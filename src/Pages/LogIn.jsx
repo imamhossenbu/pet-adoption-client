@@ -1,24 +1,44 @@
-
 import { FaGoogle, FaGithub } from "react-icons/fa";
 import loginImage from "../assets/login.png";
 import bgImg from '../assets/bgForSignUp.jpg'
-import { useContext } from "react";
+import { useContext, useState } from "react";
 import AuthContext from "../context/authContext";
+import toast from "react-hot-toast";
+import { useNavigate } from "react-router-dom";
 
 const Login = () => {
-    const {logIn}=useContext(AuthContext) ;
+    const { logIn,googleLogIn } = useContext(AuthContext);
+    const navigate = useNavigate();
+    const [error, setError] = useState("");
 
-    const handleLogin=(e)=>{
+    const handleLogin = (e) => {
         e.preventDefault();
-        const form=e.target;
+        setError("");  // Reset error message
+
+        const form = e.target;
         const email = form.email.value;
         const password = form.password.value;
-        logIn(email,password)
-        .then(res=>{
-            console.log(res.user);
-            form.reset();
+
+        logIn(email, password)
+            .then(() => {
+                toast.success('Log In Successful');
+                form.reset();
+                navigate('/');
+            })
+            .catch((err) => {
+                console.error("Login Error:", err.message);
+                setError(err.message);
+                toast.error("Failed to log in. Please check your credentials.");
+            });
+    };
+
+    const handleGoogleLogIn=()=>{
+        googleLogIn()
+        .then(()=>{
+          toast.success('Sign Up With Google Successful');
+          navigate('/') 
         })
-    }
+      }
 
     return (
         <div
@@ -52,20 +72,22 @@ const Login = () => {
                         Login to your account
                     </p>
 
-                    <form className="space-y-4">
+                    {error && <p className="text-red-500 text-center mb-4">{error}</p>}
+
+                    <form onSubmit={handleLogin} className="space-y-4">
                         {/* Email Field */}
-                        <form onSubmit={handleLogin}>
+                        <div>
                             <label className="block text-gray-700 font-medium mb-1">
                                 Email Address
                             </label>
                             <input
                                 type="email"
-                                name='email'
+                                name="email"
                                 placeholder="Enter your email"
                                 className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-orange-500 focus:border-orange-500 outline-none"
                                 required
                             />
-                        </form>
+                        </div>
 
                         {/* Password Field */}
                         <div>
@@ -74,7 +96,7 @@ const Login = () => {
                             </label>
                             <input
                                 type="password"
-                                name='password'
+                                name="password"
                                 placeholder="Enter your password"
                                 className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-orange-500 focus:border-orange-500 outline-none"
                                 required
@@ -104,7 +126,7 @@ const Login = () => {
                     <div className="mt-6">
                         <p className="text-center text-gray-500">Or login with</p>
                         <div className="flex justify-center space-x-4 mt-4">
-                            <button className="flex items-center bg-white border border-gray-300 px-4 py-2 rounded-md hover:shadow-md transition duration-300">
+                            <button onClick={handleGoogleLogIn} className="flex items-center bg-white border border-gray-300 px-4 py-2 rounded-md hover:shadow-md transition duration-300">
                                 <FaGoogle className="text-red-500 mr-2" />
                                 Google
                             </button>
@@ -117,9 +139,7 @@ const Login = () => {
                 </div>
             </div>
         </div>
-
     );
-}
-
+};
 
 export default Login;

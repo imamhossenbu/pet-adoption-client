@@ -1,33 +1,53 @@
-import { useState } from "react";
-import { NavLink } from "react-router-dom";
-import logo from '../../public/logo.png'
+import { useContext, useState } from "react";
+import { NavLink, useNavigate } from "react-router-dom";
+import logo from '../../public/logo.png';
+import AuthContext from "../context/authContext";
+import toast from "react-hot-toast";
 
 function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const { user, logOut } = useContext(AuthContext);
+  const navigate = useNavigate();
+
+  const handleLogOut = () => {
+    logOut()
+      .then(() => {
+        toast.success('Log Out Successful');
+        navigate('/');
+      })
+      .catch((err) => {
+        toast.error('Log Out Failed');
+        console.error(err.message);
+      });
+  };
 
   // Navigation Links with Active Class
   const navLinks = [
     { name: "Home", path: "/" },
     { name: "Pet Listing", path: "/pet-listing" },
     { name: "Donation Campaigns", path: "/donation-campaigns" },
-    { name: "Login", path: "/login" },
   ];
+
+  // Show Login link only when user is not logged in
+  if (!user) {
+    navLinks.push({ name: "Login", path: "/login" });
+  }
 
   // Active and Default Class
   const linkClass = ({ isActive }) =>
     isActive
-      ? "text-gray-900 font-semibold border-b-2 border-blue-500"
-      : "text-gray-600 hover:text-gray-900 transition duration-300";
+      ? "text-[#FBAE02] font-bold "
+      : "text-black font-semibold hover:text-[#FBAE02] transition duration-300";
 
   return (
     <nav className="bg-white shadow-lg sticky top-0 z-50">
       <div className="container mx-auto px-4 md:px-8">
-        <div className="flex justify-between items-center py-4">
+        <div className="flex justify-between items-center py-6">
           {/* Logo */}
           <div className="flex items-center">
             <img
-              src={logo} // Replace with your logo path
+              src={logo} 
               alt="Logo"
               className="h-8 w-auto mr-3"
             />
@@ -47,31 +67,35 @@ function Navbar() {
             ))}
           </div>
 
-          {/* Profile Section */}
-          <div className="relative">
-            <img
-              src="https://via.placeholder.com/40" // Replace with user's profile picture URL
-              alt="User"
-              className="h-10 w-10 rounded-full cursor-pointer"
-              onClick={() => setIsDropdownOpen(!isDropdownOpen)}
-            />
-            {isDropdownOpen && (
-              <div className="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg z-10">
-                <NavLink
-                  to="/dashboard"
-                  className="block px-4 py-2 text-gray-700 hover:bg-gray-100"
-                >
-                  Dashboard
-                </NavLink>
-                <button
-                  onClick={() => alert("Logout functionality")}
-                  className="w-full text-left px-4 py-2 text-gray-700 hover:bg-gray-100"
-                >
-                  Logout
-                </button>
-              </div>
-            )}
-          </div>
+          {/* Profile Section (Show only if user is logged in) */}
+          {user ? (
+            <div className="relative">
+              <img
+                src={user.photoURL} 
+                alt="User"
+                className="h-10 w-10 rounded-full cursor-pointer"
+                onClick={() => setIsDropdownOpen(!isDropdownOpen)}
+              />
+              {isDropdownOpen && (
+                <div className="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg z-10">
+                  <NavLink
+                    to="/dashboard"
+                    className="block px-4 py-2 text-gray-700 hover:bg-gray-100"
+                  >
+                    Dashboard
+                  </NavLink>
+                  <button
+                    onClick={handleLogOut}
+                    className="w-full text-left px-4 py-2 text-gray-700 hover:bg-gray-100"
+                  >
+                    Logout
+                  </button>
+                </div>
+              )}
+            </div>
+          ) : (
+            <></>
+          )}
 
           {/* Mobile Menu Button */}
           <button

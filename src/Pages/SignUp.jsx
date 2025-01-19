@@ -1,27 +1,62 @@
-import { FaGoogle, FaGithub } from "react-icons/fa";
+import { FaGoogle, FaGithub, FaEye, FaEyeSlash } from "react-icons/fa";
 import signUpImage from "../assets/signup.png"; // Replace with your signup image path
 import bgImg from "../assets/bgForSignUp.jpg";  // Replace with your background image
-import { useContext } from "react";
+import { useContext, useState } from "react";
 import AuthContext from "../context/authContext";
+import { useNavigate } from "react-router-dom";
+import toast from "react-hot-toast";
 
 const SignUp = () => {
+  const { signUp, updateUserProfile,googleLogIn } = useContext(AuthContext);
+  const [showPassword, setShowPassword] = useState(false);
+  const [error, setError] = useState("");
+  const navigate=useNavigate();
 
-  const {signUp}=useContext(AuthContext);
-
-  const handleSignUp=(e)=>{
+  const handleSignUp = (e) => {
     e.preventDefault();
+    setError("");  // Reset error message
+
     const form = e.target;
     const name = form.name.value;
     const photo = form.photo.value;
     const email = form.email.value;
     const password = form.password.value;
 
-    signUp(email,password)
-    .then(res=>{
-      console.log(res.user);
-      form.reset();
+    // Password validation regex
+    const passwordRegex = /^(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{6,}$/;
+
+    if (!passwordRegex.test(password)) {
+      setError(
+        "Password must be at least 6 characters long, contain one uppercase letter, one number, and one special character."
+      );
+      return;
+    }
+
+    signUp(email, password)
+      .then(() => {
+        updateUserProfile(name, photo)
+          .then(() => {
+            toast.success("Sign Up Successful");
+            navigate('/')
+            form.reset();
+          })
+          .catch((updateErr) => {
+            setError("Profile update failed: " + updateErr.message);
+          });
+      })
+      .catch((signUpErr) => {
+        setError("Sign-up failed: " + signUpErr.message);
+      });
+  };
+
+  const handleGoogleLogIn=()=>{
+    googleLogIn()
+    .then(()=>{
+      toast.success('Sign Up With Google Successful');
+      navigate('/') 
     })
   }
+
   return (
     <div
       className="min-h-screen flex items-center justify-center py-20 relative"
@@ -54,6 +89,8 @@ const SignUp = () => {
             Sign up to get started
           </p>
 
+          {error && <p className="text-red-500 text-center mb-4">{error}</p>}
+
           <form onSubmit={handleSignUp} className="space-y-4">
             {/* Name Field */}
             <div>
@@ -76,7 +113,7 @@ const SignUp = () => {
               </label>
               <input
                 type="url"
-                name='photo'
+                name="photo"
                 placeholder="Enter your photo URL"
                 className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-orange-500 focus:border-orange-500 outline-none"
                 required
@@ -90,7 +127,7 @@ const SignUp = () => {
               </label>
               <input
                 type="email"
-                name='email'
+                name="email"
                 placeholder="Enter your email"
                 className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-orange-500 focus:border-orange-500 outline-none"
                 required
@@ -102,13 +139,21 @@ const SignUp = () => {
               <label className="block text-gray-700 font-medium mb-1">
                 Password
               </label>
-              <input
-                type="password"
-                name='password'
-                placeholder="Enter your password"
-                className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-orange-500 focus:border-orange-500 outline-none"
-                required
-              />
+              <div className="relative">
+                <input
+                  type={showPassword ? "text" : "password"}
+                  name="password"
+                  placeholder="Enter your password"
+                  className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-orange-500 focus:border-orange-500 outline-none"
+                  required
+                />
+                <span
+                  className="absolute right-3 top-3 cursor-pointer text-gray-500"
+                  onClick={() => setShowPassword(!showPassword)}
+                >
+                  {showPassword ? <FaEyeSlash /> : <FaEye />}
+                </span>
+              </div>
             </div>
 
             {/* Sign Up Button */}
@@ -134,7 +179,7 @@ const SignUp = () => {
           <div className="mt-6">
             <p className="text-center text-gray-500">Or sign up with</p>
             <div className="flex justify-center space-x-4 mt-4">
-              <button className="flex items-center bg-white border border-gray-300 px-4 py-2 rounded-md hover:shadow-md transition duration-300">
+              <button onClick={handleGoogleLogIn} className="flex items-center bg-white border border-gray-300 px-4 py-2 rounded-md hover:shadow-md transition duration-300">
                 <FaGoogle className="text-red-500 mr-2" />
                 Google
               </button>
@@ -144,6 +189,7 @@ const SignUp = () => {
               </button>
             </div>
           </div>
+
         </div>
       </div>
     </div>
