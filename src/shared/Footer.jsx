@@ -51,7 +51,7 @@ const Footer = () => {
                 </div>
             </div>
             <div className=" bg-[#232323]">
-                <ul className="flex py-7 justify-center space-x-3 text-gray-400 ">
+                <ul className="flex flex-col items-center md:flex-row py-7 justify-center space-x-3 text-gray-400 ">
                     <li className="hover:text-white">
                         <Link to='/'> Home</Link>
                     </li>
@@ -60,6 +60,12 @@ const Footer = () => {
                     </li>
                     <li className="hover:text-white">
                         <Link to='/donation-campaigns'> Donation Campaigns</Link>
+                    </li>
+                    <li className="hover:text-white">
+                        <Link to='/services'> Services</Link>
+                    </li>
+                    <li className="hover:text-white">
+                        <Link to='/contact'>Contact Us</Link>
                     </li>
                 </ul>
             </div>

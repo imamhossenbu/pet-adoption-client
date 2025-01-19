@@ -13,12 +13,12 @@ const ContactUs = () => {
             <section className="py-20 bg-gray-100">
                 <HeadingSection title="Contact Us"
                     subtitle="We are here to assist you with any inquiries about pet adoption. Feel free to reach out to us." > </HeadingSection>
-                <div className="container mx-auto px-6 md:px-12 lg:px-20">
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-10 bg-white shadow-lg rounded-lg overflow-hidden">
+                <div className="w-full md:container mx-auto px-4 md:px-12 lg:px-20">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-10 bg-white shadow-lg rounded-lg ">
 
                         {/* Left Side - Contact Information */}
-                        <div className="p-10">
-                            <h2 className="text-3xl font-bold text-gray-800 mb-6">Send us a Message</h2>
+                        <div className="p-2 md:p-10">
+                            <h2 className="text-2xl md:text-3xl font-bold text-gray-800 mb-6">Send us a Message</h2>
                             <p className="text-gray-600 mb-6 leading-relaxed">
                                 Have questions about pet adoption? Need help finding your perfect companion?
                                 We're here to assist you every step of the way. Reach out to us and we'll be
@@ -32,7 +32,7 @@ const ContactUs = () => {
                                     </div>
                                     <div>
                                         <p className="text-gray-600">Call Anytime</p>
-                                        <p className="text-lg font-bold">(800) 555-0199</p>
+                                        <p className="text-lg font-bold">+880-1624994532</p>
                                     </div>
                                 </div>
 
@@ -42,7 +42,7 @@ const ContactUs = () => {
                                     </div>
                                     <div>
                                         <p className="text-gray-600">Write Email</p>
-                                        <p className="text-lg font-bold">support@peddycare.com</p>
+                                        <p className="text-lg font-bold">imam.cse9.bu@gmail.com</p>
                                     </div>
                                 </div>
 
@@ -53,7 +53,7 @@ const ContactUs = () => {
                                     <div>
                                         <p className="text-gray-600">Visit Office</p>
                                         <p className="text-lg font-bold">
-                                            123 Pet Adoption Street, New York, NY 10001, USA
+                                            Barisal Sadar, Barisal, Bangladesh.
                                         </p>
                                     </div>
                                 </div>
@@ -113,7 +113,8 @@ const ContactUs = () => {
             </section>
             <Map provider={osm} height={400} defaultCenter={[22.7010, 90.3535]} defaultZoom={12}>
                 <Marker
-                    width={50}
+                    width={30}
+                    color="red"
                     anchor={[22.7010, 90.3535]}
                     onClick={() => alert("Barisal Sadar, Bangladesh")}
                 />
