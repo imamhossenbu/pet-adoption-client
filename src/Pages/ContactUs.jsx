@@ -2,7 +2,8 @@ import ParallaxBanner from "../shared/ParallaxBanner";
 import contactImg from '../assets/contact.jpg'
 import { FaPhoneAlt, FaEnvelope, FaMapMarkerAlt } from "react-icons/fa";
 import HeadingSection from "../shared/HeadingSection";
-
+import { Map, Marker } from 'pigeon-maps'
+import { osm } from 'pigeon-maps/providers'
 
 const ContactUs = () => {
     return (
@@ -110,6 +111,14 @@ const ContactUs = () => {
                     </div>
                 </div>
             </section>
+            <Map provider={osm} height={400} defaultCenter={[22.7010, 90.3535]} defaultZoom={12}>
+                <Marker
+                    width={50}
+                    anchor={[22.7010, 90.3535]}
+                    onClick={() => alert("Barisal Sadar, Bangladesh")}
+                />
+            </Map>
+
         </div>
     );
 };
