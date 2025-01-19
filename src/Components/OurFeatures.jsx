@@ -37,7 +37,7 @@ const features = [
 
 const OurFeatures = () => {
     return (
-        <section className="py-20 bg-gray-100">
+        <section className="py-6 bg-gray-100">
             <HeadingSection title="Our Features" subtitle="Discover the amazing services we offer for your pets' health and happiness."></HeadingSection>
             <div className="container mx-auto px-4  md:px-10 text-center">
                 <div className="flex flex-col lg:flex-row items-center gap-12">

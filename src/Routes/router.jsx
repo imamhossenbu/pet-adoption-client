@@ -6,6 +6,7 @@ import DonationCampaigns from "../Pages/DonationCampaigns";
 import Login from "../Pages/LogIn";
 import SignUp from "../Pages/SignUp";
 import ErrorPage from "../Pages/ErrorPage";
+import ContactUs from "../Pages/ContactUs";
 
 const router = createBrowserRouter([
     {
@@ -32,6 +33,10 @@ const router = createBrowserRouter([
             {
                 path:'/sign-up',
                 element:<SignUp></SignUp>
+            },
+            {
+                path:'/contact',
+                element:<ContactUs></ContactUs>
             }
         ]
     }

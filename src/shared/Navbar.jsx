@@ -4,7 +4,7 @@ import logo from '../../public/logo.png';
 import AuthContext from "../context/authContext";
 import toast from "react-hot-toast";
 
-const Navbar=()=> {
+const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const { user, logOut } = useContext(AuthContext);
@@ -27,7 +27,18 @@ const Navbar=()=> {
     { name: "Home", path: "/" },
     { name: "Pet Listing", path: "/pet-listing" },
     { name: "Donation Campaigns", path: "/donation-campaigns" },
+    { name: "Contact Us", path: "/contact" },
   ];
+
+  const activeLogo = () => {
+    return (
+      <img
+        src={logo} // Replace with your logo path
+        alt="Active Logo"
+        className="h-5 w-5 mr-1 inline-block"
+      />
+    );
+  };
 
   // Show Login link only when user is not logged in
   if (!user) {
@@ -57,12 +68,13 @@ const Navbar=()=> {
           {/* Navigation Links (Desktop) */}
           <div className="hidden md:flex space-x-6">
             {navLinks.map((link) => (
-              <NavLink
-                key={link.name}
-                to={link.path}
-                className={linkClass}
-              >
-                {link.name}
+              <NavLink key={link.name} to={link.path} className={linkClass}>
+                {({ isActive }) => (
+                  <>
+                    {isActive && activeLogo(link.name)}
+                    {link.name}
+                  </>
+                )}
               </NavLink>
             ))}
           </div>

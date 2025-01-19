@@ -3,6 +3,7 @@ import image1 from '../assets/image1.jpg'
 import CallToAction from "../Components/CallToAction";
 import AboutUs from "../Components/AboutUs";
 import OurFeatures from "../Components/OurFeatures";
+import Testimonial from "../Components/Testimonial";
 
 const Home = () => {
     return (
@@ -11,6 +12,7 @@ const Home = () => {
             <CallToAction></CallToAction>
             <AboutUs></AboutUs>
             <OurFeatures></OurFeatures>
+            <Testimonial></Testimonial>
         </div>
     );
 };

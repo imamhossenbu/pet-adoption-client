@@ -1,3 +1,4 @@
+/* eslint-disable react/prop-types */
 const HeadingSection = ({ title, subtitle }) => {
     return (
       <div className="text-center mb-12">
