@@ -4,7 +4,7 @@ import logo from '../../public/logo.png';
 import AuthContext from "../context/authContext";
 import toast from "react-hot-toast";
 
-function Navbar() {
+const Navbar=()=> {
   const [isOpen, setIsOpen] = useState(false);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const { user, logOut } = useContext(AuthContext);
@@ -47,7 +47,7 @@ function Navbar() {
           {/* Logo */}
           <div className="flex items-center">
             <img
-              src={logo} 
+              src={logo}
               alt="Logo"
               className="h-8 w-auto mr-3"
             />
@@ -71,26 +71,27 @@ function Navbar() {
           {user ? (
             <div className="relative">
               <img
-                src={user.photoURL} 
+                src={user.photoURL}
                 alt="User"
                 className="h-10 w-10 rounded-full cursor-pointer"
                 onClick={() => setIsDropdownOpen(!isDropdownOpen)}
               />
               {isDropdownOpen && (
-                <div className="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg z-10">
+                <div className="absolute right-0 mt-2 w-48 bg-gradient-to-r from-blue-500 to-purple-500 rounded-lg shadow-lg z-10">
                   <NavLink
                     to="/dashboard"
-                    className="block px-4 py-2 text-gray-700 hover:bg-gray-100"
+                    className="block px-4 py-2 text-white font-medium transition duration-300 hover:bg-white hover:text-blue-500 rounded-t-lg"
                   >
                     Dashboard
                   </NavLink>
                   <button
                     onClick={handleLogOut}
-                    className="w-full text-left px-4 py-2 text-gray-700 hover:bg-gray-100"
+                    className="w-full text-left px-4 py-2 text-white font-medium transition duration-300 hover:bg-white hover:text-red-500 rounded-b-lg"
                   >
                     Logout
                   </button>
                 </div>
+
               )}
             </div>
           ) : (

@@ -5,11 +5,13 @@ import PetListing from "../Pages/PetListing";
 import DonationCampaigns from "../Pages/DonationCampaigns";
 import Login from "../Pages/LogIn";
 import SignUp from "../Pages/SignUp";
+import ErrorPage from "../Pages/ErrorPage";
 
 const router = createBrowserRouter([
     {
         path:'/',
         element:<Root></Root>,
+        errorElement:<ErrorPage></ErrorPage>,
         children:[
             {
                 path:'/',
