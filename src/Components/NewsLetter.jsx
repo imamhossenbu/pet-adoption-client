@@ -3,7 +3,7 @@ import newsletterBg from "../assets/newsletter.jpg";  // Replace with your real 
 const Newsletter = () => {
   return (
     <section
-      className="relative bg-cover bg-center bg-no-repeat  py-20"
+      className="relative bg-cover bg-center bg-no-repeat bg-fixed py-20"
       style={{ backgroundImage: `url(${newsletterBg})` }}
     >
       {/* Overlay to enhance readability */}

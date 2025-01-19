@@ -52,6 +52,11 @@ const Navbar = () => {
       ? "text-[#FBAE02] font-bold text-lg"
       : "text-black font-semibold hover:text-[#FBAE02] text-lg transition duration-300";
 
+
+  const scrollToTop = () => {
+    window.scrollTo({ top: 0, behavior: "smooth"});
+  };
+
   return (
     <nav className="bg-white shadow-lg sticky top-0 z-50">
       <div className="container mx-auto px-4 md:px-8">
@@ -63,13 +68,13 @@ const Navbar = () => {
               alt="Logo"
               className="h-8 w-auto mr-3"
             />
-            <span className="text-2xl font-bold text-gray-800">PeddyCare</span>
+            <span className="text-3xl font-bold text-black">PeddyCare</span>
           </div>
 
           {/* Navigation Links (Desktop) */}
           <div className="hidden md:flex space-x-6">
             {navLinks.map((link) => (
-              <NavLink key={link.name} to={link.path} className={linkClass}>
+              <NavLink onClick={scrollToTop} key={link.name} to={link.path} className={linkClass}>
                 {({ isActive }) => (
                   <>
                     {isActive && activeLogo(link.name)}

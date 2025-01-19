@@ -73,7 +73,7 @@ const ServicesCategory = () => {
                     <Swiper
                         modules={[Autoplay, Navigation, Pagination]}
                         spaceBetween={0}
-                        slidesPerView={3}
+                        slidesPerView={1}
                         breakpoints={{
                             640: { slidesPerView: 1 },
                             768: { slidesPerView: 2 },

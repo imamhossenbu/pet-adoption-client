@@ -1,6 +1,7 @@
 import featureImage from "../assets/features.jpg"; // Replace with your real image
 import { FaPaw, FaHome, FaHeartbeat, FaGraduationCap, FaClinicMedical } from "react-icons/fa";
 import HeadingSection from "../shared/HeadingSection";
+import { motion } from "framer-motion";
 
 const features = [
     {
@@ -39,9 +40,9 @@ const OurFeatures = () => {
     return (
         <section className="py-6 bg-gray-100">
             <HeadingSection title="Our Features" subtitle="Discover the amazing services we offer for your pets' health and happiness."></HeadingSection>
-            <div className="container mx-auto px-4  md:px-10 text-center">
+            <div className="container mx-auto px-4 md:px-10 text-center">
                 <div className="flex flex-col lg:flex-row items-center gap-12">
-
+                    
                     {/* Left Side - Features List */}
                     <div className="w-full lg:w-1/3 space-y-8">
                         {features.slice(0, 3).map((feature, index) => (
@@ -57,12 +58,20 @@ const OurFeatures = () => {
                         ))}
                     </div>
 
-                    {/* Center - Feature Image */}
+                    {/* Center - Feature Image with Infinite Motion */}
                     <div className="w-full lg:w-1/3">
-                        <img
+                        <motion.img
                             src={featureImage}
                             alt="Feature"
                             className="rounded-lg shadow-lg w-full h-auto object-cover"
+                            animate={{
+                                y: [0, -50, 0], // Move up and down
+                            }}
+                            transition={{
+                                duration: 3,  // Speed of the animation
+                                repeat: Infinity,  // Infinite looping
+                                ease: "easeInOut", // Smooth transition
+                            }}
                         />
                     </div>
 

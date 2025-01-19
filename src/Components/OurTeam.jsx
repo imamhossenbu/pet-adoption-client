@@ -80,7 +80,7 @@ const OurTeam = () => {
                     <Swiper
                         modules={[Autoplay, Navigation, Pagination]}
                         spaceBetween={20}
-                        slidesPerView={3}
+                        slidesPerView={1}
                         breakpoints={{
                             640: { slidesPerView: 1 },
                             768: { slidesPerView: 2 },

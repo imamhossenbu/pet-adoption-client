@@ -5,6 +5,9 @@ import logo from "../../public/logo.png";
 import { Link } from "react-router-dom";
 
 const Footer = () => {
+    const scrollToTop = () => {
+        window.scrollTo({ top: 0, behavior: "smooth" });
+      };
     return (
         <footer className="bg-[#1D1D1D] text-white">
             <div className="flex justify-center items-center gap-2 py-6 border-b border-gray-700">
@@ -53,19 +56,19 @@ const Footer = () => {
             <div className=" bg-[#232323]">
                 <ul className="flex flex-col items-center md:flex-row py-7 justify-center space-x-3 text-gray-400 ">
                     <li className="hover:text-white">
-                        <Link to='/'> Home</Link>
+                        <Link onClick={scrollToTop} to='/'> Home</Link>
                     </li>
                     <li className="hover:text-white">
-                        <Link to='/pet-listing'> Pet Listing</Link>
+                        <Link onClick={scrollToTop} to='/pet-listing'> Pet Listing</Link>
                     </li>
                     <li className="hover:text-white">
-                        <Link to='/donation-campaigns'> Donation Campaigns</Link>
+                        <Link onClick={scrollToTop} to='/donation-campaigns'> Donation Campaigns</Link>
                     </li>
                     <li className="hover:text-white">
-                        <Link to='/services'> Services</Link>
+                        <Link onClick={scrollToTop} to='/services'> Services</Link>
                     </li>
                     <li className="hover:text-white">
-                        <Link to='/contact'>Contact Us</Link>
+                        <Link onClick={scrollToTop} to='/contact'>Contact Us</Link>
                     </li>
                 </ul>
             </div>
