@@ -3,6 +3,8 @@ import Root from "../Layout.jsx/Root";
 import Home from "../Pages/Home";
 import PetListing from "../Pages/PetListing";
 import DonationCampaigns from "../Pages/DonationCampaigns";
+import Login from "../Pages/LogIn";
+import SignUp from "../Pages/SignUp";
 
 const router = createBrowserRouter([
     {
@@ -20,6 +22,14 @@ const router = createBrowserRouter([
             {
                 path:'/donation-campaigns',
                 element:<DonationCampaigns></DonationCampaigns>
+            },
+            {
+                path:'/login',
+                element:<Login></Login>
+            },
+            {
+                path:'/sign-up',
+                element:<SignUp></SignUp>
             }
         ]
     }

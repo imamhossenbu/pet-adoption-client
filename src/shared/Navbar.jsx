@@ -11,7 +11,7 @@ function Navbar() {
     { name: "Home", path: "/" },
     { name: "Pet Listing", path: "/pet-listing" },
     { name: "Donation Campaigns", path: "/donation-campaigns" },
-    { name: "Login/Register", path: "/login" },
+    { name: "Login", path: "/login" },
   ];
 
   // Active and Default Class
