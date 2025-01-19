@@ -7,7 +7,7 @@ import { useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
 
 const SignUp = () => {
-  const { signUp, updateUserProfile,googleLogIn } = useContext(AuthContext);
+  const { signUp, updateUserProfile,googleLogIn,githubLogIn } = useContext(AuthContext);
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState("");
   const navigate=useNavigate();
@@ -53,6 +53,13 @@ const SignUp = () => {
     googleLogIn()
     .then(()=>{
       toast.success('Sign Up With Google Successful');
+      navigate('/') 
+    })
+  }
+  const handleGithubLogIn=()=>{
+    githubLogIn()
+    .then(()=>{
+      toast.success('Sign Up With Github Successful');
       navigate('/') 
     })
   }
@@ -183,7 +190,7 @@ const SignUp = () => {
                 <FaGoogle className="text-red-500 mr-2" />
                 Google
               </button>
-              <button className="flex items-center bg-white border border-gray-300 px-4 py-2 rounded-md hover:shadow-md transition duration-300">
+              <button onClick={handleGithubLogIn} className="flex items-center bg-white border border-gray-300 px-4 py-2 rounded-md hover:shadow-md transition duration-300">
                 <FaGithub className="text-gray-800 mr-2" />
                 GitHub
               </button>
