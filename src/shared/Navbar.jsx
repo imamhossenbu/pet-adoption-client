@@ -37,8 +37,8 @@ function Navbar() {
   // Active and Default Class
   const linkClass = ({ isActive }) =>
     isActive
-      ? "text-[#FBAE02] font-bold "
-      : "text-black font-semibold hover:text-[#FBAE02] transition duration-300";
+      ? "text-[#FBAE02] font-bold text-lg"
+      : "text-black font-semibold hover:text-[#FBAE02] text-lg transition duration-300";
 
   return (
     <nav className="bg-white shadow-lg sticky top-0 z-50">

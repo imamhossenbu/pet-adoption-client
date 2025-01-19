@@ -7,10 +7,10 @@ import { useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
 
 const SignUp = () => {
-  const { signUp, updateUserProfile,googleLogIn,githubLogIn } = useContext(AuthContext);
+  const { signUp, updateUserProfile, googleLogIn, githubLogIn } = useContext(AuthContext);
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState("");
-  const navigate=useNavigate();
+  const navigate = useNavigate();
 
   const handleSignUp = (e) => {
     e.preventDefault();
@@ -36,6 +36,7 @@ const SignUp = () => {
       .then(() => {
         updateUserProfile(name, photo)
           .then(() => {
+            setError('')
             toast.success("Sign Up Successful");
             navigate('/')
             form.reset();
@@ -49,19 +50,27 @@ const SignUp = () => {
       });
   };
 
-  const handleGoogleLogIn=()=>{
+  const handleGoogleLogIn = () => {
     googleLogIn()
-    .then(()=>{
-      toast.success('Sign Up With Google Successful');
-      navigate('/') 
-    })
+      .then(() => {
+        setError('')
+        toast.success('Sign Up With Google Successful');
+        navigate('/')
+      })
+      .catch(error => {
+        setError(error.message)
+      })
   }
-  const handleGithubLogIn=()=>{
+  const handleGithubLogIn = () => {
     githubLogIn()
-    .then(()=>{
-      toast.success('Sign Up With Github Successful');
-      navigate('/') 
-    })
+      .then(() => {
+        setError('')
+        toast.success('Sign Up With Github Successful');
+        navigate('/')
+      })
+      .catch(error => {
+        setError(error.message)
+      })
   }
 
   return (

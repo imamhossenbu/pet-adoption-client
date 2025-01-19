@@ -7,7 +7,7 @@ import toast from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
 
 const Login = () => {
-    const { logIn,googleLogIn,githubLogIn } = useContext(AuthContext);
+    const { logIn, googleLogIn, githubLogIn } = useContext(AuthContext);
     const navigate = useNavigate();
     const [error, setError] = useState("");
 
@@ -32,21 +32,28 @@ const Login = () => {
             });
     };
 
-    const handleGoogleLogIn=()=>{
+    const handleGoogleLogIn = () => {
         googleLogIn()
-        .then(()=>{
-          toast.success('Sign Up With Google Successful');
-          navigate('/') 
-        })
-      }
-    const handleGithubLogIn=()=>{
+            .then(() => {
+                setError('')
+                toast.success('Sign Up With Google Successful');
+                navigate('/')
+            })
+            .catch(error => {
+                setError(error.message)
+            })
+    }
+    const handleGithubLogIn = () => {
         githubLogIn()
-        .then((res)=>{
-            console.log(res.user);
-          toast.success('Sign Up With Github Successful');
-          navigate('/') 
-        })
-      }
+            .then(() => {
+                setError('')
+                toast.success('Sign Up With Github Successful');
+                navigate('/')
+            })
+            .catch(error => {
+                setError(error.message)
+            })
+    }
 
     return (
         <div
