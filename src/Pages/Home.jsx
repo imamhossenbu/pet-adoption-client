@@ -4,6 +4,7 @@ import CallToAction from "../Components/CallToAction";
 import AboutUs from "../Components/AboutUs";
 import OurFeatures from "../Components/OurFeatures";
 import Testimonial from "../Components/Testimonial";
+import OurTeam from "../Components/OurTeam";
 
 const Home = () => {
     return (
@@ -13,6 +14,7 @@ const Home = () => {
             <AboutUs></AboutUs>
             <OurFeatures></OurFeatures>
             <Testimonial></Testimonial>
+            <OurTeam></OurTeam>
         </div>
     );
 };
