@@ -1,8 +1,27 @@
 import { FaGoogle, FaGithub } from "react-icons/fa";
 import signUpImage from "../assets/signup.png"; // Replace with your signup image path
 import bgImg from "../assets/bgForSignUp.jpg";  // Replace with your background image
+import { useContext } from "react";
+import AuthContext from "../context/authContext";
 
 const SignUp = () => {
+
+  const {signUp}=useContext(AuthContext);
+
+  const handleSignUp=(e)=>{
+    e.preventDefault();
+    const form = e.target;
+    const name = form.name.value;
+    const photo = form.photo.value;
+    const email = form.email.value;
+    const password = form.password.value;
+
+    signUp(email,password)
+    .then(res=>{
+      console.log(res.user);
+      form.reset();
+    })
+  }
   return (
     <div
       className="min-h-screen flex items-center justify-center py-20 relative"
@@ -35,7 +54,7 @@ const SignUp = () => {
             Sign up to get started
           </p>
 
-          <form className="space-y-4">
+          <form onSubmit={handleSignUp} className="space-y-4">
             {/* Name Field */}
             <div>
               <label className="block text-gray-700 font-medium mb-1">
@@ -43,6 +62,7 @@ const SignUp = () => {
               </label>
               <input
                 type="text"
+                name="name"
                 placeholder="Enter your full name"
                 className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-orange-500 focus:border-orange-500 outline-none"
                 required
@@ -56,6 +76,7 @@ const SignUp = () => {
               </label>
               <input
                 type="url"
+                name='photo'
                 placeholder="Enter your photo URL"
                 className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-orange-500 focus:border-orange-500 outline-none"
                 required
@@ -69,6 +90,7 @@ const SignUp = () => {
               </label>
               <input
                 type="email"
+                name='email'
                 placeholder="Enter your email"
                 className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-orange-500 focus:border-orange-500 outline-none"
                 required
@@ -82,6 +104,7 @@ const SignUp = () => {
               </label>
               <input
                 type="password"
+                name='password'
                 placeholder="Enter your password"
                 className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-orange-500 focus:border-orange-500 outline-none"
                 required

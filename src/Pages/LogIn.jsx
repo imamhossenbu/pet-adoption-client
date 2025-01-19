@@ -2,8 +2,23 @@
 import { FaGoogle, FaGithub } from "react-icons/fa";
 import loginImage from "../assets/login.png";
 import bgImg from '../assets/bgForSignUp.jpg'
+import { useContext } from "react";
+import AuthContext from "../context/authContext";
 
 const Login = () => {
+    const {logIn}=useContext(AuthContext) ;
+
+    const handleLogin=(e)=>{
+        e.preventDefault();
+        const form=e.target;
+        const email = form.email.value;
+        const password = form.password.value;
+        logIn(email,password)
+        .then(res=>{
+            console.log(res.user);
+            form.reset();
+        })
+    }
 
     return (
         <div
@@ -39,17 +54,18 @@ const Login = () => {
 
                     <form className="space-y-4">
                         {/* Email Field */}
-                        <div>
+                        <form onSubmit={handleLogin}>
                             <label className="block text-gray-700 font-medium mb-1">
                                 Email Address
                             </label>
                             <input
                                 type="email"
+                                name='email'
                                 placeholder="Enter your email"
                                 className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-orange-500 focus:border-orange-500 outline-none"
                                 required
                             />
-                        </div>
+                        </form>
 
                         {/* Password Field */}
                         <div>
@@ -58,6 +74,7 @@ const Login = () => {
                             </label>
                             <input
                                 type="password"
+                                name='password'
                                 placeholder="Enter your password"
                                 className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-orange-500 focus:border-orange-500 outline-none"
                                 required
