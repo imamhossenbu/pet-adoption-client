@@ -6,10 +6,10 @@ import rabbitImage from "../assets/rabbit.png";
 import birdImage from "../assets/bird.jpg";
 
 const petCategories = [
-  { name: "Cats", image: catImage, link: "/category/cats" },
-  { name: "Dogs", image: dogImage, link: "/category/dogs" },
-  { name: "Rabbits", image: rabbitImage, link: "/category/rabbits" },
-  { name: "Birds", image: birdImage, link: "/category/birds" },
+  { name: "Cats", image: catImage, link: "/pet-listing/cat" },
+  { name: "Dogs", image: dogImage, link: "/pet-listing/dog" },
+  { name: "Rabbits", image: rabbitImage, link: "/pet-listing/rabbit" },
+  { name: "Birds", image: birdImage, link: "/pet-listing/bird" },
 ];
 
 const PetsCategory = () => {

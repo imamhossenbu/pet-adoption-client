@@ -5,28 +5,32 @@ import { RouterProvider } from 'react-router-dom'
 import router from './Routes/router'
 import AuthProvider from './Provider/AuthProvider'
 import { Toaster } from 'react-hot-toast'
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 
+const queryClient = new QueryClient()
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>
-    <AuthProvider>
-      <Toaster
-        toastOptions={{
-          success: {
-            style: {
-              background: 'green',
-              color:'white'
+    <QueryClientProvider client={queryClient}>
+      <AuthProvider>
+        <Toaster
+          toastOptions={{
+            success: {
+              style: {
+                background: 'green',
+                color: 'white'
+              },
             },
-          },
-          error: {
-            style: {
-              background: 'red',
-              color:'white'
+            error: {
+              style: {
+                background: 'red',
+                color: 'white'
+              },
             },
-          },
-        }}
-      />
-      <RouterProvider router={router}></RouterProvider>
-    </AuthProvider>
+          }}
+        />
+        <RouterProvider router={router}></RouterProvider>
+      </AuthProvider>
+    </QueryClientProvider>
   </StrictMode>,
 )

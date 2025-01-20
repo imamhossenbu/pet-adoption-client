@@ -9,7 +9,7 @@ const Sidebar = ({user}) => {
     // const {user}=useContext(AuthContext)
   const sharedLinks = [
     { name: "Home", path: "/" },
-    { name: "Pet Listing", path: "/pets" },
+    { name: "Pet Listing", path: "/pet-listing" },
     { name: "Donation Campaign", path: "/donation-campaigns" },
     { name: "Services", path: "/services" },
     { name: "Contact", path: "/contact" },
