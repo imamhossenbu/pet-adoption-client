@@ -8,6 +8,9 @@ import SignUp from "../Pages/SignUp";
 import ErrorPage from "../Pages/ErrorPage";
 import ContactUs from "../Pages/ContactUs";
 import Services from "../Pages/Services";
+import Dashboard from "../Pages/Dashboard/Dashboard";
+import AddPet from "../Pages/Dashboard/AddPet";
+
 
 const router = createBrowserRouter([
     {
@@ -43,6 +46,18 @@ const router = createBrowserRouter([
                 path:'/services',
                 element:<Services></Services>
             }
+        ]
+    },
+    {
+        path:'/dashboard',
+        element:<Dashboard></Dashboard>,
+        children:[
+
+            // user route
+            {
+                path:'add-pet',
+                element:<AddPet></AddPet>
+            },
         ]
     }
 ])

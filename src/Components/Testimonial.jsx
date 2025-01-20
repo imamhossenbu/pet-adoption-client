@@ -1,11 +1,13 @@
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Navigation, Pagination, Autoplay } from "swiper/modules";
 import "swiper/css";
+import { motion } from "framer-motion";
 import "swiper/css/navigation";
 import "swiper/css/pagination";
 import "swiper/css/autoplay";
 import { FaQuoteLeft } from "react-icons/fa";
 import HeadingSection from "../shared/HeadingSection";
+import { FaArrowLeftLong, FaArrowRightLong } from "react-icons/fa6";
 
 // Fake testimonial data
 const testimonials = [
@@ -49,40 +51,52 @@ const Testimonial = () => {
                     title="What Our Adopters Say"
                     subtitle="See what our happy pet owners have to say about their adoption journey with PeddyCare."
                 />
-                <Swiper
-                    modules={[Navigation, Pagination, Autoplay]}
-                    spaceBetween={50}
-                    slidesPerView={1}
-                    breakpoints={{
-                        768: { slidesPerView: 2 },
-                        1024: { slidesPerView: 3 },
-                    }}
-                    navigation
-                    pagination={{ clickable: true }}
-                    autoplay={{ delay: 3000, disableOnInteraction: false }}
-                    loop={true}
-                    className="container mx-auto"
-                >
-                    {testimonials.map((testimonial, index) => (
-                        <SwiperSlide key={index}>
-                            <div className="bg-white shadow-lg h-[400px] rounded-lg z-0 p-10 text-center relative">
-                                <FaQuoteLeft className="absolute left-4 top-4 text-6xl -z-10  text-gray-200" />
-                                <p className="text-lg text-gray-600 mb-6 leading-relaxed">
-                                    {testimonial.quote}
-                                </p>
-                                <div className="flex flex-col items-center">
-                                    <img
-                                        src={testimonial.image}
-                                        alt={testimonial.name}
-                                        className="rounded-full border-4 border-white shadow-md w-24 h-24 object-cover"
-                                    />
-                                    <h3 className="text-2xl font-bold text-gray-800 mt-4">{testimonial.name}</h3>
-                                    <p className="text-gray-500 text-lg">{testimonial.role}</p>
+                <motion.div className="relative overflow-hidden">
+                    <div className="swiper-button-prev-custom absolute top-1/2 left-4 transform -translate-y-1/2 z-10 cursor-pointer bg-[#FBAE02] hover:bg-gray-300 text-gray-800 rounded-full p-2 shadow-md">
+                        <FaArrowLeftLong size={20} />
+                    </div>
+                    <div className="swiper-button-next-custom absolute top-1/2 right-4 transform -translate-y-1/2 z-10 cursor-pointer bg-[#FBAE02] hover:bg-gray-300 text-gray-800 rounded-full p-2 shadow-md">
+                        <FaArrowRightLong size={20} />
+                    </div>
+                    <Swiper
+                        modules={[Autoplay, Navigation, Pagination]}
+                        spaceBetween={20}
+                        slidesPerView={1}
+                        breakpoints={{
+                            640: { slidesPerView: 1 },
+                            768: { slidesPerView: 2 },
+                            1024: { slidesPerView: 3 },
+                        }}
+                        autoplay={{ delay: 0, disableOnInteraction: false }}
+                        speed={8000}
+                        loop={true}
+                        navigation={{
+                            prevEl: ".swiper-button-prev-custom",
+                            nextEl: ".swiper-button-next-custom",
+                        }}
+                        pagination={{ clickable: true }}
+                    >
+                        {testimonials.map((testimonial, index) => (
+                            <SwiperSlide key={index}>
+                                <div className="bg-white shadow-lg h-[400px] rounded-lg z-0 p-10 text-center relative">
+                                    <FaQuoteLeft className="absolute left-4 top-4 text-6xl -z-10  text-gray-200" />
+                                    <p className="text-lg text-gray-600 mb-6 leading-relaxed">
+                                        {testimonial.quote}
+                                    </p>
+                                    <div className="flex flex-col items-center">
+                                        <img
+                                            src={testimonial.image}
+                                            alt={testimonial.name}
+                                            className="rounded-full border-4 border-white shadow-md w-24 h-24 object-cover"
+                                        />
+                                        <h3 className="text-2xl font-bold text-gray-800 mt-4">{testimonial.name}</h3>
+                                        <p className="text-gray-500 text-lg">{testimonial.role}</p>
+                                    </div>
                                 </div>
-                            </div>
-                        </SwiperSlide>
-                    ))}
-                </Swiper>
+                            </SwiperSlide>
+                        ))}
+                    </Swiper>
+                </motion.div>
             </div>
         </section>
     );

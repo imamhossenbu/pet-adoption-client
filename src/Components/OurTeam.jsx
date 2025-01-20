@@ -5,7 +5,8 @@ import "swiper/css";
 import "swiper/css/navigation";
 import "swiper/css/pagination";
 import HeadingSection from "../shared/HeadingSection";
-import { FaFacebookF, FaTwitter, FaLinkedinIn } from "react-icons/fa";
+import { FaFacebookF, FaTwitter, FaLinkedinIn} from "react-icons/fa";
+import { FaArrowLeftLong, FaArrowRightLong } from "react-icons/fa6";
 
 const teamMembers = [
     {
@@ -76,7 +77,13 @@ const OurTeam = () => {
             <div className="container mx-auto px-4 md:px-10 text-center">
                 <HeadingSection title="Our Team" subtitle="Meet our dedicated pet care specialists who love and care for your pets like their own." />
 
-                <motion.div  className="overflow-hidden">
+                <motion.div className="relative overflow-hidden">
+                    <div className="swiper-button-prev-custom absolute top-1/2 left-4 transform -translate-y-1/2 z-10 cursor-pointer bg-[#FBAE02] hover:bg-gray-300 text-gray-800 rounded-full p-2 shadow-md">
+                        <FaArrowLeftLong  size={20} />
+                    </div>
+                    <div className="swiper-button-next-custom absolute top-1/2 right-4 transform -translate-y-1/2 z-10 cursor-pointer bg-[#FBAE02] hover:bg-gray-300 text-gray-800 rounded-full p-2 shadow-md">
+                        <FaArrowRightLong  size={20} />
+                    </div>
                     <Swiper
                         modules={[Autoplay, Navigation, Pagination]}
                         spaceBetween={20}
@@ -89,7 +96,10 @@ const OurTeam = () => {
                         autoplay={{ delay: 0, disableOnInteraction: false }}
                         speed={5000}
                         loop={true}
-                        navigation
+                        navigation={{
+                            prevEl: ".swiper-button-prev-custom",
+                            nextEl: ".swiper-button-next-custom",
+                        }}
                         pagination={{ clickable: true }}
                     >
                         {teamMembers.map((member, index) => (

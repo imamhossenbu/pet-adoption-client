@@ -7,6 +7,7 @@ import "swiper/css/navigation";
 import "swiper/css/pagination";
 import HeadingSection from "../shared/HeadingSection";
 import { useState } from "react";
+import { FaArrowLeftLong, FaArrowRightLong } from "react-icons/fa6";
 
 // Set the root element for accessibility
 Modal.setAppElement("#root");
@@ -69,7 +70,13 @@ const ServicesCategory = () => {
             <div className="container mx-auto px-4 md:px-10  text-center">
                 <HeadingSection title="Services" subtitle="Discover the amazing services we offer for your pets' health and happiness." />
 
-                <motion.div whileHover={{ animationPlayState: "paused" }} className="overflow-hidden">
+                <motion.div whileHover={{ animationPlayState: "paused" }} className=" relative overflow-hidden">
+                    <div className="swiper-button-prev-custom absolute top-1/2 left-4 transform -translate-y-1/2 z-10 cursor-pointer bg-[#FBAE02] hover:bg-gray-300 text-gray-800 rounded-full p-2 shadow-md">
+                        <FaArrowLeftLong size={20} />
+                    </div>
+                    <div className="swiper-button-next-custom absolute top-1/2 right-4 transform -translate-y-1/2 z-10 cursor-pointer bg-[#FBAE02] hover:bg-gray-300 text-gray-800 rounded-full p-2 shadow-md">
+                        <FaArrowRightLong size={20} />
+                    </div>
                     <Swiper
                         modules={[Autoplay, Navigation, Pagination]}
                         spaceBetween={0}
@@ -82,7 +89,10 @@ const ServicesCategory = () => {
                         autoplay={{ delay: 0, disableOnInteraction: false }}
                         speed={6000}
                         loop={true}
-                        navigation
+                        navigation={{
+                            prevEl: ".swiper-button-prev-custom",
+                            nextEl: ".swiper-button-next-custom",
+                        }}
                         pagination={{ clickable: true }}
                     >
                         {services.map((service, index) => (
