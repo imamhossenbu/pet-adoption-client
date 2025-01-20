@@ -6,6 +6,7 @@ import OurFeatures from "../Components/OurFeatures";
 import Testimonial from "../Components/Testimonial";
 import OurTeam from "../Components/OurTeam";
 import { Helmet } from "react-helmet";
+import PetsCategory from "../Components/PetsCategory";
 
 const Home = () => {
     return (
@@ -14,6 +15,7 @@ const Home = () => {
                 <title>Home||PeddyCare</title>
             </Helmet>
             <ParallaxBanner bgImage={image1} heading={'Find Your New Best Friend'} subheading={'Bringing joy, one paw at a time.'}></ParallaxBanner>
+            <PetsCategory></PetsCategory>
             <CallToAction></CallToAction>
             <AboutUs></AboutUs>
             <OurFeatures></OurFeatures>
