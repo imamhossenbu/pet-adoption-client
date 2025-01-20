@@ -54,6 +54,7 @@ const AboutUs = () => {
             <img
               src={aboutUsImage}
               alt="About Us"
+              loading="lazy"
               className="rounded-lg shadow-lg w-full h-auto object-cover"
             />
           </motion.div>
@@ -84,13 +85,19 @@ const AboutUs = () => {
               variants={fadeInUp}
             >
               <button
-                onClick={() => navigate("/contact")}
+                onClick={() => {
+                  navigate('/contact');
+                  window.scrollTo({ top: 0, behavior: "smooth" });
+                }}
                 className="bg-orange-500 hover:bg-orange-600 text-white font-semibold py-3 px-8 rounded-lg shadow-lg transition duration-300"
               >
                 Contact Us
               </button>
               <button
-                onClick={() => navigate("/services")}
+                onClick={() => {
+                  navigate('/services');
+                  window.scrollTo({ top: 0, behavior: "smooth" });
+                }}
                 className="bg-gray-800 hover:bg-gray-900 text-white font-semibold py-3 px-8 rounded-lg shadow-lg transition duration-300"
               >
                 Our Services

@@ -4,10 +4,14 @@ import { FaPhoneAlt, FaEnvelope, FaMapMarkerAlt } from "react-icons/fa";
 import HeadingSection from "../shared/HeadingSection";
 import { Map, Marker } from 'pigeon-maps'
 import { osm } from 'pigeon-maps/providers'
+import { Helmet } from "react-helmet";
 
 const ContactUs = () => {
     return (
         <div>
+            <Helmet>
+                <title>Contact||PeddyCare</title>
+            </Helmet>
             <ParallaxBanner bgImage={contactImg} heading={'Contact PeddyCare Today'} subheading={"We'd love to hear from you! Reach out for support, inquiries, or just to say hello to our pet-loving team."}></ParallaxBanner>
 
             <section className="py-20 bg-gray-100">

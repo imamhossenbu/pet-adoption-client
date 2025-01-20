@@ -80,7 +80,7 @@ const ServicesCategory = () => {
                             1024: { slidesPerView: 3 },
                         }}
                         autoplay={{ delay: 0, disableOnInteraction: false }}
-                        speed={4000}
+                        speed={6000}
                         loop={true}
                         navigation
                         pagination={{ clickable: true }}

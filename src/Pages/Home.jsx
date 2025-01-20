@@ -5,10 +5,14 @@ import AboutUs from "../Components/AboutUs";
 import OurFeatures from "../Components/OurFeatures";
 import Testimonial from "../Components/Testimonial";
 import OurTeam from "../Components/OurTeam";
+import { Helmet } from "react-helmet";
 
 const Home = () => {
     return (
         <div>
+            <Helmet>
+                <title>Home||PeddyCare</title>
+            </Helmet>
             <ParallaxBanner bgImage={image1} heading={'Find Your New Best Friend'} subheading={'Bringing joy, one paw at a time.'}></ParallaxBanner>
             <CallToAction></CallToAction>
             <AboutUs></AboutUs>

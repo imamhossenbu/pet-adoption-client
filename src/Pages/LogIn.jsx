@@ -5,6 +5,7 @@ import { useContext, useState } from "react";
 import AuthContext from "../context/authContext";
 import toast from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
+import { Helmet } from "react-helmet";
 
 const Login = () => {
     const { logIn, googleLogIn, githubLogIn } = useContext(AuthContext);
@@ -65,6 +66,9 @@ const Login = () => {
                 backgroundRepeat: "no-repeat",
             }}
         >
+            <Helmet>
+                <title>Log in||PeddyCare</title>
+            </Helmet>
             {/* Overlay to reduce opacity */}
             <div className="absolute inset-0 bg-black opacity-30"></div>
 
