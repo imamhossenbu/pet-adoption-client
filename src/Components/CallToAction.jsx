@@ -26,7 +26,7 @@ const CallToAction = () => {
                         Give these loving animals the home they deserve. Open your heart and make a difference today.
                     </p>
                     <button
-                        onClick={() => navigate("/adopt")}
+                        onClick={() => navigate("/pet-listing")}
                         className="bg-orange-500 hover:bg-orange-600 text-white font-bold py-3 px-8 rounded-lg shadow-lg transition duration-300"
                     >
                         Find Your Companion

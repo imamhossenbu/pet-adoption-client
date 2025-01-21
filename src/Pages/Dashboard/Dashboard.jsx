@@ -1,18 +1,15 @@
-import { useState } from "react";
+import { useContext, useState } from "react";
 import { Outlet } from "react-router-dom";
 import { FaBars, FaTimes } from "react-icons/fa";
 import Sidebar from "./Sidebar"; // Import the Sidebar component
+import AuthContext from "../../context/authContext";
 
 const Dashboard = () => {
+  const {user}= useContext(AuthContext)
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
 
   const toggleDrawer = () => setIsDrawerOpen(!isDrawerOpen);
 
-  const user = {
-    name: "John Doe",
-    role: "user", // Change to "user" for user-specific routes
-    profilePicture: "https://i.ibb.co/3m6sJ49/user.jpg",
-  };
 
   return (
     <div className="flex min-h-screen bg-gray-100">
@@ -49,13 +46,13 @@ const Dashboard = () => {
           </button>
           <div className="flex items-center gap-4">
             <img
-              src={user.profilePicture}
-              alt={user.name}
+              src={user?.photoURL}
+              alt={user?.displayName}
               className="w-10 h-10 rounded-full object-cover"
             />
             <div>
-              <h2 className="text-lg font-semibold">{user.name}</h2>
-              <p className="text-sm text-gray-500 capitalize">{user.role}</p>
+              <h2 className="text-lg font-semibold">{user?.displayName}</h2>
+              <p className="text-sm text-gray-500 capitalize">{user?.role}</p>
             </div>
           </div>
         </header>

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import { useForm } from 'react-hook-form';
 import Select from 'react-select';
 import makeAnimated from 'react-select/animated';
@@ -6,6 +6,8 @@ import { useEditor, EditorContent } from '@tiptap/react';
 import StarterKit from '@tiptap/starter-kit';
 import useAxiosPublic from '../../Hooks/useAxiosPublic';
 import Swal from 'sweetalert2';
+import AuthContext from '../../context/authContext';
+import { useNavigate } from 'react-router-dom';
 
 const categoryOptions = [
     { value: 'dog', label: 'Dog', color: '#FF5630' },
@@ -20,6 +22,8 @@ const image_hosting_api = `https://api.imgbb.com/1/upload?key=${image_hosting_ke
 
 
 const AddPet = () => {
+    const navigate = useNavigate();
+    const { user } = useContext(AuthContext);
     const axiosSecurePublic = useAxiosPublic();
 
     const {
@@ -62,7 +66,8 @@ const AddPet = () => {
                 petImage: res.data.data.display_url,
                 dateAdded: new Date().toISOString(),
                 adopted: false,
-                petAge: parseFloat(data.petAge)
+                petAge: parseFloat(data.petAge),
+                userEmail: user.email,
             };
             const petItemRes = await axiosSecurePublic.post('/pet', petData);
             if (petItemRes.data.insertedId) {
@@ -72,6 +77,7 @@ const AddPet = () => {
                     text: "Your item has been added.",
                     icon: "success"
                 })
+                navigate('/pet-listing')
             }
         }
 
@@ -103,13 +109,22 @@ const AddPet = () => {
                     <div>
                         <label className="block font-medium mb-1">Pet Age (in years)</label>
                         <input
-                            type="number"
+                            type="text"
                             {...register('petAge', {
                                 required: 'Pet age is required',
-                                min: { value: 0, message: 'Age must be a positive number' },
+                                validate: value => {
+                                    const number = parseFloat(value);
+                                    if (isNaN(number)) {
+                                        return 'Age must be a valid number';
+                                    }
+                                    if (number < 0) {
+                                        return 'Age must be a positive number';
+                                    }
+                                    return true;
+                                },
                             })}
-                            className={`block w-full border rounded-md p-2 ${errors.petAge ? 'border-red-500' : 'border-gray-300'
-                                }`}
+                            className={`block w-full border rounded-md p-2 ${errors.petAge ? 'border-red-500' : 'border-gray-300'}`}
+                            placeholder="Enter pet age (e.g., 3.5)"
                         />
                         {errors.petAge && (
                             <p className="text-red-500 text-sm mt-1">{errors.petAge.message}</p>

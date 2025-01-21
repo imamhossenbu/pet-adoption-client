@@ -46,9 +46,9 @@ const Sidebar = ({user}) => {
       <nav className="flex-1 overflow-y-auto">
         <ul className="space-y-1 px-4">
           <li className="text-gray-400 uppercase font-semibold text-sm">
-            {user.role === "admin" ? "Admin Links" : "User Links"}
+            {user?.role === "admin" ? "Admin Links" : "User Links"}
           </li>
-          {(user.role === "admin" ? adminLinks : userLinks).map((link, index) => (
+          {(user?.role === "admin" ? adminLinks : userLinks).map((link, index) => (
             <li key={index}>
               <NavLink
                 to={link.path}
