@@ -5,6 +5,7 @@ import useAxiosPublic from "../../Hooks/useAxiosPublic";
 import AuthContext from "../../context/authContext";
 import { useQuery } from "@tanstack/react-query";
 import Swal from "sweetalert2";
+import DonationProgress from "../../shared/DonationProgress";
 
 const MyDonationCampaigns = () => {
     const navigate = useNavigate();
@@ -62,18 +63,8 @@ const MyDonationCampaigns = () => {
                                 <td className="p-3">{campaign?.petName}</td>
                                 <td className="p-3">${campaign.maxDonationAmount}</td>
                                 <td className="p-3">
-                                    <div className="relative w-full bg-gray-200 rounded">
-                                        <div
-                                            className="bg-green-500 text-xs font-medium text-white text-center p-0.5 leading-none rounded"
-                                            style={{
-                                                width: `${(campaign.currentDonationAmount / campaign.maxDonationAmount) * 100}%`,
-                                            }}
-                                        >
-                                            {Math.floor(
-                                                (campaign.currentDonationAmount / campaign.maxDonationAmount) * 100
-                                            )}
-                                            %
-                                        </div>
+                                    <div>
+                                        <DonationProgress donatedAmount={campaign.donatedAmount} maxDonationAmount={campaign.maxDonationAmount}></DonationProgress>
                                     </div>
                                 </td>
                                 <td className="p-3 flex justify-center gap-2">
@@ -85,7 +76,7 @@ const MyDonationCampaigns = () => {
                                         <FaEdit size={20} />
                                     </button>
                                     <button
-                                        onClick={() => handlePauseToggle(campaign._id, campaign.paused)}
+                                        onClick={() => handlePauseToggle(campaign._id, campaign?.paused)}
                                         className={`text-${campaign.paused ? "green" : "red"}-500 hover:text-${campaign.paused ? "green" : "red"}-700`}
                                         title={campaign.paused ? "Unpause" : "Pause"}
                                     >
@@ -113,8 +104,8 @@ const MyDonationCampaigns = () => {
                         <ul>
                             {modalData.map((donator) => (
                                 <li key={donator._id} className="border-b py-2">
-                                    <strong>Name:</strong> {donator.userName} <br />
-                                    <strong>Email:</strong> {donator.userEmail} <br />
+                                    <strong>Name:</strong> {donator.name} <br />
+                                    <strong>Email:</strong> {donator.email} <br />
                                     <strong>Amount:</strong> ${donator.amount}
                                 </li>
                             ))}

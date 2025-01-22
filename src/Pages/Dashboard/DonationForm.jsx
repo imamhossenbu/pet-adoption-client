@@ -1,53 +1,112 @@
 /* eslint-disable react/prop-types */
 import { CardElement, useStripe, useElements } from "@stripe/react-stripe-js";
-import { useState } from "react";
+import { useState, useEffect, useContext } from "react";
 import useAxiosPublic from "../../Hooks/useAxiosPublic";
-import Swal from "sweetalert2";
+import AuthContext from "../../context/authContext";
+import toast from "react-hot-toast";
+import { useNavigate } from "react-router-dom";
 
-const DonationForm = ({ donationId, onClose }) => {
+const DonationForm = ({ donationId, onClose ,refetch}) => {
+    const { user } = useContext(AuthContext);
     const stripe = useStripe();
     const elements = useElements();
     const axiosSecurePublic = useAxiosPublic();
+    const navigate = useNavigate();
     const [amount, setAmount] = useState("");
+    const [clientSecret, setClientSecret] = useState("");
+    const [error, setError] = useState("");
 
-    const handleSubmit = async (e) => {
-        e.preventDefault();
-        if (!stripe || !elements) return;
+    // Generate Payment Intent when amount changes
+    useEffect(() => {
+        if (amount > 0) {
+            axiosSecurePublic.post('/create-payment-intent', { donation: amount })
+                .then(res => {
+                    setClientSecret(res.data.clientSecret);
+                })
+                .catch(err => console.error("Payment intent error:", err));
+        }
+    }, [axiosSecurePublic, amount]);
 
-        if (!amount || isNaN(amount) || amount <= 0) {
-            Swal.fire("Error", "Please enter a valid donation amount.", "error");
+    const handleSubmit = async (event) => {
+        event.preventDefault();
+
+        if (!stripe || !elements) {
+            toast.error("Stripe is not properly initialized.");
             return;
         }
 
-        const cardElement = elements.getElement(CardElement);
-        const { error, paymentMethod } = await stripe.createPaymentMethod({
+        const card = elements.getElement(CardElement);
+        if (!card) {
+            toast.error("Please enter valid card details.");
+            return;
+        }
+
+        // Create payment method
+        const { error: paymentError, paymentMethod } = await stripe.createPaymentMethod({
             type: "card",
-            card: cardElement,
+            card,
         });
 
-        if (error) {
-            Swal.fire("Error", error.message, "error");
+        if (paymentError) {
+            setError(paymentError.message);
             return;
         }
+        else{
+            console.log('Payment successful:', paymentMethod);
+            setError('');
+        }
 
-        const { data } = await axiosSecurePublic.post("/donations/charge", {
-            donationId,
-            amount,
-            paymentMethodId: paymentMethod.id,
+        setError("");
+
+        // Confirm payment
+        const { paymentIntent, error: confirmError } = await stripe.confirmCardPayment(clientSecret, {
+            payment_method: {
+                card: card,
+                billing_details: {
+                    name: user?.displayName || "Anonymous",
+                    email: user?.email || "anonymous",
+                },
+            },
         });
+        console.log(paymentIntent);
 
-        if (data.success) {
-            Swal.fire("Success", "Donation Successful!", "success");
-            onClose();
+        if (confirmError) {
+            toast.error("Payment failed. Please try again.");
+            console.error("Confirm error", confirmError);
         } else {
-            Swal.fire("Error", "Payment failed, try again.", "error");
+            if (paymentIntent.status === "succeeded") {
+
+                // Save payment details to database
+                const paymentData = {
+                    name: user?.displayName,
+                    email: user?.email,
+                    transactionId: paymentIntent.id,
+                    amount: amount,
+                    donationId: donationId,
+                    date: new Date().toISOString(),
+                };
+
+                try {
+                    const res = await axiosSecurePublic.post('/payment', paymentData);
+                    console.log(res);
+                    if (res.data.paymentResult.insertedId) {
+                        toast.success("Donation successful!");
+                        refetch();
+                        onClose();
+                        navigate(`/donation-details/${donationId}`);
+                    }
+                } catch (err) {
+                    toast.error("Failed to save payment details.");
+                    console.error("Payment save error:", err);
+                }
+            }
         }
     };
 
     return (
-        <div className="bg-white py-6 px-10 rounded-lg shadow-lg w-full max-w-4xl">
+        <div className="bg-white py-6 px-8 rounded-lg shadow-lg w-full max-w-4xl">
             <h2 className="text-3xl font-bold text-orange-600 mb-6 text-center">Make a Donation</h2>
-            
+
             <form onSubmit={handleSubmit} className="space-y-6">
                 {/* Donation Amount Field */}
                 <div>
@@ -60,7 +119,7 @@ const DonationForm = ({ donationId, onClose }) => {
                         onChange={(e) => setAmount(e.target.value)}
                         className="w-full p-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-orange-400"
                         required
-                        placeholder="Enter amount"
+                        placeholder="Enter donation amount"
                     />
                 </div>
 
@@ -72,6 +131,7 @@ const DonationForm = ({ donationId, onClose }) => {
                     <div className="p-4 border border-gray-300 rounded-md bg-gray-50">
                         <CardElement className="focus:outline-none" />
                     </div>
+                    {error && <p className="text-red-500 text-sm mt-2">{error}</p>}
                 </div>
 
                 {/* Action Buttons */}
@@ -86,7 +146,7 @@ const DonationForm = ({ donationId, onClose }) => {
                     <button
                         type="submit"
                         className="px-6 py-3 bg-orange-500 text-white font-bold rounded-md hover:bg-orange-600 transition duration-300"
-                        disabled={!stripe}
+                        disabled={!stripe || !clientSecret || !amount}
                     >
                         Donate
                     </button>

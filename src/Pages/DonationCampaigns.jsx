@@ -7,6 +7,7 @@ import useAxiosPublic from "../Hooks/useAxiosPublic";
 import { useInView } from "react-intersection-observer";
 import { NavLink } from "react-router-dom";
 import HeadingSection from '../shared/HeadingSection'
+import DonationProgress from "../shared/DonationProgress";
 
 const DonationCampaigns = () => {
     const axiosSecurePublic = useAxiosPublic();
@@ -88,19 +89,20 @@ const DonationCampaigns = () => {
                                 <h3 className="text-xl font-bold text-orange-500 mb-2">
                                     {campaign.petName}
                                 </h3>
-                                <p className="text-gray-600 mb-2">
-                                    <strong>Max Donation:</strong> ${campaign.maxDonationAmount}
-                                </p>
-                                <p className="text-gray-600 mb-4">
-                                    <strong>Donated Amount:</strong> ${campaign.donatedAmount}
-                                </p>
+                                <div className="flex flex-col md:flex-row gap-6">
+                                    <div>
+                                        <p className="text-gray-600 mb-2">
+                                            <strong>Max Donation:</strong> ${campaign.maxDonationAmount}
+                                        </p>
+                                        <p className="text-gray-600 mb-4">
+                                            <strong>Donated Amount:</strong> ${campaign.donatedAmount ? campaign.donatedAmount : 0}
+                                        </p>
+                                    </div>
 
-                                {/* Progress Bar */}
-                                <div className="w-full bg-gray-200 rounded-full h-4">
-                                    <div
-                                        className="bg-green-500 h-4 rounded-full"
-                                        style={{ width: `${(campaign.donatedAmount / campaign.maxDonationAmount) * 100}%` }}
-                                    ></div>
+                                    {/* Progress Bar */}
+                                    <div>
+                                        <DonationProgress donatedAmount={campaign.donatedAmount} maxDonationAmount={campaign.maxDonationAmount}></DonationProgress>
+                                    </div>
                                 </div>
 
                                 <NavLink
