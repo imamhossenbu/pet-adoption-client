@@ -4,7 +4,7 @@ import useAdmin from '../Hooks/useAdmin';
 import { Navigate, useLocation } from 'react-router-dom';
 import AuthContext from '../context/authContext';
 import Skeleton from 'react-loading-skeleton';
-import 'react-loading-skeleton/dist/skeleton.css'
+import 'react-loading-skeleton/dist/skeleton.css';
 
 const AdminRoute = ({ children }) => {
     const { user, loading } = useContext(AuthContext);

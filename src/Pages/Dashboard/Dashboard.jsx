@@ -1,9 +1,10 @@
 import { useContext, useState } from "react";
 import { Outlet } from "react-router-dom";
 import { FaBars, FaTimes } from "react-icons/fa";
-import Sidebar from "./Sidebar"; 
+import Sidebar from "./Sidebar";
 import AuthContext from "../../context/authContext";
 import useAdmin from "../../Hooks/useAdmin";
+import Skeleton from "react-loading-skeleton";
 
 const Dashboard = () => {
   const { user } = useContext(AuthContext)
@@ -13,7 +14,15 @@ const Dashboard = () => {
 
   const toggleDrawer = () => setIsDrawerOpen(!isDrawerOpen);
 
-  if(isPending) return <h2>loading.....</h2>
+  if (isPending) return (
+    <div className="fixed inset-0 bg-gray-100 flex justify-center items-center z-50">
+      <div className="w-full max-w-md p-4">
+        <Skeleton count={5} height={30} className="mb-2" />
+        <Skeleton count={1} height={50} className="mb-4" />
+        <Skeleton count={3} height={20} className="mb-2" />
+      </div>
+    </div>
+  )
 
   return (
     <div className="flex min-h-screen bg-gray-100">
@@ -33,7 +42,7 @@ const Dashboard = () => {
 
           {/* Drawer */}
           <div className="fixed inset-y-0 left-0 w-64 bg-gray-800 text-white z-40 lg:hidden">
-            <Sidebar  />
+            <Sidebar />
           </div>
         </>
       )}
