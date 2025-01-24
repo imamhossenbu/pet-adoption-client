@@ -8,6 +8,8 @@ import { useInView } from "react-intersection-observer";
 import { NavLink } from "react-router-dom";
 import HeadingSection from '../shared/HeadingSection'
 import DonationProgress from "../shared/DonationProgress";
+import Skeleton from "react-loading-skeleton";
+import 'react-loading-skeleton/dist/skeleton.css'
 
 const DonationCampaigns = () => {
     const axiosSecurePublic = useAxiosPublic();
@@ -44,7 +46,15 @@ const DonationCampaigns = () => {
         fetchNextPage();
     }
 
-    if (isLoading) return <div>Loading...</div>;
+    if (isLoading) return (
+        <div className="fixed inset-0 bg-gray-100 flex justify-center items-center z-50">
+            <div className="w-full max-w-md p-4">
+                <Skeleton count={5} height={30} className="mb-2" />
+                <Skeleton count={1} height={50} className="mb-4" />
+                <Skeleton count={3} height={20} className="mb-2" />
+            </div>
+        </div>
+    );
     if (isError) return <div>Error fetching donation campaigns</div>;
 
     // Combine paginated data

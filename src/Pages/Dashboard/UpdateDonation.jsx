@@ -5,27 +5,29 @@ import useAxiosPublic from '../../Hooks/useAxiosPublic';
 import Swal from 'sweetalert2';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useEffect } from 'react';
+import useAxiosSecure from '../../Hooks/useAxiosSecure';
 
 // Cloudinary/ImgBB API Key (Replace with your actual API key)
 const image_hosting_key = import.meta.env.VITE_img_hosting_api;
 const image_hosting_api = `https://api.imgbb.com/1/upload?key=${image_hosting_key}`;
 
 const UpdateDonation = () => {
-    const [campaign,setCampaign] = useState([]);
+    const [campaign, setCampaign] = useState([]);
     const { id } = useParams();
     const { user } = useContext(AuthContext);
+    const axiosSecure = useAxiosSecure();
     const axiosSecurePublic = useAxiosPublic();
     const navigate = useNavigate();
 
     const { register, handleSubmit, formState: { errors } } = useForm();
 
     useEffect(() => {
-        axiosSecurePublic.get(`donation/${id}`)
-        .then(res=>{
-            setCampaign(res.data);
-            console.log(res.data);
-        })
-    }, [axiosSecurePublic,setCampaign,id])
+        axiosSecure.get(`donation/${id}`)
+            .then(res => {
+                setCampaign(res.data);
+                console.log(res.data);
+            })
+    }, [axiosSecure, setCampaign, id])
 
 
     // Submit handler
@@ -53,9 +55,9 @@ const UpdateDonation = () => {
                 };
 
                 // Send the donation data to the backend
-                const res = await axiosSecurePublic.put(`/donation-campaigns/${id}`, donationData);
+                const res = await axiosSecure.put(`/donation-campaigns/${id}`, donationData);
 
-                if (res.data.modifiedCount>0) {
+                if (res.data.modifiedCount > 0) {
                     Swal.fire({
                         title: "Success!",
                         text: "Donation campaign updated successfully.",

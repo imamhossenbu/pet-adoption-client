@@ -3,13 +3,17 @@ import { Outlet } from "react-router-dom";
 import { FaBars, FaTimes } from "react-icons/fa";
 import Sidebar from "./Sidebar"; // Import the Sidebar component
 import AuthContext from "../../context/authContext";
+import useAdmin from "../../Hooks/useAdmin";
 
 const Dashboard = () => {
-  const {user}= useContext(AuthContext)
+  const { user } = useContext(AuthContext)
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
+  const [isAdmin, isPending] = useAdmin();
+  console.log(isAdmin);
 
   const toggleDrawer = () => setIsDrawerOpen(!isDrawerOpen);
 
+  if(isPending) return <h2>loading.....</h2>
 
   return (
     <div className="flex min-h-screen bg-gray-100">
@@ -29,7 +33,7 @@ const Dashboard = () => {
 
           {/* Drawer */}
           <div className="fixed inset-y-0 left-0 w-64 bg-gray-800 text-white z-40 lg:hidden">
-            <Sidebar user={user} />
+            <Sidebar  />
           </div>
         </>
       )}

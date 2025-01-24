@@ -1,24 +1,24 @@
 import { FaTrash, FaEdit } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
-import useAxiosPublic from "../../Hooks/useAxiosPublic";
 import { useContext, useEffect, useState } from "react";
 import AuthContext from "../../context/authContext";
 import Swal from "sweetalert2";
+import useAxiosSecure from "../../Hooks/useAxiosSecure";
 
 const MyAddedPets = () => {
     const navigate = useNavigate();
-    const axiosSecurePublic = useAxiosPublic();
+    const axiosSecure = useAxiosSecure();
     const { user } = useContext(AuthContext);
     const [pets, setPets] = useState([]);
 
 
     useEffect(() => {
-        axiosSecurePublic.get(`/pet/${user?.email}`)
+        axiosSecure.get(`/pet/${user?.email}`)
             .then(res => {
                 setPets(res.data)
             })
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [axiosSecurePublic])
+    }, [axiosSecure])
 
     const handleDelete = (id) => {
         Swal.fire({
@@ -32,7 +32,7 @@ const MyAddedPets = () => {
         }).then((result) => {
             if (result.isConfirmed) {
                 // Proceed with deletion
-                axiosSecurePublic
+                axiosSecure
                     .delete(`/pet/${id}`)
                     .then((res) => {
                         if (res.data.deletedCount) {
@@ -61,7 +61,7 @@ const MyAddedPets = () => {
     };
 
     const handleAdopt = (id) => {
-        axiosSecurePublic.patch(`/pets/${id}`, { adopted: true })
+        axiosSecure.patch(`/pets/${id}`, { adopted: true })
             .then(res => {
                 if (res.data.modifiedCount > 0) {
                     setPets(prevPets =>

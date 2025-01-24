@@ -1,6 +1,52 @@
-import newsletterBg from "../assets/newsletter.jpg";  // Replace with your real image
+import { useContext, useState } from "react";
+import emailjs from "emailjs-com";
+import newsletterBg from "../assets/newsletter.jpg";
+import AuthContext from "../context/authContext";
+import Swal from "sweetalert2";
 
 const Newsletter = () => {
+  const { user } = useContext(AuthContext)
+  const name = user?.displayName;
+  const [email, setEmail] = useState("");
+  const [isSubmitted, setIsSubmitted] = useState(false);
+  const [error, setError] = useState("");
+
+  const sendEmail = (e) => {
+    e.preventDefault();
+
+    emailjs
+      .send(
+        "service_qw43pch",
+        "template_7dzfa4c",
+        {
+          email: email,
+          name: name,
+        },
+        "xPMPQPzivNE4gngbY"
+      )
+      .then(
+        (response) => {
+          console.log("SUCCESS!", response.status, response.text);
+          Swal.fire({
+            title: "Success.",
+            text: "Thanks for Subscribing us.",
+            icon: "success",
+          });
+          setIsSubmitted(true);
+        },
+        (err) => {
+          console.error("FAILED...", err);
+          Swal.fire({
+            title: "Error!",
+            text: "Failed to subscribe. Please try again.",
+            icon: "error",
+          });
+          setError("Failed to subscribe. Please try again.");
+        }
+      );
+  };
+
+
   return (
     <section
       className="relative bg-cover bg-center bg-no-repeat bg-fixed py-20"
@@ -14,24 +60,37 @@ const Newsletter = () => {
           Subscribe to our newsletter
         </h2>
         <p className="text-lg md:text-xl mb-6">
-          We send e-mails once a month, we never send Spam!
+          We send emails once a month, we never send Spam!
         </p>
 
-        {/* Subscription Form */}
-        <form className="max-w-lg mx-auto flex flex-col md:flex-row items-center">
-          <input
-            type="email"
-            placeholder="Email"
-            className="w-full md:flex-1 px-4 py-3 rounded-l-lg border-0 focus:ring-2 focus:ring-orange-400 text-gray-900"
-            required
-          />
-          <button
-            type="submit"
-            className="bg-blue-500 hover:bg-blue-600 text-white font-bold px-6 py-3 rounded-r-lg transition duration-300"
+        {/* Show Thank You Message or Form */}
+        {isSubmitted ? (
+          <p className="text-2xl font-semibold text-green-400">
+            Thanks for subscribing!
+          </p>
+        ) : (
+          <form
+            onSubmit={sendEmail}
+            className="max-w-lg mx-auto flex flex-col md:flex-row items-center"
           >
-            SUBSCRIBE
-          </button>
-        </form>
+            <input
+              type="email"
+              placeholder="Email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              className="w-full md:flex-1 px-4 py-3 rounded-l-lg border-0 focus:ring-2 focus:ring-orange-400 text-gray-900"
+              required
+            />
+            <button
+              type="submit"
+              className="bg-blue-500 hover:bg-blue-600 text-white font-bold px-6 py-3 rounded-r-lg transition duration-300"
+            >
+              SUBSCRIBE
+            </button>
+          </form>
+        )}
+
+        {error && <p className="text-red-500 mt-4">{error}</p>}
       </div>
     </section>
   );

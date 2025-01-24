@@ -7,6 +7,8 @@ import useAxiosPublic from "../Hooks/useAxiosPublic";
 import Select from "react-select";
 import HeadingSection from "../shared/HeadingSection";
 import { NavLink } from "react-router-dom";
+import Skeleton from "react-loading-skeleton";
+import 'react-loading-skeleton/dist/skeleton.css'
 
 const PetListing = () => {
     const axiosSecurePublic = useAxiosPublic();
@@ -102,7 +104,13 @@ const PetListing = () => {
 
                     {/* Display Pets */}
                     {isLoading || isFetching ? (
-                        <div>Loading...</div>
+                        <div className="fixed inset-0 bg-gray-100 flex justify-center items-center z-50">
+                            <div className="w-full max-w-md p-4">
+                                <Skeleton count={5} height={30} className="mb-2" />
+                                <Skeleton count={1} height={50} className="mb-4" />
+                                <Skeleton count={3} height={20} className="mb-2" />
+                            </div>
+                        </div>
                     ) : isError ? (
                         <div>Error fetching pets. Please try again later.</div>
                     ) : (

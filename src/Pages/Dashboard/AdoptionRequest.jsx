@@ -1,17 +1,17 @@
 import { useQuery } from "@tanstack/react-query";
-import useAxiosPublic from "../../Hooks/useAxiosPublic";
 import { useContext } from "react";
 import AuthContext from "../../context/authContext";
 import Swal from "sweetalert2";
+import useAxiosSecure from "../../Hooks/useAxiosSecure";
 
 const AdoptionRequest = () => {
-  const axiosSecurePublic = useAxiosPublic();
+  const axiosSecure = useAxiosSecure();
   const { user } = useContext(AuthContext);
 
   const { data: adoptionRequests = [], refetch } = useQuery({
     queryKey: ["adoptions", user.email],
     queryFn: async () => {
-      const res = await axiosSecurePublic.get(`/adoptions/${user?.email}`);
+      const res = await axiosSecure.get(`/adoptions/${user?.email}`);
       return res.data;
     },
   });
@@ -28,7 +28,7 @@ const AdoptionRequest = () => {
     });
 
     if (confirm.isConfirmed) {
-      await axiosSecurePublic.patch(`/adoptions/${id}`, { status: "accepted" });
+      await axiosSecure.patch(`/adoptions/${id}`, { status: "accepted" });
       Swal.fire("Accepted!", "The adoption request has been accepted.", "success");
       refetch(); // Refetch the updated data
     }
@@ -46,7 +46,7 @@ const AdoptionRequest = () => {
     });
 
     if (confirm.isConfirmed) {
-      await axiosSecurePublic.delete(`/adoptions/${id}`);
+      await axiosSecure.delete(`/adoptions/${id}`);
       Swal.fire("Rejected!", "The adoption request has been rejected.", "error");
       refetch(); // Refetch the updated data
     }

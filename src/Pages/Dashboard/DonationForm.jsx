@@ -1,16 +1,16 @@
 /* eslint-disable react/prop-types */
 import { CardElement, useStripe, useElements } from "@stripe/react-stripe-js";
 import { useState, useEffect, useContext } from "react";
-import useAxiosPublic from "../../Hooks/useAxiosPublic";
 import AuthContext from "../../context/authContext";
 import toast from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
+import useAxiosSecure from "../../Hooks/useAxiosSecure";
 
 const DonationForm = ({ donationId, onClose ,refetch}) => {
     const { user } = useContext(AuthContext);
     const stripe = useStripe();
     const elements = useElements();
-    const axiosSecurePublic = useAxiosPublic();
+    const axiosSecure = useAxiosSecure();
     const navigate = useNavigate();
     const [amount, setAmount] = useState("");
     const [clientSecret, setClientSecret] = useState("");
@@ -19,13 +19,13 @@ const DonationForm = ({ donationId, onClose ,refetch}) => {
     // Generate Payment Intent when amount changes
     useEffect(() => {
         if (amount > 0) {
-            axiosSecurePublic.post('/create-payment-intent', { donation: amount })
+            axiosSecure.post('/create-payment-intent', { donation: amount })
                 .then(res => {
                     setClientSecret(res.data.clientSecret);
                 })
                 .catch(err => console.error("Payment intent error:", err));
         }
-    }, [axiosSecurePublic, amount]);
+    }, [axiosSecure, amount]);
 
     const handleSubmit = async (event) => {
         event.preventDefault();
@@ -87,7 +87,7 @@ const DonationForm = ({ donationId, onClose ,refetch}) => {
                 };
 
                 try {
-                    const res = await axiosSecurePublic.post('/payment', paymentData);
+                    const res = await axiosSecure.post('/payment', paymentData);
                     console.log(res);
                     if (res.data.paymentResult.insertedId) {
                         toast.success("Donation successful!");

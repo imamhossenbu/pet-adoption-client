@@ -20,6 +20,11 @@ import MyDonationCampaigns from "../Pages/Dashboard/MyDonationCampaigns";
 import DonationDetails from "../Pages/Dashboard/DonationDetails";
 import UpdateDonation from "../Pages/Dashboard/UpdateDonation";
 import MyDonations from "../Pages/Dashboard/MyDonations";
+import AllUsers from "../Pages/Dashboard/AllUsers";
+import AllPets from "../Pages/AllPets";
+import AllDonationCampaign from "../Pages/Dashboard/AllDonationCampaign";
+import AdminRoute from "./AdminRoute";
+import RecommendedDonationDetails from "../Pages/RecommendedDonationDetails";
 
 
 const router = createBrowserRouter([
@@ -39,6 +44,10 @@ const router = createBrowserRouter([
             {
                 path: '/pet-details/:id',
                 element: <PrivateRoute><PetDetails></PetDetails></PrivateRoute>
+            },
+            {
+                path:'/donation-details/recommended/:id',
+                element:<RecommendedDonationDetails></RecommendedDonationDetails>
             },
             {
                 path: '/donation-campaigns',
@@ -70,7 +79,7 @@ const router = createBrowserRouter([
     },
     {
         path: '/dashboard',
-        element: <Dashboard></Dashboard>,
+        element: <PrivateRoute><Dashboard></Dashboard></PrivateRoute>,
         children: [
 
             // user route
@@ -99,12 +108,29 @@ const router = createBrowserRouter([
                 element: <PrivateRoute><MyDonationCampaigns></MyDonationCampaigns></PrivateRoute>
             },
             {
-                path:'edit-donation/:id',
-                element:<PrivateRoute><UpdateDonation></UpdateDonation></PrivateRoute>
+                path: 'edit-donation/:id',
+                element: <PrivateRoute><UpdateDonation></UpdateDonation></PrivateRoute>
             },
             {
-                path:'my-donations',
-                element:<PrivateRoute><MyDonations></MyDonations></PrivateRoute>
+                path: 'my-donations',
+                element: <PrivateRoute><MyDonations></MyDonations></PrivateRoute>
+            },
+
+
+
+
+            // admin route
+            {
+                path: 'all-users',
+                element: <AdminRoute><AllUsers></AllUsers></AdminRoute>
+            },
+            {
+                path:'all-pets',
+                element:<AdminRoute><AllPets></AllPets></AdminRoute>
+            },
+            {
+                path:'all-donations',
+                element:<AdminRoute><AllDonationCampaign></AllDonationCampaign></AdminRoute>
             }
 
         ]

@@ -76,7 +76,8 @@ const DonationDetails = () => {
                         <DonationProgress donatedAmount={donation.donatedAmount} maxDonationAmount={donation.maxDonationAmount} />
                     </div>
                     <button
-                        onClick={() => setIsModalOpen(true)}
+                        onClick={() => setIsModalOpen(true)} 
+                        disabled={donation?.paused}
                         className="mt-4 bg-orange-500 text-white py-2 px-4 rounded-md hover:bg-orange-600 transition duration-300"
                     >
                         Donate Now
@@ -129,7 +130,7 @@ const DonationDetails = () => {
                                     </div>
 
                                     <NavLink
-                                        to={campaign._id === id ? "#" : `/donation-details/${campaign._id}`}
+                                        to={campaign._id === id ? "#" : `/donation-details/recommended/${campaign._id}`}
                                         onClick={(e) => {
                                             if (campaign._id === id) {
                                                 e.preventDefault(); 

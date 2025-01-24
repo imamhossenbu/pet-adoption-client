@@ -8,6 +8,8 @@ import useAxiosPublic from '../../Hooks/useAxiosPublic';
 import Swal from 'sweetalert2';
 import AuthContext from '../../context/authContext';
 import { useNavigate } from 'react-router-dom';
+import useAxiosSecure from '../../Hooks/useAxiosSecure'
+
 
 const categoryOptions = [
     { value: 'dog', label: 'Dog', color: '#FF5630' },
@@ -25,6 +27,7 @@ const AddPet = () => {
     const navigate = useNavigate();
     const { user } = useContext(AuthContext);
     const axiosSecurePublic = useAxiosPublic();
+    const axiosSecure = useAxiosSecure();
 
     const {
         register,
@@ -69,7 +72,7 @@ const AddPet = () => {
                 petAge: parseFloat(data.petAge),
                 userEmail: user.email,
             };
-            const petItemRes = await axiosSecurePublic.post('/pet', petData);
+            const petItemRes = await axiosSecure.post('/pet', petData);
             if (petItemRes.data.insertedId) {
                 reset();
                 Swal.fire({

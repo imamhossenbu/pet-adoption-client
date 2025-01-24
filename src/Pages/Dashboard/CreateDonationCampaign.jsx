@@ -4,6 +4,7 @@ import AuthContext from '../../context/authContext';
 import useAxiosPublic from '../../Hooks/useAxiosPublic';
 import Swal from 'sweetalert2';
 import { useNavigate } from 'react-router-dom';
+import useAxiosSecure from '../../Hooks/useAxiosSecure';
 
 // Cloudinary/ImgBB API Key (Replace with your actual API key)
 const image_hosting_key = import.meta.env.VITE_img_hosting_api;
@@ -12,6 +13,7 @@ const image_hosting_api = `https://api.imgbb.com/1/upload?key=${image_hosting_ke
 const CreateDonationCampaign = () => {
     const { user } = useContext(AuthContext);
     const axiosSecurePublic = useAxiosPublic();
+    const axiosSecure = useAxiosSecure();
     const navigate = useNavigate();
 
     const { register, handleSubmit, formState: { errors } } = useForm();
@@ -41,7 +43,7 @@ const CreateDonationCampaign = () => {
                 };
 
                 // Send the donation data to the backend
-                const res = await axiosSecurePublic.post('/donation-campaigns', donationData);
+                const res = await axiosSecure.post('/donation-campaigns', donationData);
 
                 if (res.data.insertedId) {
                     Swal.fire({

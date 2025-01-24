@@ -1,18 +1,18 @@
 import { useQuery } from "@tanstack/react-query";
-import useAxiosPublic from "../../Hooks/useAxiosPublic";
 import { useContext } from "react";
 import AuthContext from "../../context/authContext";
 import Swal from "sweetalert2";
+import useAxiosSecure from "../../Hooks/useAxiosSecure";
 
 const MyDonations = () => {
-    const axiosSecurePublic = useAxiosPublic();
+    const axiosSecure = useAxiosSecure();
     const { user } = useContext(AuthContext);
 
     // Fetch donations for logged-in user
     const { data: donations = [], refetch } = useQuery({
         queryKey: ["myDonations", user?.email],
         queryFn: async () => {
-            const res = await axiosSecurePublic.get(`/my-donations/${user?.email}`);
+            const res = await axiosSecure.get(`/my-donations/${user?.email}`);
             return res.data;
         },
         enabled: !!user?.email,  
@@ -32,7 +32,7 @@ const MyDonations = () => {
         }).then(async (result) => {
             if (result.isConfirmed) {
                 try {
-                    await axiosSecurePublic.delete(`/refund-donation/${donationId}`); 
+                    await axiosSecure.delete(`/refund-donation/${donationId}`); 
                     Swal.fire("Refunded!", "Your donation has been refunded.", "success");
                     refetch();  // Refresh data after refund
                 } catch (error) {

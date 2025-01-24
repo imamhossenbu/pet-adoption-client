@@ -5,6 +5,7 @@ import makeAnimated from 'react-select/animated';
 import { useEditor, EditorContent } from '@tiptap/react';
 import StarterKit from '@tiptap/starter-kit';
 import useAxiosPublic from '../../Hooks/useAxiosPublic';
+import useAxiosSecure from '../../Hooks/useAxiosSecure';
 import Swal from 'sweetalert2';
 import AuthContext from '../../context/authContext';
 import { useNavigate, useParams } from 'react-router-dom';
@@ -26,6 +27,7 @@ const UpdatePet = () => {
     const navigate = useNavigate();
     const { user } = useContext(AuthContext);
     const axiosSecurePublic = useAxiosPublic();
+    const axiosSecure = useAxiosSecure();
     const { id } = useParams();
     const {
         register,
@@ -48,7 +50,7 @@ const UpdatePet = () => {
     const { data: pets = [] } = useQuery({
         queryKey: ['pets'],
         queryFn: async () => {
-            const res = await axiosSecurePublic.get(`/pets/${id}`)
+            const res = await axiosSecure.get(`/pets/${id}`)
             return res.data;
         }
     })
@@ -93,7 +95,7 @@ const UpdatePet = () => {
                 dateAdded: new Date().toISOString(),
                 adopted:false
             };
-            const response = await axiosSecurePublic.put(`/pet/${id}`, updatedPetData);
+            const response = await axiosSecure.put(`/pet/${id}`, updatedPetData);
             console.log(response);
             if (response.data.modifiedCount > 0) {
                 Swal.fire({

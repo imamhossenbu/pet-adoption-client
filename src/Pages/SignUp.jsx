@@ -3,15 +3,19 @@ import signUpImage from "../assets/signup.png"; // Replace with your signup imag
 import bgImg from "../assets/bgForSignUp.jpg";  // Replace with your background image
 import { useContext, useState } from "react";
 import AuthContext from "../context/authContext";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
 import { Helmet } from "react-helmet";
+import useAxiosPublic from "../Hooks/useAxiosPublic";
 
 const SignUp = () => {
+  const axiosSecurePublic = useAxiosPublic();
   const { signUp, updateUserProfile, googleLogIn, githubLogIn } = useContext(AuthContext);
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState("");
   const navigate = useNavigate();
+  const location = useLocation();
+  const from = location?.state?.from?.pathname || '/';
 
   const handleSignUp = (e) => {
     e.preventDefault();
@@ -37,10 +41,22 @@ const SignUp = () => {
       .then(() => {
         updateUserProfile(name, photo)
           .then(() => {
-            setError('')
-            toast.success("Sign Up Successful");
-            navigate('/')
-            form.reset();
+            const userInfo = {
+              name: name,
+              email: email,
+              photo:photo
+            }
+            axiosSecurePublic.post('/users', userInfo)
+              .then(() => {
+                setError('')
+                toast.success('Sign Up Successful');
+                form.reset();
+                navigate(from, { replace: true });
+              })
+              .catch(error => {
+                toast(error.message);
+              })
+
           })
           .catch((updateErr) => {
             setError("Profile update failed: " + updateErr.message);
@@ -51,28 +67,70 @@ const SignUp = () => {
       });
   };
 
-  const handleGoogleLogIn = () => {
-    googleLogIn()
-      .then(() => {
-        setError('')
-        toast.success('Sign Up With Google Successful');
-        navigate('/')
-      })
-      .catch(error => {
-        setError(error.message)
-      })
-  }
-  const handleGithubLogIn = () => {
-    githubLogIn()
-      .then(() => {
-        setError('')
-        toast.success('Sign Up With Github Successful');
-        navigate('/')
-      })
-      .catch(error => {
-        setError(error.message)
-      })
-  }
+  const handleGoogleLogIn = async () => {
+    try {
+      const res = await googleLogIn();
+      const result = res.user;
+
+      // Await user data fetch
+      const response = await axiosSecurePublic.get(`/users/email/${result?.email}`);
+      const userData = response.data;
+
+      if (userData?.isBanned) {
+        setError("Your account has been banned. Please contact support.");
+        toast.error("Your account is banned. Access denied.");
+        return;  // Stop the login process
+      }
+
+      // If user is not banned, register/login
+      const userInfo = {
+        name: result?.displayName,
+        email: result?.email,
+        photo:result?.photoURL
+      };
+
+      await axiosSecurePublic.post('/users', userInfo);
+      toast.success('Sign Up With Google Successful');
+      navigate(from, { replace: true });
+
+    } catch (error) {
+      setError(error.message);
+      toast.error("Failed to log in with Google.");
+    }
+  };
+
+  const handleGithubLogIn = async () => {
+    try {
+      const res = await githubLogIn();
+      const result = res.user;
+
+      // Await user data fetch
+      const response = await axiosSecurePublic.get(`/users/email/${result?.email}`);
+      const userData = response.data;
+
+      if (userData?.isBanned) {
+        setError("Your account has been banned. Please contact support.");
+        toast.error("Your account is banned. Access denied.");
+        return;  // Stop the login process
+      }
+
+      // If user is not banned, register/login
+      const userInfo = {
+        name: result?.displayName,
+        email: result?.email,
+        photo:result?.photoURL
+      };
+
+      await axiosSecurePublic.post('/users', userInfo);
+      toast.success('Sign Up With GitHub Successful');
+      navigate(from, { replace: true });
+
+    } catch (error) {
+      setError(error.message);
+      toast.error("Failed to log in with GitHub.");
+    }
+  };
+
 
   return (
     <div

@@ -1,11 +1,11 @@
 import { useContext, useState } from "react";
 import { Modal } from "react-responsive-modal";
 import "react-responsive-modal/styles.css";
-import useAxiosPublic from "../Hooks/useAxiosPublic";
 import AuthContext from "../context/authContext";
 import { useQuery } from "@tanstack/react-query";
 import { useNavigate, useParams } from "react-router-dom";
 import Swal from "sweetalert2";
+import useAxiosSecure from "../Hooks/useAxiosSecure";
 
 const PetDetails = () => {
     const { user } = useContext(AuthContext);
@@ -18,12 +18,12 @@ const PetDetails = () => {
         address: "",
     });
 
-    const axiosSecurePublic = useAxiosPublic();
+    const axiosSecure = useAxiosSecure();
 
     const { data: pet = {} } = useQuery({
         queryKey: ["pet", id],
         queryFn: async () => {
-            const res = await axiosSecurePublic.get(`/pets/${id}`);
+            const res = await axiosSecure.get(`/pets/${id}`);
             return res.data;
         },
     });
@@ -46,7 +46,7 @@ const PetDetails = () => {
         };
 
         
-            const res = await axiosSecurePublic.post("/adoption", adoptionData);
+            const res = await axiosSecure.post("/adoption", adoptionData);
 
             if (res.data.insertedId) {
                 setIsModalOpen(false);
