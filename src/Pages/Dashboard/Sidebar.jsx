@@ -2,6 +2,7 @@ import { useState } from "react";
 import { NavLink } from "react-router-dom";
 import logo from '../../../public/logo.png';
 import useAdmin from "../../Hooks/useAdmin";
+import { Helmet } from "react-helmet";
 
 const Sidebar = () => {
   const [isAdmin] = useAdmin();
@@ -34,6 +35,9 @@ const Sidebar = () => {
 
   return (
     <div className="flex flex-col min-h-screen bg-gray-800 text-white">
+       <Helmet>
+        <title>Dashboard || PeddyCare</title>
+      </Helmet>
       {/* Logo */}
       <div className="py-4 px-6">
         <h1 className="text-2xl font-bold flex items-center gap-2">

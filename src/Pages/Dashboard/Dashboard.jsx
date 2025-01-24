@@ -1,7 +1,7 @@
 import { useContext, useState } from "react";
 import { Outlet } from "react-router-dom";
 import { FaBars, FaTimes } from "react-icons/fa";
-import Sidebar from "./Sidebar"; // Import the Sidebar component
+import Sidebar from "./Sidebar"; 
 import AuthContext from "../../context/authContext";
 import useAdmin from "../../Hooks/useAdmin";
 
