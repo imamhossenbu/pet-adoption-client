@@ -1,12 +1,9 @@
-import { useContext, useState } from "react";
+import {useState } from "react";
 import emailjs from "emailjs-com";
 import newsletterBg from "../assets/newsletter.jpg";
-import AuthContext from "../context/authContext";
 import Swal from "sweetalert2";
 
 const Newsletter = () => {
-  const { user } = useContext(AuthContext)
-  const name = user?.displayName;
   const [email, setEmail] = useState("");
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [error, setError] = useState("");
@@ -20,7 +17,6 @@ const Newsletter = () => {
         "template_7dzfa4c",
         {
           email: email,
-          name: name,
         },
         "xPMPQPzivNE4gngbY"
       )

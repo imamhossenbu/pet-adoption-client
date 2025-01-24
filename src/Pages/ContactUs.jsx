@@ -26,16 +26,14 @@ const ContactUs = () => {
         setFormData({ ...formData, [e.target.name]: e.target.value });
     };
 
-    // Handle form submission
     const handleSubmit = (e) => {
         e.preventDefault();
 
         emailjs
             .send(
-                "service_qw43pch",  // Replace with your EmailJS Service ID
-                "template_imjva58", // Replace with your EmailJS Template ID
-                formData,
-                "xPMPQPzivNE4gngbY"   // Replace with your EmailJS Public Key
+                "service_qw43pch",  
+                "template_imjva58", 
+                "xPMPQPzivNE4gngbY"   
             )
             .then(
                 (response) => {

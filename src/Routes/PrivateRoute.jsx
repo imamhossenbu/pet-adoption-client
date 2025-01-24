@@ -9,6 +9,7 @@ import 'react-loading-skeleton/dist/skeleton.css'
 
 const PrivateRoute = ({ children }) => {
     const { user, loading } = useContext(AuthContext);
+    console.log(user);
     const location = useLocation();
 
     if (loading) {

@@ -1,15 +1,15 @@
 import { useState, useContext } from "react";
 import { FaEdit, FaPause, FaEye } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
-import useAxiosPublic from "../../Hooks/useAxiosPublic";
 import AuthContext from "../../context/authContext";
 import { useQuery } from "@tanstack/react-query";
 import Swal from "sweetalert2";
 import DonationProgress from "../../shared/DonationProgress";
+import useAxiosSecure from "../../Hooks/useAxiosSecure";
 
 const MyDonationCampaigns = () => {
     const navigate = useNavigate();
-    const axiosSecurePublic = useAxiosPublic();
+    const axiosSecure = useAxiosSecure();
     const { user } = useContext(AuthContext);
     const [modalData, setModalData] = useState(null);
 
@@ -17,14 +17,14 @@ const MyDonationCampaigns = () => {
     const { data: campaigns = [], refetch } = useQuery({
         queryKey: ["donation-campaigns", user.email],
         queryFn: async () => {
-            const res = await axiosSecurePublic.get(`/donation-campaigns/${user.email}`);
+            const res = await axiosSecure.get(`/donation-campaigns/${user.email}`);
             return res.data;
         },
     });
 
     // Handle pause/unpause of donation campaign
     const handlePauseToggle = async (id, status) => {
-        await axiosSecurePublic.patch(`/donations/${id}`, { paused: !status });
+        await axiosSecure.patch(`/donations/${id}`, { paused: !status });
         refetch();
         Swal.fire({
             title: "Success!",
@@ -35,7 +35,7 @@ const MyDonationCampaigns = () => {
 
     // Open modal to show donators
     const handleViewDonators = async (donationId) => {
-        const res = await axiosSecurePublic.get(`/donators/${donationId}`);
+        const res = await axiosSecure.get(`/donators/${donationId}`);
         setModalData(res.data);
     };
 
