@@ -23,6 +23,7 @@ const ManageCategories = () => {
     category: "",
     label: "",
     icon: "🐾",
+    image: "",
     description: "",
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -126,9 +127,17 @@ const ManageCategories = () => {
             >
               <div>
                 <div className="flex items-center justify-between mb-4">
-                  <span className="text-3xl p-3 bg-amber-50 rounded-2xl border border-amber-100/50">
-                    {cat.icon || "🐾"}
-                  </span>
+                  {cat.image ? (
+                    <img
+                      src={cat.image}
+                      alt={cat.label || cat.category}
+                      className="w-14 h-14 object-cover rounded-2xl border border-gray-200 shadow-xs"
+                    />
+                  ) : (
+                    <span className="text-3xl p-3 bg-amber-50 rounded-2xl border border-amber-100/50">
+                      {cat.icon || "🐾"}
+                    </span>
+                  )}
                   {cat._id && (
                     <button
                       onClick={() =>
@@ -212,6 +221,21 @@ const ManageCategories = () => {
                   value={newCat.icon}
                   onChange={(e) =>
                     setNewCat({ ...newCat, icon: e.target.value })
+                  }
+                  className="w-full px-4 py-2.5 rounded-xl border border-gray-200 text-xs focus:ring-2 focus:ring-[#FBAE02] focus:outline-none"
+                />
+              </div>
+
+              <div>
+                <label className="block text-xs font-black uppercase text-gray-500 mb-1">
+                  Category Image URL (Optional)
+                </label>
+                <input
+                  type="url"
+                  placeholder="https://images.unsplash.com/... or Cloudinary URL"
+                  value={newCat.image}
+                  onChange={(e) =>
+                    setNewCat({ ...newCat, image: e.target.value })
                   }
                   className="w-full px-4 py-2.5 rounded-xl border border-gray-200 text-xs focus:ring-2 focus:ring-[#FBAE02] focus:outline-none"
                 />

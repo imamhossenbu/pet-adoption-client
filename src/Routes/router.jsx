@@ -35,6 +35,7 @@ import MyAdoptionRequests from "../Pages/Dashboard/MyAdoptionRequests";
 import ManageServices from "../Pages/Dashboard/ManageServices";
 import ManageFaqs from "../Pages/Dashboard/ManageFaqs";
 import ManageCategories from "../Pages/Dashboard/ManageCategories";
+import ForgotPassword from "../Pages/ForgotPassword";
 
 
 const router = createBrowserRouter([
@@ -76,6 +77,10 @@ const router = createBrowserRouter([
             {
                 path: '/login',
                 element: <Login></Login>
+            },
+            {
+                path: '/forgot-password',
+                element: <ForgotPassword></ForgotPassword>
             },
             {
                 path: '/sign-up',
