@@ -30,6 +30,11 @@ import ServiceDetails from "../Pages/ServiceDetails";
 import PrivacyPolicy from "../Pages/LegalPrivacy";
 import TermsOfService from "../Pages/LegalTerms";
 import AdoptionPolicy from "../Pages/LegalAdoption";
+import DashboardOverview from "../Pages/Dashboard/DashboardOverview";
+import MyAdoptionRequests from "../Pages/Dashboard/MyAdoptionRequests";
+import ManageServices from "../Pages/Dashboard/ManageServices";
+import ManageFaqs from "../Pages/Dashboard/ManageFaqs";
+import ManageCategories from "../Pages/Dashboard/ManageCategories";
 
 
 const router = createBrowserRouter([
@@ -107,6 +112,12 @@ const router = createBrowserRouter([
         element: <PrivateRoute><Dashboard></Dashboard></PrivateRoute>,
         children: [
 
+            // dashboard index overview
+            {
+                index: true,
+                element: <DashboardOverview></DashboardOverview>
+            },
+
             // user route
             {
                 path: 'add-pet',
@@ -125,6 +136,10 @@ const router = createBrowserRouter([
                 element: <PrivateRoute><AdoptionRequest></AdoptionRequest></PrivateRoute>
             },
             {
+                path: 'my-adoption-requests',
+                element: <PrivateRoute><MyAdoptionRequests></MyAdoptionRequests></PrivateRoute>
+            },
+            {
                 path: 'create-donation-campaign',
                 element: <PrivateRoute><CreateDonationCampaign></CreateDonationCampaign></PrivateRoute>
             },
@@ -141,21 +156,34 @@ const router = createBrowserRouter([
                 element: <PrivateRoute><MyDonations></MyDonations></PrivateRoute>
             },
 
-
-
-
             // admin route
             {
                 path: 'all-users',
                 element: <AdminRoute><AllUsers></AllUsers></AdminRoute>
             },
             {
-                path:'all-pets',
-                element:<AdminRoute><AllPets></AllPets></AdminRoute>
+                path: 'all-pets',
+                element: <AdminRoute><AllPets></AllPets></AdminRoute>
             },
             {
-                path:'all-donations',
-                element:<AdminRoute><AllDonationCampaign></AllDonationCampaign></AdminRoute>
+                path: 'all-donations',
+                element: <AdminRoute><AllDonationCampaign></AllDonationCampaign></AdminRoute>
+            },
+            {
+                path: 'adoption-requests',
+                element: <AdminRoute><AdoptionRequest></AdoptionRequest></AdminRoute>
+            },
+            {
+                path: 'manage-services',
+                element: <AdminRoute><ManageServices></ManageServices></AdminRoute>
+            },
+            {
+                path: 'manage-faqs',
+                element: <AdminRoute><ManageFaqs></ManageFaqs></AdminRoute>
+            },
+            {
+                path: 'manage-categories',
+                element: <AdminRoute><ManageCategories></ManageCategories></AdminRoute>
             }
 
         ]

@@ -1,173 +1,330 @@
-import { useState } from "react";
-import { FaEdit, FaPause, FaEye, FaTrash } from "react-icons/fa";
-import { useNavigate } from "react-router-dom";
+import { useState, useMemo } from "react";
+import { FaEdit, FaPause, FaPlay, FaEye, FaTrashAlt, FaHandHoldingHeart, FaSearch, FaFilter, FaTimes, FaPlusCircle } from "react-icons/fa";
+import { useNavigate, Link } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
+import { Helmet } from "react-helmet";
 import Swal from "sweetalert2";
 import DonationProgress from "../../shared/DonationProgress";
 import useAxiosSecure from "../../Hooks/useAxiosSecure";
 import Skeleton from "react-loading-skeleton";
-// import AuthContext from "../../context/authContext";
 
 const AllDonationCampaign = () => {
-    const navigate = useNavigate();
-    const axiosSecure = useAxiosSecure();
-    // const { user } = useContext(AuthContext);
-    const [modalData, setModalData] = useState(null);
+  const navigate = useNavigate();
+  const axiosSecure = useAxiosSecure();
+  const [modalData, setModalData] = useState(null);
+  const [selectedCampaignName, setSelectedCampaignName] = useState("");
+  const [searchTerm, setSearchTerm] = useState("");
+  const [statusFilter, setStatusFilter] = useState("all");
 
-    // Fetch all donation campaigns for admin
-    const { data: campaigns = [], refetch, isLoading } = useQuery({
-        queryKey: ["all-donation-campaigns"],
-        queryFn: async () => {
-            const res = await axiosSecure.get(`/donation-campaigns`);
-            return res.data;
-        },
+  // Fetch all donation campaigns for admin
+  const { data: campaigns = [], refetch, isLoading } = useQuery({
+    queryKey: ["all-donation-campaigns"],
+    queryFn: async () => {
+      const res = await axiosSecure.get(`/donation-campaigns`);
+      return res.data || [];
+    },
+  });
+
+  const filteredCampaigns = useMemo(() => {
+    return campaigns.filter((c) => {
+      const matchSearch =
+        c.petName?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        c.createdBy?.toLowerCase().includes(searchTerm.toLowerCase());
+      const matchStatus =
+        statusFilter === "all" ||
+        (statusFilter === "active" && !c.paused) ||
+        (statusFilter === "paused" && c.paused);
+      return matchSearch && matchStatus;
     });
+  }, [campaigns, searchTerm, statusFilter]);
 
-    if (isLoading) return (
-        <div className="container mx-auto p-6 max-w-6xl">
-            <Skeleton height={36} width={260} className="mb-6 rounded-lg" />
-            <Skeleton height={50} className="rounded-xl mb-4" />
-            <Skeleton count={6} height={55} className="rounded-lg mb-2" />
-        </div>
-    );
+  // Handle pause/unpause of donation campaign
+  const handlePauseToggle = async (id, status, petName) => {
+    await axiosSecure.patch(`donations/${id}`, { paused: !status });
+    refetch();
+    Swal.fire({
+      title: "Success!",
+      text: `${petName}'s campaign has been ${status ? "resumed" : "paused"}.`,
+      icon: "success",
+      timer: 1500,
+      showConfirmButton: false,
+    });
+  };
 
-    // Handle pause/unpause of donation campaign
-    const handlePauseToggle = async (id, status) => {
-        await axiosSecure.patch(`donations/${id}`, { paused: !status });
+  // Handle deleting a donation campaign
+  const handleDelete = async (id, petName) => {
+    Swal.fire({
+      title: `Delete campaign for ${petName}?`,
+      text: "This emergency fund campaign will be permanently removed.",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#EF4444",
+      cancelButtonColor: "#6B7280",
+      confirmButtonText: "Yes, Delete",
+    }).then(async (result) => {
+      if (result.isConfirmed) {
+        await axiosSecure.delete(`donations/${id}`);
         refetch();
-        Swal.fire({
-            title: "Success!",
-            text: `Donation campaign has been ${status ? "unpaused" : "paused"}.`,
-            icon: "success",
-        });
-    };
+        Swal.fire("Deleted!", "The campaign has been removed.", "success");
+      }
+    });
+  };
 
-    // Handle deleting a donation campaign
-    const handleDelete = async (id) => {
-        Swal.fire({
-            title: "Are you sure?",
-            text: "This action cannot be undone!",
-            icon: "warning",
-            showCancelButton: true,
-            confirmButtonColor: "#d33",
-            cancelButtonColor: "#3085d6",
-            confirmButtonText: "Yes, delete it!",
-        }).then(async (result) => {
-            if (result.isConfirmed) {
-                await axiosSecure.delete(`donations/${id}`);
-                refetch();
-                Swal.fire({
-                    title: "Deleted!",
-                    text: "The donation campaign has been deleted.",
-                    icon: "success",
-                });
-            }
-        });
-    };
+  // Open modal to show donators
+  const handleViewDonators = async (campaign) => {
+    setSelectedCampaignName(campaign.petName);
+    try {
+      const res = await axiosSecure.get(`donators/${campaign._id}`);
+      setModalData(res.data || []);
+    } catch (err) {
+      setModalData([]);
+    }
+  };
 
-    // Open modal to show donators
-    const handleViewDonators = async (donationId) => {
-        const res = await axiosSecure.get(`donators/${donationId}`);
-        setModalData(res.data);
-    };
+  return (
+    <div className="space-y-6 pb-12">
+      <Helmet>
+        <title>Manage Campaigns || PeddyCare Admin</title>
+      </Helmet>
 
-    return (
-        <div className="w-full md:container mx-auto px-2 md:px-6 lg:px-8">
-            <h1 className="text-2xl md:text-3xl font-bold my-6 text-center">
-                All Donation Campaigns
-            </h1>
-            <div className="overflow-x-auto shadow-md rounded-lg">
-                <table className="table-auto w-full text-left border-collapse">
-                    <thead className="bg-[#D1A054] text-white">
-                        <tr className="uppercase text-sm md:text-base">
-                            <th className="p-3">Pet Name</th>
-                            <th className="p-3">Max Donation</th>
-                            <th className="p-3">Donation Progress</th>
-                            <th className="p-3 text-center">Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {campaigns.map((campaign) => (
-                            <tr
-                                key={campaign._id}
-                                className="border-b hover:bg-gray-100 text-sm md:text-base"
-                            >
-                                <td className="p-3">{campaign?.petName}</td>
-                                <td className="p-3">${campaign.maxDonationAmount}</td>
-                                <td className="p-3">
-                                    <DonationProgress
-                                        donatedAmount={campaign.donatedAmount}
-                                        maxDonationAmount={campaign.maxDonationAmount}
-                                    />
-                                </td>
-                                <td className="p-3 flex justify-center gap-3">
-                                    {/* Edit Campaign */}
-                                    <button
-                                        onClick={() => navigate(`/dashboard/edit-donation/${campaign._id}`)}
-                                        className="text-blue-500 hover:text-blue-700"
-                                        title="Edit"
-                                    >
-                                        <FaEdit size={20} />
-                                    </button>
-
-                                    {/* Pause/Unpause Campaign */}
-                                    <button
-                                        onClick={() => handlePauseToggle(campaign._id, campaign?.paused)}
-                                        className={`text-${campaign.paused ? "green" : "red"}-500 hover:text-${campaign.paused ? "green" : "red"}-700`}
-                                        title={campaign.paused ? "Unpause" : "Pause"}
-                                    >
-                                        <FaPause size={20} />
-                                    </button>
-
-                                    {/* View Donators */}
-                                    <button
-                                        onClick={() => handleViewDonators(campaign._id)}
-                                        className="text-gray-500 hover:text-gray-700"
-                                        title="View Donators"
-                                    >
-                                        <FaEye size={20} />
-                                    </button>
-
-                                    {/* Delete Campaign */}
-                                    <button
-                                        onClick={() => handleDelete(campaign._id)}
-                                        className="text-red-500 hover:text-red-700"
-                                        title="Delete"
-                                    >
-                                        <FaTrash size={20} />
-                                    </button>
-                                </td>
-                            </tr>
-                        ))}
-                    </tbody>
-                </table>
-            </div>
-
-            {/* Donators Modal */}
-            {modalData && (
-                <div className="fixed inset-0 bg-gray-900 bg-opacity-50 flex justify-center items-center">
-                    <div className="bg-white p-6 rounded-lg shadow-lg w-96">
-                        <h2 className="text-xl font-bold mb-4">Donators List</h2>
-                        <ul>
-                            {modalData.map((donator) => (
-                                <li key={donator._id} className="border-b py-2">
-                                    <strong>Name:</strong> {donator.name} <br />
-                                    <strong>Email:</strong> {donator.email} <br />
-                                    <strong>Amount:</strong> ${donator.amount}
-                                </li>
-                            ))}
-                        </ul>
-                        <button
-                            onClick={() => setModalData(null)}
-                            className="mt-4 bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600"
-                        >
-                            Close
-                        </button>
-                    </div>
-                </div>
-            )}
+      {/* Header */}
+      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 bg-white p-6 rounded-3xl border border-gray-100 shadow-sm">
+        <div>
+          <span className="inline-flex items-center gap-1.5 text-xs font-black uppercase text-[#FBAE02] tracking-wider mb-1">
+            <FaHandHoldingHeart /> Fundraising Management
+          </span>
+          <h1 className="text-2xl font-black text-gray-900 tracking-tight">
+            Emergency Donation Campaigns ({campaigns.length})
+          </h1>
+          <p className="text-xs text-gray-400 mt-0.5">
+            Monitor medical funds, inspect supporters and donations, pause or update goals.
+          </p>
         </div>
-    );
+
+        <Link
+          to="/dashboard/create-donation-campaign"
+          className="inline-flex items-center gap-2 bg-[#FBAE02] hover:bg-orange-500 text-black hover:text-white font-extrabold text-xs uppercase px-5 py-3 rounded-2xl transition shadow"
+        >
+          <FaPlusCircle className="text-sm" /> Create New Campaign
+        </Link>
+      </div>
+
+      {/* Search and Filters */}
+      <div className="bg-white p-4 md:p-6 rounded-3xl border border-gray-100 shadow-sm flex flex-col sm:flex-row items-center gap-4 justify-between">
+        <div className="relative w-full sm:w-96">
+          <FaSearch className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 text-sm" />
+          <input
+            type="text"
+            placeholder="Search campaigns by pet name or organizer..."
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            className="w-full pl-11 pr-4 py-2.5 rounded-xl border border-gray-200 text-xs focus:ring-2 focus:ring-[#FBAE02] focus:outline-none"
+          />
+        </div>
+
+        <div className="flex items-center gap-2 w-full sm:w-auto">
+          <FaFilter className="text-gray-400 text-xs" />
+          <select
+            value={statusFilter}
+            onChange={(e) => setStatusFilter(e.target.value)}
+            className="bg-gray-50 border border-gray-200 rounded-xl px-3 py-2 text-xs font-bold text-gray-700 focus:outline-none cursor-pointer"
+          >
+            <option value="all">All Campaigns</option>
+            <option value="active">Active Campaigns</option>
+            <option value="paused">Paused Campaigns</option>
+          </select>
+        </div>
+      </div>
+
+      {/* Campaigns Table */}
+      <div className="bg-white rounded-3xl border border-gray-100 shadow-sm overflow-hidden">
+        {isLoading ? (
+          <div className="p-6 space-y-4">
+            <Skeleton height={60} count={5} className="rounded-xl" />
+          </div>
+        ) : filteredCampaigns.length === 0 ? (
+          <div className="text-center py-16 px-4">
+            <FaHandHoldingHeart className="mx-auto text-4xl text-gray-300 mb-3" />
+            <h4 className="text-base font-black text-gray-800">
+              No campaigns found
+            </h4>
+            <p className="text-xs text-gray-400 mt-1 max-w-sm mx-auto">
+              No matching medical campaigns found for your query.
+            </p>
+          </div>
+        ) : (
+          <div className="overflow-x-auto">
+            <table className="w-full text-left text-xs">
+              <thead>
+                <tr className="bg-gray-50/80 border-b border-gray-200/80 text-gray-400 uppercase font-black tracking-wider">
+                  <th className="py-4 px-6">Pet / Campaign</th>
+                  <th className="py-4 px-6">Target Goal</th>
+                  <th className="py-4 px-6">Fundraising Progress</th>
+                  <th className="py-4 px-6">Status</th>
+                  <th className="py-4 px-6 text-right">Actions</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-gray-100">
+                {filteredCampaigns.map((campaign) => (
+                  <tr
+                    key={campaign._id}
+                    className="hover:bg-gray-50/70 transition"
+                  >
+                    <td className="py-4 px-6">
+                      <div className="flex items-center gap-3">
+                        <img
+                          src={campaign.petImage}
+                          alt={campaign.petName}
+                          className="w-12 h-12 rounded-2xl object-cover border border-gray-200"
+                        />
+                        <div>
+                          <p className="font-black text-gray-900 text-sm">
+                            {campaign.petName}
+                          </p>
+                          <span className="text-[10px] text-gray-400">
+                            By: {campaign.createdBy || "Admin"}
+                          </span>
+                        </div>
+                      </div>
+                    </td>
+
+                    <td className="py-4 px-6 font-black text-gray-900 text-sm">
+                      ${campaign.maxDonationAmount}
+                    </td>
+
+                    <td className="py-4 px-6 min-w-[200px]">
+                      <DonationProgress
+                        donatedAmount={campaign.donatedAmount || 0}
+                        maxDonationAmount={campaign.maxDonationAmount}
+                      />
+                    </td>
+
+                    <td className="py-4 px-6">
+                      <span
+                        className={`inline-flex items-center gap-1 text-[11px] font-black px-3 py-1 rounded-full ${
+                          campaign.paused
+                            ? "bg-red-100 text-red-800"
+                            : "bg-emerald-100 text-emerald-800"
+                        }`}
+                      >
+                        {campaign.paused ? "Paused" : "Active"}
+                      </span>
+                    </td>
+
+                    <td className="py-4 px-6 text-right">
+                      <div className="inline-flex items-center gap-2">
+                        {/* Donators list */}
+                        <button
+                          onClick={() => handleViewDonators(campaign)}
+                          className="p-2 rounded-xl text-xs font-bold bg-blue-50 text-blue-700 hover:bg-blue-100 transition"
+                          title="View Supporters & Donations"
+                        >
+                          <FaEye className="text-sm" />
+                        </button>
+
+                        {/* Edit Campaign */}
+                        <button
+                          onClick={() =>
+                            navigate(`/dashboard/edit-donation/${campaign._id}`)
+                          }
+                          className="p-2 rounded-xl text-xs font-bold bg-amber-50 text-[#FBAE02] hover:bg-amber-100 transition"
+                          title="Edit Campaign"
+                        >
+                          <FaEdit className="text-sm" />
+                        </button>
+
+                        {/* Pause / Resume */}
+                        <button
+                          onClick={() =>
+                            handlePauseToggle(
+                              campaign._id,
+                              campaign.paused,
+                              campaign.petName
+                            )
+                          }
+                          className={`p-2 rounded-xl text-xs font-bold transition ${
+                            campaign.paused
+                              ? "bg-emerald-50 text-emerald-700 hover:bg-emerald-100"
+                              : "bg-orange-50 text-orange-700 hover:bg-orange-100"
+                          }`}
+                          title={campaign.paused ? "Resume Campaign" : "Pause Campaign"}
+                        >
+                          {campaign.paused ? (
+                            <FaPlay className="text-xs" />
+                          ) : (
+                            <FaPause className="text-xs" />
+                          )}
+                        </button>
+
+                        {/* Delete */}
+                        <button
+                          onClick={() =>
+                            handleDelete(campaign._id, campaign.petName)
+                          }
+                          className="p-2 rounded-xl text-xs font-bold bg-red-50 text-red-700 hover:bg-red-100 transition"
+                          title="Delete Campaign"
+                        >
+                          <FaTrashAlt className="text-sm" />
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        )}
+      </div>
+
+      {/* Donators Modal */}
+      {modalData && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-xs">
+          <div className="bg-white w-full max-w-md rounded-3xl p-6 md:p-8 shadow-2xl border border-gray-100 relative max-h-[85vh] overflow-y-auto">
+            <button
+              onClick={() => setModalData(null)}
+              className="absolute right-5 top-5 p-2 rounded-xl text-gray-400 hover:text-black hover:bg-gray-100 transition"
+            >
+              <FaTimes />
+            </button>
+
+            <h3 className="text-lg font-black text-gray-900 mb-1">
+              Supporters of {selectedCampaignName}
+            </h3>
+            <p className="text-xs text-gray-400 mb-4">
+              All community members who have contributed to this medical fund.
+            </p>
+
+            {modalData.length === 0 ? (
+              <p className="text-xs text-gray-400 text-center py-8">
+                No donations have been made to this campaign yet.
+              </p>
+            ) : (
+              <ul className="divide-y divide-gray-100 text-xs">
+                {modalData.map((d, i) => (
+                  <li key={d._id || i} className="py-3 flex items-center justify-between">
+                    <div>
+                      <p className="font-black text-gray-900">{d.name || "Generous Donor"}</p>
+                      <p className="text-[11px] text-gray-400">{d.email}</p>
+                    </div>
+                    <span className="font-black text-emerald-600 bg-emerald-50 px-3 py-1 rounded-full text-xs">
+                      ${d.amount}
+                    </span>
+                  </li>
+                ))}
+              </ul>
+            )}
+
+            <button
+              onClick={() => setModalData(null)}
+              className="mt-6 w-full py-2.5 bg-gray-100 hover:bg-gray-200 text-gray-800 font-extrabold text-xs rounded-xl transition"
+            >
+              Close
+            </button>
+          </div>
+        </div>
+      )}
+    </div>
+  );
 };
 
 export default AllDonationCampaign;
