@@ -78,7 +78,7 @@ const Settings = () => {
               const data = res.data;
               if (data.name) setName(data.name);
               if (data.phone) setPhone(data.phone);
-              if (data.address) setAddress(data.address);
+              if (data.address || data.city) setAddress(data.address || data.city);
               if (data.occupation) setOccupation(data.occupation);
               if (data.bio) setBio(data.bio);
               if (data.photoURL || data.image) {
@@ -142,7 +142,8 @@ const Settings = () => {
 
       // Sync to MongoDB server
       if (user?.email) {
-        await axiosSecure.patch(`/users/profile/${user.email}`, {
+        await axiosSecure.patch(`/users/profile/${encodeURIComponent(user.email)}`, {
+          email: user.email,
           name: name || user?.displayName,
           photoURL: finalUrl,
         });
@@ -190,7 +191,8 @@ const Settings = () => {
     try {
       await updateUserProfile(name || user?.displayName || "User", "");
       if (user?.email) {
-        await axiosSecure.patch(`/users/profile/${user.email}`, {
+        await axiosSecure.patch(`/users/profile/${encodeURIComponent(user.email)}`, {
+          email: user.email,
           photoURL: "",
         });
       }
@@ -237,10 +239,12 @@ const Settings = () => {
 
       // 2. Sync full profile to MongoDB
       if (user?.email) {
-        await axiosSecure.patch(`/users/profile/${user.email}`, {
+        await axiosSecure.patch(`/users/profile/${encodeURIComponent(user.email)}`, {
+          email: user.email,
           name: name.trim(),
           phone: phone.trim(),
           address: address.trim(),
+          city: address.trim(),
           occupation: occupation.trim(),
           bio: bio.trim(),
           photoURL: photoUrl || user?.photoURL || "",
