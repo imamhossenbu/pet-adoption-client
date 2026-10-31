@@ -17,7 +17,7 @@ const AllPets = () => {
             })
     }, [axiosSecure])
 
-    console.log(pets); // Ensure pets is always an array
+
 
 
 
@@ -83,7 +83,6 @@ const AllPets = () => {
         });
 
     }
-    console.log(pets);
 
 
     return (

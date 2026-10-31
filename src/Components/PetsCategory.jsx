@@ -30,7 +30,10 @@ const PetsCategory = () => {
             <motion.div
               key={index}
               className="bg-white rounded-lg shadow-lg overflow-hidden transform hover:scale-105 transition duration-300 cursor-pointer"
-              onClick={() => navigate(`/pet-listing?category=${category.category}`)}
+              onClick={() => {
+                navigate(`/pet-listing?category=${category.category}`);
+                window.scrollTo({ top: 0, behavior: "smooth" });
+              }}
 
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}

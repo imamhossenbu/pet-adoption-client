@@ -1,12 +1,10 @@
-import axios from 'axios';
-
-
+import axios from "axios";
 
 const axiosSecurePublic = axios.create({
-    baseURL: 'https://pet-adoption-server-olive.vercel.app'
-})
+  baseURL: "http://localhost:5000",
+});
 const useAxiosPublic = () => {
-    return axiosSecurePublic;
+  return axiosSecurePublic;
 };
 
 export default useAxiosPublic;

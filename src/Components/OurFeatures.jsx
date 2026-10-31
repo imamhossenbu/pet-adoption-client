@@ -38,39 +38,53 @@ const features = [
 
 const OurFeatures = () => {
     return (
-        <section className="py-6 bg-gray-100">
-            <HeadingSection title="Our Features" subtitle="Discover the amazing services we offer for your pets' health and happiness."></HeadingSection>
+        <section className="py-16 bg-gray-100 overflow-hidden">
+            <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.5 }}
+            >
+                <HeadingSection title="Our Features" subtitle="Discover the amazing services we offer for your pets' health and happiness." />
+            </motion.div>
             <div className="container mx-auto px-4 md:px-10 text-center">
                 <div className="flex flex-col lg:flex-row items-center gap-12">
                     
                     {/* Left Side - Features List */}
                     <div className="w-full lg:w-1/3 space-y-8">
                         {features.slice(0, 3).map((feature, index) => (
-                            <div key={index} className="flex items-center gap-4 text-left">
-                                <div className="bg-pink-500 rounded-full p-4">
+                            <motion.div
+                                key={index}
+                                initial={{ opacity: 0, x: -30 }}
+                                whileInView={{ opacity: 1, x: 0 }}
+                                viewport={{ once: true }}
+                                transition={{ duration: 0.5, delay: index * 0.15 }}
+                                className="flex items-center gap-4 text-left p-3 rounded-2xl hover:bg-white/60 transition-colors"
+                            >
+                                <div className="bg-[#FBAE02] text-black rounded-2xl p-3.5 shadow-md flex-shrink-0">
                                     {feature.icon}
                                 </div>
                                 <div>
                                     <h3 className="text-xl font-bold text-gray-800">{feature.title}</h3>
-                                    <p className="text-gray-600">{feature.description}</p>
+                                    <p className="text-gray-600 text-sm mt-1">{feature.description}</p>
                                 </div>
-                            </div>
+                            </motion.div>
                         ))}
                     </div>
 
-                    {/* Center - Feature Image with Infinite Motion */}
+                    {/* Center - Feature Image with Smooth Floating Motion */}
                     <div className="w-full lg:w-1/3">
                         <motion.img
                             src={featureImage}
                             alt="Feature"
-                            className="rounded-lg shadow-lg w-full h-auto object-cover"
+                            className="rounded-3xl shadow-xl w-full h-auto object-cover border-4 border-white"
                             animate={{
-                                y: [0, -50, 0], // Move up and down
+                                y: [0, -12, 0],
                             }}
                             transition={{
-                                duration: 3,  // Speed of the animation
-                                repeat: Infinity,  // Infinite looping
-                                ease: "easeInOut", // Smooth transition
+                                duration: 4,
+                                repeat: Infinity,
+                                ease: "easeInOut",
                             }}
                         />
                     </div>
@@ -78,15 +92,22 @@ const OurFeatures = () => {
                     {/* Right Side - Features List */}
                     <div className="w-full lg:w-1/3 space-y-8">
                         {features.slice(3).map((feature, index) => (
-                            <div key={index} className="flex items-center gap-4 text-left">
-                                <div className="bg-pink-500 rounded-full p-4">
+                            <motion.div
+                                key={index}
+                                initial={{ opacity: 0, x: 30 }}
+                                whileInView={{ opacity: 1, x: 0 }}
+                                viewport={{ once: true }}
+                                transition={{ duration: 0.5, delay: index * 0.15 }}
+                                className="flex items-center gap-4 text-left p-3 rounded-2xl hover:bg-white/60 transition-colors"
+                            >
+                                <div className="bg-[#FBAE02] text-black rounded-2xl p-3.5 shadow-md flex-shrink-0">
                                     {feature.icon}
                                 </div>
                                 <div>
                                     <h3 className="text-xl font-bold text-gray-800">{feature.title}</h3>
-                                    <p className="text-gray-600">{feature.description}</p>
+                                    <p className="text-gray-600 text-sm mt-1">{feature.description}</p>
                                 </div>
-                            </div>
+                            </motion.div>
                         ))}
                     </div>
 

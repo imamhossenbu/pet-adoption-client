@@ -15,14 +15,22 @@ const Dashboard = () => {
   const toggleDrawer = () => setIsDrawerOpen(!isDrawerOpen);
 
   if (isPending) return (
-    <div className="fixed inset-0 bg-gray-100 flex justify-center items-center z-50">
-      <div className="w-full max-w-md p-4">
-        <Skeleton count={5} height={30} className="mb-2" />
-        <Skeleton count={1} height={50} className="mb-4" />
-        <Skeleton count={3} height={20} className="mb-2" />
+    <div className="flex min-h-screen bg-gray-50">
+      <div className="hidden lg:flex lg:w-80 bg-gray-900 p-6 flex-col gap-4">
+        <Skeleton height={50} className="rounded-xl mb-4" baseColor="#1f2937" highlightColor="#374151" />
+        <Skeleton count={6} height={42} className="rounded-lg mb-2" baseColor="#1f2937" highlightColor="#374151" />
+      </div>
+      <div className="flex-1 p-8 space-y-6">
+        <Skeleton height={64} className="rounded-2xl mb-6" />
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
+          <Skeleton height={130} className="rounded-2xl" />
+          <Skeleton height={130} className="rounded-2xl" />
+          <Skeleton height={130} className="rounded-2xl" />
+        </div>
+        <Skeleton height={340} className="rounded-2xl" />
       </div>
     </div>
-  )
+  );
 
   return (
     <div className="flex min-h-screen bg-gray-100">

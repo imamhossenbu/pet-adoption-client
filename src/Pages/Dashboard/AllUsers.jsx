@@ -62,7 +62,6 @@ const AllUsers = () => {
                                             alt={user.name}
                                             className="w-12 h-12 rounded-full object-cover border border-gray-300 shadow-sm"
                                         />
-                                        <span className="font-medium text-gray-700">{user.name}</span>
                                     </div>
                                 </td>
 

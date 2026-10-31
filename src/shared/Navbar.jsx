@@ -1,13 +1,16 @@
 import { useContext, useState } from "react";
 import { NavLink, useNavigate } from "react-router-dom";
-import logo from '../../public/logo.png';
+import logo from '../assets/logo.png';
 import AuthContext from "../context/authContext";
+import { useFavorites } from "../context/FavoritesContext";
+import { FaHeart } from "react-icons/fa";
 import toast from "react-hot-toast";
 
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const { user, logOut } = useContext(AuthContext);
+  const { favorites, setIsDrawerOpen } = useFavorites();
   const navigate = useNavigate();
 
   const handleLogOut = () => {
@@ -26,6 +29,7 @@ const Navbar = () => {
   const navLinks = [
     { name: "Home", path: "/" },
     { name: "Pet Listing", path: "/pet-listing" },
+    { name: "Matchmaker", path: "/pet-matchmaker" },
     { name: "Donation Campaigns", path: "/donation-campaigns" },
     { name: "Services", path: "/services" },
     { name: "Contact Us", path: "/contact" },
@@ -62,17 +66,17 @@ const Navbar = () => {
       <div className="container mx-auto px-4 md:px-8">
         <div className="flex justify-between items-center py-6">
           {/* Logo */}
-          <div className="flex items-center">
+          <NavLink to="/" onClick={scrollToTop} className="flex items-center">
             <img
               src={logo}
               alt="Logo"
               className="h-8 w-auto mr-3"
             />
             <span className="text-3xl font-bold text-black">PeddyCare</span>
-          </div>
+          </NavLink>
 
           {/* Navigation Links (Desktop) */}
-          <div className="hidden md:flex space-x-6">
+          <div className="hidden md:flex space-x-6 items-center">
             {navLinks.map((link) => (
               <NavLink onClick={scrollToTop} key={link.name} to={link.path} className={linkClass}>
                 {({ isActive }) => (
@@ -85,42 +89,75 @@ const Navbar = () => {
             ))}
           </div>
 
-          {/* Profile Section (Show only if user is logged in) */}
-          {user ? (
-            <div className="relative">
-              <img
-                src={user.photoURL}
-                alt="User"
-                className="h-10 w-10 rounded-full cursor-pointer"
-                onClick={() => setIsDropdownOpen(!isDropdownOpen)}
-              />
-              {isDropdownOpen && (
-                <div className="absolute right-0 mt-2 w-48 bg-gradient-to-r from-blue-500 to-purple-500 rounded-lg shadow-lg z-10">
-                  <NavLink
-                    to="/dashboard"
-                    className="block px-4 py-2 text-white font-medium transition duration-300 hover:bg-white hover:text-blue-500 rounded-t-lg"
-                  >
-                    Dashboard
-                  </NavLink>
-                  <button
-                    onClick={handleLogOut}
-                    className="w-full text-left px-4 py-2 text-white font-medium transition duration-300 hover:bg-white hover:text-red-500 rounded-b-lg"
-                  >
-                    Logout
-                  </button>
-                </div>
-
+          {/* Right Action Icons (Favorites + Profile) */}
+          <div className="hidden md:flex items-center space-x-4">
+            {/* Favorites Wishlist Trigger Button */}
+            <button
+              onClick={() => setIsDrawerOpen(true)}
+              className="relative p-2.5 rounded-full hover:bg-orange-50 text-gray-700 hover:text-red-500 transition duration-200 border border-gray-200 shadow-2xs group"
+              title="View Saved Pets Wishlist"
+              aria-label="View Saved Pets Wishlist"
+            >
+              <FaHeart className="w-5 h-5 text-gray-600 group-hover:text-red-500 transition" />
+              {favorites.length > 0 && (
+                <span className="absolute -top-1 -right-1 bg-[#FBAE02] text-black font-extrabold text-[10px] w-5 h-5 rounded-full flex items-center justify-center border-2 border-white shadow">
+                  {favorites.length}
+                </span>
               )}
-            </div>
-          ) : (
-            <></>
-          )}
+            </button>
 
-          {/* Mobile Menu Button */}
-          <button
-            className="md:hidden text-gray-600 focus:outline-none"
-            onClick={() => setIsOpen(!isOpen)}
-          >
+            {/* Profile Section (Show only if user is logged in) */}
+            {user && (
+              <div className="relative">
+                <img
+                  src={user.photoURL}
+                  alt="User"
+                  className="h-10 w-10 rounded-full cursor-pointer border-2 border-[#FBAE02]"
+                  onClick={() => setIsDropdownOpen(!isDropdownOpen)}
+                />
+                {isDropdownOpen && (
+                  <div className="absolute right-0 mt-2 w-48 bg-[#1D1D1D] text-white rounded-xl shadow-xl z-10 border border-gray-700 overflow-hidden">
+                    <NavLink
+                      to="/dashboard"
+                      onClick={() => setIsDropdownOpen(false)}
+                      className="block px-4 py-2.5 text-white font-medium transition duration-200 hover:bg-[#FBAE02] hover:text-black"
+                    >
+                      Dashboard
+                    </NavLink>
+                    <button
+                      onClick={() => {
+                        setIsDropdownOpen(false);
+                        handleLogOut();
+                      }}
+                      className="w-full text-left px-4 py-2.5 text-white font-medium transition duration-200 hover:bg-red-600 border-t border-gray-700"
+                    >
+                      Logout
+                    </button>
+                  </div>
+                )}
+              </div>
+            )}
+          </div>
+
+          {/* Mobile Right Section (Wishlist Button + Menu Toggle) */}
+          <div className="flex md:hidden items-center space-x-3">
+            <button
+              onClick={() => setIsDrawerOpen(true)}
+              className="relative p-2 rounded-full hover:bg-orange-50 text-gray-700"
+              title="Saved Pets"
+            >
+              <FaHeart className="w-5 h-5 text-red-500" />
+              {favorites.length > 0 && (
+                <span className="absolute -top-1 -right-1 bg-[#FBAE02] text-black font-extrabold text-[10px] w-4 h-4 rounded-full flex items-center justify-center">
+                  {favorites.length}
+                </span>
+              )}
+            </button>
+
+            <button
+              className="text-gray-600 focus:outline-none p-1"
+              onClick={() => setIsOpen(!isOpen)}
+            >
             <svg
               className="h-6 w-6"
               xmlns="http://www.w3.org/2000/svg"
@@ -146,6 +183,7 @@ const Navbar = () => {
             </svg>
           </button>
         </div>
+      </div>
 
         {/* Mobile Navigation Links */}
         {isOpen && (

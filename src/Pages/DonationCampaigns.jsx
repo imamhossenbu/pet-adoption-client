@@ -10,6 +10,7 @@ import HeadingSection from '../shared/HeadingSection'
 import DonationProgress from "../shared/DonationProgress";
 import Skeleton from "react-loading-skeleton";
 import 'react-loading-skeleton/dist/skeleton.css'
+import { getPetImage, handleImageError } from "../utils/imageFallback";
 
 const DonationCampaigns = () => {
     const axiosSecurePublic = useAxiosPublic();
@@ -46,17 +47,6 @@ const DonationCampaigns = () => {
         fetchNextPage();
     }
 
-    if (isLoading) return (
-        <div className="fixed inset-0 bg-gray-100 flex justify-center items-center z-50">
-            <div className="w-full max-w-md p-4">
-                <Skeleton count={5} height={30} className="mb-2" />
-                <Skeleton count={1} height={50} className="mb-4" />
-                <Skeleton count={3} height={20} className="mb-2" />
-            </div>
-        </div>
-    );
-    if (isError) return <div>Error fetching donation campaigns</div>;
-
     // Combine paginated data
     const campaigns = data?.pages.flatMap((page) => page.donations) || [];
 
@@ -84,15 +74,38 @@ const DonationCampaigns = () => {
                 </div>
 
                 {/* Donation Campaign Cards */}
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+                {isLoading ? (
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+                        {[1, 2, 3, 4, 5, 6].map((n) => (
+                            <div key={n} className="bg-white rounded-2xl p-5 shadow border border-gray-100 flex flex-col">
+                                <Skeleton height={224} className="rounded-xl mb-4" />
+                                <Skeleton width={160} height={24} className="rounded mb-2" />
+                                <Skeleton count={2} height={12} className="rounded mb-4" />
+                                <div className="flex justify-between items-center p-3.5 bg-orange-50/50 rounded-xl mb-4 border border-orange-100">
+                                    <div className="w-1/2">
+                                        <Skeleton width={60} height={10} className="mb-1" />
+                                        <Skeleton width={90} height={22} className="mb-1" />
+                                        <Skeleton width={70} height={10} />
+                                    </div>
+                                    <Skeleton circle width={56} height={56} />
+                                </div>
+                                <Skeleton height={44} className="rounded-xl mt-auto" />
+                            </div>
+                        ))}
+                    </div>
+                ) : isError ? (
+                    <div className="text-center py-10 text-red-500 font-semibold">Error fetching donation campaigns. Please try again later.</div>
+                ) : (
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
                     {campaigns.map((campaign) => (
                         <div
                             key={campaign._id}
                             className="bg-white rounded-lg shadow-lg overflow-hidden border border-gray-200 transition-transform duration-300 hover:scale-105"
                         >
                             <img
-                                src={campaign.petImage}
+                                src={getPetImage(campaign.petImage, "dog", campaign._id)}
                                 alt={campaign.petName}
+                                onError={(e) => handleImageError(e, "dog")}
                                 className="w-full h-56 object-cover"
                             />
                             <div className="p-6">
@@ -125,6 +138,7 @@ const DonationCampaigns = () => {
                         </div>
                     ))}
                 </div>
+                )}
 
                 {/* Infinite Scroll Loader */}
                 <div ref={ref} className="text-center mt-8">

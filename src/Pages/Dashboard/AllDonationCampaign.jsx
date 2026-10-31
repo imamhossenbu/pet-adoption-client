@@ -5,6 +5,7 @@ import { useQuery } from "@tanstack/react-query";
 import Swal from "sweetalert2";
 import DonationProgress from "../../shared/DonationProgress";
 import useAxiosSecure from "../../Hooks/useAxiosSecure";
+import Skeleton from "react-loading-skeleton";
 // import AuthContext from "../../context/authContext";
 
 const AllDonationCampaign = () => {
@@ -22,7 +23,13 @@ const AllDonationCampaign = () => {
         },
     });
 
-    if (isLoading) return <h2 className="text-center mt-10 text-gray-600">Loading...</h2>;
+    if (isLoading) return (
+        <div className="container mx-auto p-6 max-w-6xl">
+            <Skeleton height={36} width={260} className="mb-6 rounded-lg" />
+            <Skeleton height={50} className="rounded-xl mb-4" />
+            <Skeleton count={6} height={55} className="rounded-lg mb-2" />
+        </div>
+    );
 
     // Handle pause/unpause of donation campaign
     const handlePauseToggle = async (id, status) => {
@@ -65,7 +72,7 @@ const AllDonationCampaign = () => {
     };
 
     return (
-        <div className="container mx-auto px-4 md:px-6 lg:px-8">
+        <div className="w-full md:container mx-auto px-2 md:px-6 lg:px-8">
             <h1 className="text-2xl md:text-3xl font-bold my-6 text-center">
                 All Donation Campaigns
             </h1>

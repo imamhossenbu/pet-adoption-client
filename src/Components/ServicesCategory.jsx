@@ -1,151 +1,107 @@
-import { Swiper, SwiperSlide } from "swiper/react";
-import { Autoplay, Navigation, Pagination } from "swiper/modules";
 import { motion } from "framer-motion";
-import Modal from "react-modal";
-import "swiper/css";
-import "swiper/css/navigation";
-import "swiper/css/pagination";
+import { Link } from "react-router-dom";
 import HeadingSection from "../shared/HeadingSection";
-import { useState } from "react";
-import { FaArrowLeftLong, FaArrowRightLong } from "react-icons/fa6";
-
-// Set the root element for accessibility
-Modal.setAppElement("#root");
-
-const services = [
-    {
-        title: "Dog Walker",
-        description: "Professional dog walking services for your furry friends.",
-        moreDescription: "Our dog walking service ensures your pet gets the exercise and socialization they need. We offer daily, weekly, and customized walking plans.",
-        image: "https://i.ibb.co.com/vHrwSCb/woman-7377662-1280.jpg",
-    },
-    {
-        title: "Agility Training",
-        description: "Boost your pet's agility with expert-guided programs.",
-        moreDescription: "Our agility training helps pets build confidence and stay active through structured obstacle courses and professional guidance.",
-        image: "https://i.ibb.co.com/SyzG5s0/dog-4048819-1280.jpg",
-    },
-    {
-        title: "Veterinarian",
-        description: "Expert veterinary care for your pet’s health and wellness.",
-        moreDescription: "Get top-notch health care services for your pets, including vaccinations, dental care, and emergency services.",
-        image: "https://images.pexels.com/photos/7469217/pexels-photo-7469217.jpeg",
-    },
-    {
-        title: "Pet Grooming",
-        description: "Pamper your pet with our top-notch grooming services.",
-        moreDescription: "Our grooming includes bathing, haircuts, nail trimming, and spa treatments tailored to your pet's needs.",
-        image: "https://i.ibb.co.com/P5fCpvW/nail-clipping-6926862-1280.jpg",
-    },
-    {
-        title: "Pet Boarding",
-        description: "Safe and comfortable boarding facilities while you're away.",
-        moreDescription: "Our pet boarding provides a safe and friendly environment with 24/7 supervision and personalized care plans.",
-        image: "https://i.ibb.co.com/QpkJdrn/dog-5003034-1280.jpg",
-    },
-    {
-        title: "Pet Adoption",
-        description: "Find a loving companion through our adoption program.",
-        moreDescription: "Browse through our adoption center to find a loving home for a pet in need. Every pet deserves a second chance.",
-        image: "https://i.ibb.co.com/LJbGKvF/dog-7770442-1280.jpg",
-    },
-];
+import { servicesData } from "../data/servicesData";
+import { FaArrowRight, FaStar, FaPaw, FaCheckCircle } from "react-icons/fa";
 
 const ServicesCategory = () => {
-    const [modalIsOpen, setModalIsOpen] = useState(false);
-    const [selectedService, setSelectedService] = useState(null);
+  return (
+    <section className="py-20 bg-gray-50/80">
+      <div className="container mx-auto px-4 md:px-10">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.5 }}
+          className="text-center"
+        >
+          <HeadingSection
+            title="Our Professional Services"
+            subtitle="Explore our certified veterinary, grooming, training, and foster care programs designed to keep your pets thriving."
+          />
+        </motion.div>
 
-    const openModal = (service) => {
-        setSelectedService(service);
-        setModalIsOpen(true);
-    };
-
-    const closeModal = () => {
-        setModalIsOpen(false);
-        setSelectedService(null);
-    };
-
-    return (
-        <section className="py-20 bg-gray-100">
-            <div className="container mx-auto px-4 md:px-10  text-center">
-                <HeadingSection title="Services" subtitle="Discover the amazing services we offer for your pets' health and happiness." />
-
-                <motion.div whileHover={{ animationPlayState: "paused" }} className=" relative overflow-hidden">
-                    <div className="swiper-button-prev-custom absolute top-1/2 left-4 transform -translate-y-1/2 z-10 cursor-pointer bg-[#FBAE02] hover:bg-gray-300 text-gray-800 rounded-full p-2 shadow-md">
-                        <FaArrowLeftLong size={20} />
-                    </div>
-                    <div className="swiper-button-next-custom absolute top-1/2 right-4 transform -translate-y-1/2 z-10 cursor-pointer bg-[#FBAE02] hover:bg-gray-300 text-gray-800 rounded-full p-2 shadow-md">
-                        <FaArrowRightLong size={20} />
-                    </div>
-                    <Swiper
-                        modules={[Autoplay, Navigation, Pagination]}
-                        spaceBetween={0}
-                        slidesPerView={1}
-                        breakpoints={{
-                            640: { slidesPerView: 1 },
-                            768: { slidesPerView: 2 },
-                            1024: { slidesPerView: 3 },
-                        }}
-                        autoplay={{ delay: 0, disableOnInteraction: false }}
-                        speed={6000}
-                        loop={true}
-                        navigation={{
-                            prevEl: ".swiper-button-prev-custom",
-                            nextEl: ".swiper-button-next-custom",
-                        }}
-                        pagination={{ clickable: true }}
-                    >
-                        {services.map((service, index) => (
-                            <SwiperSlide key={index}>
-                                <motion.div whileHover={{ scale: 1.05 }} className="w-[350px] h-[450px] rounded-lg shadow-lg bg-white overflow-hidden">
-                                    <div className="relative">
-                                        <img src={service.image} alt={service.title} className="w-full h-60 object-cover" />
-                                        <div className="absolute top-4 left-1/2 transform -translate-x-1/2 bg-white rounded-full shadow-lg border-4 border-white w-24 h-24 flex items-center justify-center">
-                                            <img src={service.image} alt={service.title} className="rounded-full w-20 h-20 object-cover" />
-                                        </div>
-                                    </div>
-                                    <div className="p-6 bg-gray-50 text-center">
-                                        <h3 className="text-xl font-bold text-gray-800">{service.title}</h3>
-                                        <p className="text-gray-600 mt-3">{service.description}</p>
-                                    </div>
-                                    <div className="bg-blue-900 p-4 text-center">
-                                        <button
-                                            onClick={() => openModal(service)}
-                                            className="bg-pink-500 hover:bg-pink-600 text-white font-semibold py-2 px-6 rounded-full"
-                                        >
-                                            Read More
-                                        </button>
-                                    </div>
-                                </motion.div>
-                            </SwiperSlide>
-                        ))}
-                    </Swiper>
-                </motion.div>
-            </div>
-
-            {/* Modal for Service Details */}
-            <Modal
-                isOpen={modalIsOpen}
-                onRequestClose={closeModal}
-                className="bg-white max-w-lg mx-auto mt-20 p-6 rounded-lg shadow-lg relative z-50"
-                overlayClassName="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50"
+        {/* 6 Services Grid */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mt-12">
+          {servicesData.map((service, index) => (
+            <motion.div
+              key={service.id}
+              initial={{ opacity: 0, y: 30 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, margin: "-40px" }}
+              transition={{ duration: 0.5, delay: index * 0.1 }}
+              whileHover={{ y: -8, transition: { duration: 0.25 } }}
+              className="bg-white rounded-3xl overflow-hidden shadow-md hover:shadow-2xl transition-all duration-300 border border-gray-100 flex flex-col justify-between group"
             >
-                {selectedService && (
-                    <div className="text-center">
-                        <h2 className="text-3xl font-bold text-gray-800">{selectedService.title}</h2>
-                        <img src={selectedService.image} alt={selectedService.title} className="w-full h-60 object-cover rounded-lg mt-4" />
-                        <p className="mt-4 text-lg text-gray-600">{selectedService.moreDescription}</p>
-                        <button
-                            onClick={closeModal}
-                            className="mt-6 bg-red-500 hover:bg-red-600 text-white font-semibold py-2 px-6 rounded-full"
-                        >
-                            Close
-                        </button>
-                    </div>
-                )}
-            </Modal>
-        </section>
-    );
+              <div>
+                {/* Image Section */}
+                <div className="relative h-60 overflow-hidden bg-gray-100">
+                  <img
+                    src={service.image}
+                    alt={service.title}
+                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                  />
+                  {/* Badge */}
+                  <div className="absolute top-3 left-3">
+                    <span className="bg-[#1D1D1D]/85 backdrop-blur-xs text-[#FBAE02] font-extrabold text-[11px] px-3 py-1 rounded-full uppercase tracking-wider">
+                      {service.badge}
+                    </span>
+                  </div>
+
+                  {/* Starting Price Tag */}
+                  <div className="absolute bottom-3 right-3 bg-white/95 backdrop-blur-xs rounded-xl px-3 py-1 text-xs shadow-md border border-gray-100">
+                    <span className="text-gray-400 font-bold block text-[9px] uppercase">From</span>
+                    <strong className="text-gray-900 font-black text-sm text-orange-600">
+                      {service.startingPrice}
+                    </strong>
+                  </div>
+                </div>
+
+                {/* Content */}
+                <div className="p-6">
+                  <div className="flex items-center gap-1 text-amber-500 text-xs mb-2">
+                    <FaStar className="fill-current" />
+                    <span className="font-bold text-gray-800">{service.rating}</span>
+                    <span className="text-gray-400">({service.totalReviews} reviews)</span>
+                  </div>
+
+                  <h3 className="text-xl font-black text-gray-900 group-hover:text-orange-600 transition-colors mb-2.5">
+                    {service.title}
+                  </h3>
+
+                  <p className="text-xs text-gray-600 line-clamp-2 leading-relaxed mb-4">
+                    {service.tagline}
+                  </p>
+
+                  {/* Perks preview */}
+                  <div className="space-y-1.5 pt-3 border-t border-gray-100">
+                    {service.keyHighlights.slice(0, 2).map((h, i) => (
+                      <div key={i} className="flex items-center gap-2 text-xs text-gray-600">
+                        <FaCheckCircle className="text-emerald-500 w-3 h-3 flex-shrink-0" />
+                        <span className="truncate">{h.title}</span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </div>
+
+              {/* Bottom Action Footer */}
+              <div className="p-6 pt-0">
+                <Link
+                  to={`/services/${service.slug}`}
+                  onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
+                  className="w-full inline-flex items-center justify-center gap-2 bg-gradient-to-r from-[#1D1D1D] to-[#2D2D2D] hover:from-orange-500 hover:to-orange-600 text-white font-extrabold py-3 px-4 rounded-xl shadow-md transition-all duration-300 text-xs md:text-sm group-hover:shadow-lg"
+                >
+                  <span>Explore Details & Plans</span>
+                  <FaArrowRight className="w-3 h-3 text-[#FBAE02] group-hover:text-white transition-colors" />
+                </Link>
+              </div>
+            </motion.div>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
 };
 
 export default ServicesCategory;

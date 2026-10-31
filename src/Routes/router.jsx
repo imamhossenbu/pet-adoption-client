@@ -25,6 +25,11 @@ import AllPets from "../Pages/AllPets";
 import AllDonationCampaign from "../Pages/Dashboard/AllDonationCampaign";
 import AdminRoute from "./AdminRoute";
 import RecommendedDonationDetails from "../Pages/RecommendedDonationDetails";
+import PetMatchmaker from "../Pages/PetMatchmaker";
+import ServiceDetails from "../Pages/ServiceDetails";
+import PrivacyPolicy from "../Pages/LegalPrivacy";
+import TermsOfService from "../Pages/LegalTerms";
+import AdoptionPolicy from "../Pages/LegalAdoption";
 
 
 const router = createBrowserRouter([
@@ -40,6 +45,10 @@ const router = createBrowserRouter([
             {
                 path: '/pet-listing',
                 element: <PetListing></PetListing>
+            },
+            {
+                path: '/pet-matchmaker',
+                element: <PetMatchmaker></PetMatchmaker>
             },
             {
                 path: '/pet-details/:id',
@@ -74,6 +83,22 @@ const router = createBrowserRouter([
             {
                 path: '/services',
                 element: <Services></Services>
+            },
+            {
+                path: '/services/:slug',
+                element: <ServiceDetails></ServiceDetails>
+            },
+            {
+                path: '/privacy-policy',
+                element: <PrivacyPolicy></PrivacyPolicy>
+            },
+            {
+                path: '/terms-of-service',
+                element: <TermsOfService></TermsOfService>
+            },
+            {
+                path: '/adoption-policy',
+                element: <AdoptionPolicy></AdoptionPolicy>
             }
         ]
     },

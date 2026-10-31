@@ -55,36 +55,63 @@ const AddPet = () => {
 
     // Form Submission Handler
     const onSubmit = async (data) => {
-        const imageFile = { image: data.image[0] };
-        const res = await axiosSecurePublic.post(image_hosting_api, imageFile, {
-            headers: {
-                'Content-Type': 'multipart/form-data'
+        try {
+            let uploadedImageUrl = null;
+            if (data.image && data.image[0]) {
+                const formData = new FormData();
+                formData.append('image', data.image[0]);
+                try {
+                    const res = await axiosSecurePublic.post(image_hosting_api, formData, {
+                        headers: {
+                            'Content-Type': 'multipart/form-data'
+                        }
+                    });
+                    if (res.data?.data?.display_url) {
+                        uploadedImageUrl = res.data.data.display_url;
+                    }
+                } catch (imgErr) {
+                    console.warn("ImgBB upload error, using category fallback", imgErr);
+                }
             }
-        })
-        console.log(res.data.data.display_url);
-        if (res.data.status === 200) {
+
+            // Fallback image if imgbb fails or is blocked
+            if (!uploadedImageUrl) {
+                const categoryImages = {
+                    dog: "https://images.unsplash.com/photo-1543466835-00a7907e9de1?auto=format&fit=crop&w=800&q=80",
+                    cat: "https://images.unsplash.com/photo-1514888286974-6c03e2ca1dba?auto=format&fit=crop&w=800&q=80",
+                    rabbit: "https://images.unsplash.com/photo-1585110396000-c9ffd4e4b308?auto=format&fit=crop&w=800&q=80",
+                    bird: "https://images.unsplash.com/photo-1452570053594-1b985d6ea890?auto=format&fit=crop&w=800&q=80"
+                };
+                uploadedImageUrl = categoryImages[data.petCategory?.value] || categoryImages.dog;
+            }
+
             const petData = {
                 ...data,
                 petCategory: data.petCategory.value, // Extract value from react-select
-                petImage: res.data.data.display_url,
+                petImage: uploadedImageUrl,
                 dateAdded: new Date().toISOString(),
                 adopted: false,
                 petAge: parseFloat(data.petAge),
-                userEmail: user.email,
+                userEmail: user?.email,
             };
             const petItemRes = await axiosSecure.post('/pet', petData);
             if (petItemRes.data.insertedId) {
                 reset();
                 Swal.fire({
                     title: "Added!",
-                    text: "Your item has been added.",
+                    text: "Your pet has been successfully listed for adoption.",
                     icon: "success"
-                })
-                navigate('/pet-listing')
+                });
+                navigate('/pet-listing');
             }
+        } catch (err) {
+            console.error("Failed to add pet", err);
+            Swal.fire({
+                title: "Error!",
+                text: "Failed to add pet. Please try again.",
+                icon: "error"
+            });
         }
-
-
     };
 
     return (

@@ -12,7 +12,7 @@ const teamMembers = [
     {
         name: "Mika Doe",
         role: "Adoption Manager",
-        image: "https://i.ibb.co/g7yXcnT/team1.jpg",
+        image: "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&w=800&q=80",
         social: {
             facebook: "https://www.facebook.com/mika.doe",
             twitter: "https://www.twitter.com/mika_doe",
@@ -22,7 +22,7 @@ const teamMembers = [
     {
         name: "Jillian Smith",
         role: "Vet Assistant",
-        image: "https://i.ibb.co/hyP6rrf/team2.jpg",
+        image: "https://images.unsplash.com/photo-1576765608535-5f04d1e3f289?auto=format&fit=crop&w=800&q=80",
         social: {
             facebook: "https://www.facebook.com/jillian.smith",
             twitter: "https://www.twitter.com/jillian_smith",
@@ -32,7 +32,7 @@ const teamMembers = [
     {
         name: "Laura Smith",
         role: "Veterinarian",
-        image: "https://i.ibb.co/5cfZDGw/team3.jpg",
+        image: "https://images.unsplash.com/photo-1559839734-2b71ea197ec2?auto=format&fit=crop&w=800&q=80",
         social: {
             facebook: "https://www.facebook.com/laura.smith",
             twitter: "https://www.twitter.com/laura_smith",
@@ -42,7 +42,7 @@ const teamMembers = [
     {
         name: "John Doe",
         role: "Pet Trainer",
-        image: "https://i.ibb.co/h7R5Ldx/team4.jpg",
+        image: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=800&q=80",
         social: {
             facebook: "https://www.facebook.com/john.doe",
             twitter: "https://www.twitter.com/john_doe",
@@ -52,7 +52,7 @@ const teamMembers = [
     {
         name: "Sarah Johnson",
         role: "Animal Care Specialist",
-        image: "https://i.ibb.co/QdYgsz1/team5.jpg",
+        image: "https://images.unsplash.com/photo-1580489944761-15a19d654956?auto=format&fit=crop&w=800&q=80",
         social: {
             facebook: "https://www.facebook.com/sarah.johnson",
             twitter: "https://www.twitter.com/sarah_johnson",
@@ -62,7 +62,7 @@ const teamMembers = [
     {
         name: "Michael Adams",
         role: "Pet Behaviorist",
-        image: "https://i.ibb.co/BqKtPQ8/team6.jpg",
+        image: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?auto=format&fit=crop&w=800&q=80",
         social: {
             facebook: "https://www.facebook.com/michael.adams",
             twitter: "https://www.twitter.com/michael_adams",
@@ -73,16 +73,29 @@ const teamMembers = [
 
 const OurTeam = () => {
     return (
-        <section className="py-20 bg-gray-100">
+        <section className="py-20 bg-gray-100 overflow-hidden">
             <div className="container mx-auto px-4 md:px-10 text-center">
-                <HeadingSection title="Our Team" subtitle="Meet our dedicated pet care specialists who love and care for your pets like their own." />
+                <motion.div
+                    initial={{ opacity: 0, y: 20 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    viewport={{ once: true }}
+                    transition={{ duration: 0.5 }}
+                >
+                    <HeadingSection title="Our Team" subtitle="Meet our dedicated pet care specialists who love and care for your pets like their own." />
+                </motion.div>
 
-                <motion.div className="relative overflow-hidden">
-                    <div className="swiper-button-prev-custom absolute top-1/2 left-4 transform -translate-y-1/2 z-10 cursor-pointer bg-[#FBAE02] hover:bg-gray-300 text-gray-800 rounded-full p-2 shadow-md">
-                        <FaArrowLeftLong  size={20} />
+                <motion.div
+                    initial={{ opacity: 0, y: 30 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    viewport={{ once: true }}
+                    transition={{ duration: 0.6, delay: 0.1 }}
+                    className="relative overflow-hidden"
+                >
+                    <div className="swiper-button-prev-custom absolute top-1/2 left-4 transform -translate-y-1/2 z-10 cursor-pointer bg-[#FBAE02] hover:bg-orange-500 text-black hover:text-white rounded-full p-2.5 shadow-md transition-colors">
+                        <FaArrowLeftLong size={18} />
                     </div>
-                    <div className="swiper-button-next-custom absolute top-1/2 right-4 transform -translate-y-1/2 z-10 cursor-pointer bg-[#FBAE02] hover:bg-gray-300 text-gray-800 rounded-full p-2 shadow-md">
-                        <FaArrowRightLong  size={20} />
+                    <div className="swiper-button-next-custom absolute top-1/2 right-4 transform -translate-y-1/2 z-10 cursor-pointer bg-[#FBAE02] hover:bg-orange-500 text-black hover:text-white rounded-full p-2.5 shadow-md transition-colors">
+                        <FaArrowRightLong size={18} />
                     </div>
                     <Swiper
                         modules={[Autoplay, Navigation, Pagination]}
@@ -104,32 +117,40 @@ const OurTeam = () => {
                     >
                         {teamMembers.map((member, index) => (
                             <SwiperSlide key={index}>
-                                <motion.div whileHover={{ scale: 1.05 }} className="relative w-[350px] h-[420px] rounded-lg shadow-lg bg-white overflow-hidden group">
-                                    <div className="relative group">
-                                        <img src={member.image} alt={member.name} className="w-full h-72 object-cover rounded-lg" />
+                                <motion.div whileHover={{ y: -6 }} className="relative mx-auto w-full max-w-[340px] rounded-2xl shadow-lg bg-white overflow-hidden group border border-gray-100">
+                                    <div className="relative group overflow-hidden">
+                                        <img 
+                                            src={member.image} 
+                                            alt={member.name} 
+                                            onError={(e) => {
+                                                e.target.onerror = null;
+                                                e.target.src = "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=800&q=80";
+                                            }}
+                                            className="w-full h-72 object-cover group-hover:scale-105 transition-transform duration-300" 
+                                        />
 
                                         {/* Social icons div, showing on hover */}
                                         <div
-                                            className="absolute top-0 right-0 h-full w-16 bg-blue-500 rounded-l-lg flex flex-col justify-center items-center space-y-4 transition-all transform translate-x-full opacity-0 group-hover:translate-x-0 group-hover:opacity-100"
+                                            className="absolute top-0 right-0 h-full w-14 bg-[#1D1D1D]/90 backdrop-blur-xs rounded-l-2xl flex flex-col justify-center items-center space-y-4 transition-all transform translate-x-full opacity-0 group-hover:translate-x-0 group-hover:opacity-100"
                                         >
-                                            <a href={member.social.facebook} target="_blank" rel="noopener noreferrer">
-                                                <FaFacebookF className="text-white hover:text-blue-300 transition" size={20} />
+                                            <a href={member.social.facebook} target="_blank" rel="noopener noreferrer" className="p-2 rounded-full hover:bg-white/20 transition">
+                                                <FaFacebookF className="text-[#FBAE02]" size={16} />
                                             </a>
-                                            <a href={member.social.twitter} target="_blank" rel="noopener noreferrer">
-                                                <FaTwitter className="text-white hover:text-blue-300 transition" size={20} />
+                                            <a href={member.social.twitter} target="_blank" rel="noopener noreferrer" className="p-2 rounded-full hover:bg-white/20 transition">
+                                                <FaTwitter className="text-[#FBAE02]" size={16} />
                                             </a>
-                                            <a href={member.social.linkedin} target="_blank" rel="noopener noreferrer">
-                                                <FaLinkedinIn className="text-white hover:text-blue-300 transition" size={20} />
+                                            <a href={member.social.linkedin} target="_blank" rel="noopener noreferrer" className="p-2 rounded-full hover:bg-white/20 transition">
+                                                <FaLinkedinIn className="text-[#FBAE02]" size={16} />
                                             </a>
                                         </div>
                                     </div>
 
-                                    <div className="p-6 bg-gray-50 text-center">
-                                        <h3 className="text-xl font-bold text-gray-800">{member.name}</h3>
-                                        <p className="text-pink-500 flex justify-center items-center gap-2">
-                                            <span className="w-6 h-[2px] bg-pink-500"></span> 🐾 <span className="w-6 h-[2px] bg-pink-500"></span>
+                                    <div className="p-6 bg-white text-center">
+                                        <h3 className="text-xl font-black text-gray-900">{member.name}</h3>
+                                        <p className="text-orange-500 flex justify-center items-center gap-2 my-1">
+                                            <span className="w-6 h-[2px] bg-orange-400"></span> 🐾 <span className="w-6 h-[2px] bg-orange-400"></span>
                                         </p>
-                                        <p className="text-gray-600 mt-3">{member.role}</p>
+                                        <p className="text-gray-500 text-sm font-semibold">{member.role}</p>
                                     </div>
                                 </motion.div>
                             </SwiperSlide>

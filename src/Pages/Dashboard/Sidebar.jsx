@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { NavLink } from "react-router-dom";
-import logo from '../../../public/logo.png';
+import logo from '../../assets/logo.png';
 import useAdmin from "../../Hooks/useAdmin";
 import { Helmet } from "react-helmet";
 

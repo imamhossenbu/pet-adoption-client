@@ -3,6 +3,8 @@ import Navbar from "../shared/Navbar";
 import Footer from "../shared/Footer";
 import Newsletter from "../Components/NewsLetter";
 import ScrollToTopButton from "../shared/ScrollToTopButton";
+import FavoritesDrawer from "../Components/FavoritesDrawer";
+import PeddyAssistantBot from "../Components/PeddyAssistantBot";
 
 const Root = () => {
   const location=useLocation();
@@ -17,6 +19,10 @@ const Root = () => {
         <Outlet />
       </div>
       <ScrollToTopButton></ScrollToTopButton>
+
+      {/* Floating AI Pet Care Assistant & Favorites Drawer */}
+      <PeddyAssistantBot />
+      <FavoritesDrawer />
 
       {!(location.pathname === "/login" || location.pathname === "/sign-up") && (
         <Newsletter />
