@@ -9,7 +9,9 @@ import {
     updateProfile,
     updatePassword,
     EmailAuthProvider,
-    reauthenticateWithCredential
+    reauthenticateWithCredential,
+    linkWithCredential,
+    sendPasswordResetEmail
 } from "firebase/auth";
 import { useEffect, useState } from "react";
 import { auth } from "../../firebase.config";
@@ -47,11 +49,37 @@ const AuthProvider = ({ children }) => {
 
     const updateUserPassword = async (currentPassword, newPassword) => {
         if (!auth.currentUser) throw new Error("No active user session");
-        if (currentPassword && auth.currentUser.email) {
+
+        const hasPassword = auth.currentUser.providerData?.some(
+            (p) => p.providerId === "password"
+        );
+
+        // If user already has a password, re-authenticate with currentPassword
+        if (hasPassword && currentPassword && auth.currentUser.email) {
             const credential = EmailAuthProvider.credential(auth.currentUser.email, currentPassword);
             await reauthenticateWithCredential(auth.currentUser, credential);
+            return updatePassword(auth.currentUser, newPassword);
         }
+
+        // If user logged in via Google / Social provider (no password provider yet)
+        if (!hasPassword && auth.currentUser.email) {
+            try {
+                const credential = EmailAuthProvider.credential(auth.currentUser.email, newPassword);
+                await linkWithCredential(auth.currentUser, credential);
+                return;
+            } catch (linkErr) {
+                console.warn("linkWithCredential fallback:", linkErr);
+                return updatePassword(auth.currentUser, newPassword);
+            }
+        }
+
         return updatePassword(auth.currentUser, newPassword);
+    };
+
+    const sendResetEmail = (email) => {
+        const targetEmail = email || auth.currentUser?.email;
+        if (!targetEmail) throw new Error("No email provided");
+        return sendPasswordResetEmail(auth, targetEmail);
     };
 
     const googleLogIn = () => {
@@ -97,6 +125,7 @@ const AuthProvider = ({ children }) => {
         logOut,
         updateUserProfile,
         updateUserPassword,
+        sendResetEmail,
         googleLogIn,
         githubLogIn,
         loading,

@@ -19,7 +19,9 @@ import {
   FaCalendarAlt,
   FaCloudUploadAlt,
   FaTrashAlt,
-  FaExclamationTriangle
+  FaExclamationTriangle,
+  FaGoogle,
+  FaPaperPlane
 } from "react-icons/fa";
 import AuthContext from "../../context/authContext";
 import useAxiosSecure from "../../Hooks/useAxiosSecure";
@@ -28,9 +30,13 @@ import UserAvatar from "../../Components/UserAvatar";
 import { uploadImageToCloud } from "../../utils/cloudinaryUpload";
 
 const Settings = () => {
-  const { user, updateUserProfile, updateUserPassword } = useContext(AuthContext);
+  const { user, updateUserProfile, updateUserPassword, sendResetEmail } = useContext(AuthContext);
   const axiosSecure = useAxiosSecure();
   const [isAdmin] = useAdmin();
+
+  // Check if account has an active password or authenticated via Google/Social
+  const hasPassword = user?.providerData?.some((p) => p.providerId === "password");
+  const isGoogleUser = user?.providerData?.some((p) => p.providerId === "google.com");
 
   // Profile data states
   const [name, setName] = useState("");
@@ -54,6 +60,7 @@ const Settings = () => {
   const [showNewPassword, setShowNewPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [isPasswordSaving, setIsPasswordSaving] = useState(false);
+  const [isSendingReset, setIsSendingReset] = useState(false);
 
   // Populate initial values from Firebase user and server profile
   useEffect(() => {
@@ -260,9 +267,19 @@ const Settings = () => {
     }
   };
 
-  // Handle password update
+  // Handle password update / creation
   const handleChangePassword = async (e) => {
     e.preventDefault();
+
+    if (hasPassword && !currentPassword) {
+      Swal.fire({
+        icon: "warning",
+        title: "Current Password Required",
+        text: "Please enter your current password to authenticate this change.",
+        confirmButtonColor: "#FBAE02",
+      });
+      return;
+    }
 
     if (!newPassword) {
       Swal.fire({
@@ -304,30 +321,66 @@ const Settings = () => {
 
       Swal.fire({
         icon: "success",
-        title: "Password Changed!",
-        text: "Your security credentials have been updated successfully.",
+        title: hasPassword ? "Password Updated!" : "Password Created! 🎉",
+        text: hasPassword
+          ? "Your password has been changed successfully."
+          : "You have successfully linked a password to your account! You can now log in using either Google or your email and password.",
         confirmButtonColor: "#FBAE02",
-        timer: 2500,
+        timer: 3000,
       });
     } catch (err) {
       console.error("Password update error:", err);
-      let errorMsg = "Could not update password. Please check your current password.";
+      let errorMsg = "Could not update password. Please check your credentials.";
       if (err.code === "auth/wrong-password" || err.code === "auth/invalid-credential") {
         errorMsg = "Incorrect current password. Please try again.";
       } else if (err.code === "auth/requires-recent-login") {
-        errorMsg = "For security reasons, please log out and log back in before changing your password.";
+        errorMsg = "For security reasons, please log out and log back in before setting your password, or use the email reset link.";
       } else if (err.message) {
         errorMsg = err.message;
       }
 
       Swal.fire({
         icon: "error",
-        title: "Password Change Failed",
+        title: "Password Update Failed",
         text: errorMsg,
         confirmButtonColor: "#FBAE02",
       });
     } finally {
       setIsPasswordSaving(false);
+    }
+  };
+
+  // One-click password setup link to user email
+  const handleSendResetEmail = async () => {
+    if (!user?.email) {
+      Swal.fire({
+        icon: "warning",
+        title: "No Email Found",
+        text: "No email address found for this account.",
+        confirmButtonColor: "#FBAE02",
+      });
+      return;
+    }
+
+    setIsSendingReset(true);
+    try {
+      await sendResetEmail(user.email);
+      Swal.fire({
+        icon: "success",
+        title: "Setup Link Sent! ✉️",
+        html: `A secure password link has been sent to <b>${user.email}</b>. Follow the link in your email to set or change your password.`,
+        confirmButtonColor: "#FBAE02",
+      });
+    } catch (err) {
+      console.error("Reset email error:", err);
+      Swal.fire({
+        icon: "error",
+        title: "Failed to Send Email",
+        text: err.message || "Could not dispatch password reset link.",
+        confirmButtonColor: "#FBAE02",
+      });
+    } finally {
+      setIsSendingReset(false);
     }
   };
 
@@ -683,50 +736,85 @@ const Settings = () => {
             <div className="flex items-center justify-between pb-3 border-b border-gray-100">
               <div>
                 <h2 className="text-base font-black text-gray-900 flex items-center gap-2">
-                  <FaKey className="text-[#FBAE02]" /> Security & Password Change
+                  <FaKey className="text-[#FBAE02]" />
+                  {hasPassword ? "Security & Password Change" : "Create Password for Email Login"}
                 </h2>
                 <p className="text-xs text-gray-500 mt-0.5">
-                  Update your login credentials to keep your account safe.
+                  {hasPassword
+                    ? "Update your login credentials to keep your account safe."
+                    : "You signed in with Google. You can create a password to enable direct email login."}
                 </p>
               </div>
-              <span className="text-[11px] text-gray-500 font-black uppercase tracking-wider bg-gray-100 px-2.5 py-1 rounded-full">
-                Security
+              <span className={`text-[11px] font-black uppercase tracking-wider px-2.5 py-1 rounded-full ${
+                hasPassword ? "bg-gray-100 text-gray-600" : "bg-orange-50 text-[#FBAE02]"
+              }`}>
+                {hasPassword ? "Security" : "Password Setup"}
               </span>
             </div>
 
-            <form onSubmit={handleChangePassword} className="space-y-4">
-              {/* Current Password */}
-              <div>
-                <label className="block text-xs font-black uppercase text-gray-600 mb-1.5">
-                  Current Password
-                </label>
-                <div className="relative">
-                  <span className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-gray-400 text-xs">
-                    <FaLock />
-                  </span>
-                  <input
-                    type={showCurrentPassword ? "text" : "password"}
-                    value={currentPassword}
-                    onChange={(e) => setCurrentPassword(e.target.value)}
-                    placeholder="Enter current password"
-                    className="w-full pl-9 pr-10 py-2.5 rounded-xl border border-gray-200 text-xs text-gray-800 font-medium focus:ring-2 focus:ring-[#FBAE02] focus:border-transparent outline-none transition"
-                  />
-                  <button
-                    type="button"
-                    onClick={() => setShowCurrentPassword(!showCurrentPassword)}
-                    className="absolute inset-y-0 right-0 pr-3.5 flex items-center text-gray-400 hover:text-gray-600 text-xs"
-                  >
-                    {showCurrentPassword ? <FaEyeSlash /> : <FaEye />}
-                  </button>
+            {/* Social / Google User Helpful Notice */}
+            {!hasPassword && (
+              <div className="p-4 rounded-2xl bg-amber-50/70 border border-amber-200/80 flex items-start gap-3.5 text-xs text-amber-950">
+                <div className="w-9 h-9 rounded-xl bg-white border border-amber-200 flex items-center justify-center shrink-0 shadow-xs">
+                  <FaGoogle className="text-base text-[#FBAE02]" />
+                </div>
+                <div className="flex-1 min-w-0">
+                  <h4 className="font-black text-gray-900">
+                    Signed in with {isGoogleUser ? "Google Authentication" : "Social Login"}
+                  </h4>
+                  <p className="text-[11px] text-gray-600 mt-0.5 leading-relaxed">
+                    You do not have a password yet because you authenticated using Google. You can create a password below so you can sign in using either Google or your email directly.
+                  </p>
                 </div>
               </div>
+            )}
+
+            <form onSubmit={handleChangePassword} className="space-y-4">
+              {/* Current Password (Only shown if user has an existing password) */}
+              {hasPassword && (
+                <div>
+                  <div className="flex items-center justify-between mb-1.5">
+                    <label className="block text-xs font-black uppercase text-gray-600">
+                      Current Password <span className="text-red-500">*</span>
+                    </label>
+                    <button
+                      type="button"
+                      disabled={isSendingReset}
+                      onClick={handleSendResetEmail}
+                      className="text-[11px] font-bold text-orange-600 hover:underline flex items-center gap-1 cursor-pointer"
+                    >
+                      <FaPaperPlane className="text-[10px]" />
+                      <span>{isSendingReset ? "Sending..." : "Forgot password? Send reset link"}</span>
+                    </button>
+                  </div>
+                  <div className="relative">
+                    <span className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-gray-400 text-xs">
+                      <FaLock />
+                    </span>
+                    <input
+                      type={showCurrentPassword ? "text" : "password"}
+                      value={currentPassword}
+                      onChange={(e) => setCurrentPassword(e.target.value)}
+                      placeholder="Enter current password"
+                      className="w-full pl-9 pr-10 py-2.5 rounded-xl border border-gray-200 text-xs text-gray-800 font-medium focus:ring-2 focus:ring-[#FBAE02] focus:border-transparent outline-none transition"
+                    />
+                    <button
+                      type="button"
+                      onClick={() => setShowCurrentPassword(!showCurrentPassword)}
+                      className="absolute inset-y-0 right-0 pr-3.5 flex items-center text-gray-400 hover:text-gray-600 text-xs"
+                    >
+                      {showCurrentPassword ? <FaEyeSlash /> : <FaEye />}
+                    </button>
+                  </div>
+                </div>
+              )}
 
               {/* New Password & Confirm Password Grid */}
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 {/* New Password */}
                 <div>
                   <label className="block text-xs font-black uppercase text-gray-600 mb-1.5">
-                    New Password
+                    {hasPassword ? "New Password" : "Create Password"} <span className="text-red-500">*</span>
                   </label>
                   <div className="relative">
                     <span className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-gray-400 text-xs">
@@ -752,7 +840,7 @@ const Settings = () => {
                 {/* Confirm Password */}
                 <div>
                   <label className="block text-xs font-black uppercase text-gray-600 mb-1.5">
-                    Confirm New Password
+                    Confirm {hasPassword ? "New Password" : "Password"} <span className="text-red-500">*</span>
                   </label>
                   <div className="relative">
                     <span className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-gray-400 text-xs">
@@ -762,7 +850,7 @@ const Settings = () => {
                       type={showConfirmPassword ? "text" : "password"}
                       value={confirmPassword}
                       onChange={(e) => setConfirmPassword(e.target.value)}
-                      placeholder="Re-enter new password"
+                      placeholder="Re-enter password"
                       className="w-full pl-9 pr-10 py-2.5 rounded-xl border border-gray-200 text-xs text-gray-800 font-medium focus:ring-2 focus:ring-[#FBAE02] focus:border-transparent outline-none transition"
                     />
                     <button
@@ -799,15 +887,33 @@ const Settings = () => {
                 </div>
               )}
 
-              {/* Submit Password Button */}
-              <div className="pt-2 flex justify-end">
+              {/* Action Buttons */}
+              <div className="pt-2 flex flex-wrap items-center justify-between gap-3">
+                {!hasPassword ? (
+                  <button
+                    type="button"
+                    disabled={isSendingReset}
+                    onClick={handleSendResetEmail}
+                    className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl border border-gray-200 hover:border-orange-300 hover:bg-orange-50/50 text-gray-700 hover:text-orange-600 text-xs font-bold transition disabled:opacity-50"
+                  >
+                    <FaPaperPlane className="text-xs text-[#FBAE02]" />
+                    <span>{isSendingReset ? "Sending Link..." : "Send Setup Link to Email"}</span>
+                  </button>
+                ) : <div />}
+
                 <button
                   type="submit"
                   disabled={isPasswordSaving || !newPassword}
                   className="inline-flex items-center gap-2 bg-[#141414] hover:bg-black text-[#FBAE02] font-extrabold text-xs px-6 py-3 rounded-xl transition shadow-xs disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   <FaKey />
-                  <span>{isPasswordSaving ? "Updating Password..." : "Update Password"}</span>
+                  <span>
+                    {isPasswordSaving
+                      ? "Saving..."
+                      : hasPassword
+                      ? "Update Password"
+                      : "Set Account Password"}
+                  </span>
                 </button>
               </div>
             </form>
