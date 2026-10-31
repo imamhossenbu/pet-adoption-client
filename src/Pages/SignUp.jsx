@@ -3,7 +3,7 @@ import signUpImage from "../assets/signup.png"; // Replace with your signup imag
 import bgImg from "../assets/bgForSignUp.jpg";  // Replace with your background image
 import { useContext, useState } from "react";
 import AuthContext from "../context/authContext";
-import { useLocation, useNavigate } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
 import { Helmet } from "react-helmet";
 import useAxiosPublic from "../Hooks/useAxiosPublic";
@@ -247,9 +247,9 @@ const SignUp = () => {
           <div className="text-center mt-4">
             <p className="text-gray-600">
               Already have an account?{" "}
-              <a href="/login" className="text-orange-500 font-medium">
+              <Link to="/login" className="text-orange-500 font-medium hover:underline">
                 Go to Login
-              </a>
+              </Link>
             </p>
           </div>
 

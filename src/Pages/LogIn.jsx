@@ -4,7 +4,7 @@ import bgImg from '../assets/bgForSignUp.jpg'
 import { useContext, useState } from "react";
 import AuthContext from "../context/authContext";
 import toast from "react-hot-toast";
-import { useLocation, useNavigate } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { Helmet } from "react-helmet";
 import useAxiosPublic from "../Hooks/useAxiosPublic";
 
@@ -199,9 +199,9 @@ const Login = () => {
                     <div className="text-center mt-4">
                         <p className="text-gray-600">
                             New here?{" "}
-                            <a href="/sign-up" className="text-orange-500 font-medium">
+                            <Link to="/sign-up" className="text-orange-500 font-medium hover:underline">
                                 Create an Account
-                            </a>
+                            </Link>
                         </p>
                     </div>
 
