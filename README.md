@@ -1,136 +1,103 @@
-# Pet Adoption Platform - Client Side
+# PeddyCare - Pet Adoption Platform (Client Side) 🐾
 
-Welcome to the **Pet Adoption Platform**, a web application that connects individuals with pets in need of loving homes. This platform allows users to browse, adopt, and contribute to pet adoption campaigns, making it easier to find the perfect pet companion.
+Welcome to **PeddyCare**, a modern, responsive full-stack pet adoption and rescue support platform built to connect rescued animals with loving forever homes.
 
-## 🚀 Live URL
+---
 
-[Pet Adoption Platform](https://pet-adoption-3d21e.web.app/)
+## 🚀 Live Demonstration & Links
+- **Live Website:** [https://pet-adoption-3d21e.web.app](https://pet-adoption-3d21e.web.app/)
+- **Client Repository:** [https://github.com/imamhossenbu/pet-adoption-client](https://github.com/imamhossenbu/pet-adoption-client)
+- **Server Repository:** [https://github.com/imamhossenbu/pet-adoption-server](https://github.com/imamhossenbu/pet-adoption-server)
 
-## 🎯 Project Purpose
+---
 
-The goal of this project is to leverage technology to create a user-friendly and responsive platform for pet adoption. Users can search for pets, adopt them, and contribute to donation campaigns to support pets in need.
+## 🎯 Key Features
 
-## 🏗 Key Features
+### 🐶 Public & Community Features
+- **Dynamic Pet Catalog:** Explore pets categorized with instant regex filtering, live search by name, and infinite scroll pagination.
+- **Detailed Pet Profiles:** Pet descriptions with image galleries, age, gender, adoption fee, location, and an interactive **Adopt Me** modal.
+- **Donation Campaigns:** View verified medical and shelter campaigns with live Stripe credit card checkout and funding progress bars.
+- **Care Specialists & Leadership:** Interactive Swiper carousel showcasing certified veterinarians and trainers synced dynamically with the backend.
+- **Newsletter Subscription:** Seamless email subscription integrated directly with MongoDB and duplicate protection.
+- **Dark / Light Theme:** Custom theme toggler with persistent localStorage state.
 
-- **User Authentication:**
-  - Email/password registration & login
-  - Social authentication (Google, Facebook, GitHub)
-  - Role-based access (User/Admin)
-- **Pet Listing Page:**
-  - View available pets in a grid layout
-  - Search by pet name or filter by category
-  - Infinite scrolling for seamless browsing
-- **Pet Details Page:**
-  - Detailed view with an "Adopt" button
-  - Adoption request modal with user details
-- **Donation Campaigns:**
-  - Browse and contribute to donation campaigns
-  - Stripe payment integration
+### 🛡️ User & Admin Dashboard
+- **Role-Based Routing:** Strict protected routes (`AdminRoute` & `PrivateRoute`) backed by JWT authorization.
 - **User Dashboard:**
-  - Add and manage pets
-  - Track adoption requests and donations
-- **Admin Dashboard:**
-  - Manage users, pets, and donations
-  - Assign admin roles
-- **UI/UX Enhancements:**
-  - Fully responsive design
-  - Dark/light mode toggle
-  - Skeleton loaders for smooth UX
+  - Add adoptable pets with direct drag-and-drop Cloudinary file uploads.
+  - Track user-submitted adoption applications and incoming requests.
+  - Create and manage donation campaigns with real-time donation logs.
+- **Admin Command Center:**
+  - **Overview Analytics:** Key platform KPI cards and visual donation charts.
+  - **User Directory:** Real-time role switching (`Admin` / `User`), status control (`🟢 Active`, `🟡 Suspended`, `🔴 Banned`), and deletion.
+  - **All Pets & Campaigns:** Moderation tables with adoption status toggle and campaign pause controls.
+  - **Care Specialists & Team:** Comprehensive team management with direct portrait uploads and social link editing.
+  - **Newsletter Broadcast:** Manage subscriber lists, one-click copy active emails, and send rich HTML broadcast newsletters via Nodemailer.
+  - **Pet Categories & FAQs:** Dynamic CRUD management for category tags and expandable FAQ sections.
 
-## 🛠 Technologies Used
+---
 
-### Frontend Stack
+## 🛠️ Frontend Tech Stack
 
-- **React.js** - Core library for building the UI
-- **React Router** - Client-side routing
-- **Tailwind CSS** - Styling framework
-- **Shadcn-ui** - Component library for UI elements
-- **TanStack Query** - Data fetching and caching
-- **Firebase Authentication** - User authentication
-- **React Hook Form** - Form handling
-- **React Query** - State and data management
-- **Stripe API** - Payment integration
-- **Cloudinary** - Image upload
-- **React-Quill** - WYSIWYG text editor
+- **Framework:** React.js 18 + Vite
+- **Styling:** Tailwind CSS + DaisyUI
+- **State & Caching:** TanStack React Query v5
+- **Routing:** React Router DOM v6
+- **Authentication:** Firebase Authentication (Email/Password, Google)
+- **Forms & Inputs:** React Hook Form + React Quill (WYSIWYG)
+- **Animations:** Framer Motion, Swiper.js, Lottie React
+- **Payments:** Stripe Elements (`@stripe/react-stripe-js`)
+- **Asset Uploads:** Cloudinary direct drag-and-drop integration
+- **Notifications:** SweetAlert2 + React Hot Toast
 
-## ⚙ Installation & Setup
+---
 
-### Prerequisites
+## ⚙️ Installation & Local Setup
 
-Ensure you have the following installed:
-
-- Node.js (v16+)
+### 1. Prerequisites
+- Node.js (v18+)
 - npm or yarn
 
-### Steps to Run the Project
-
-1. Clone the repository:
-   ```bash
-   git clone https://github.com/yourusername/pet-adoption-client.git
-Navigate to the project directory:
-bash
-Copy
-Edit
+### 2. Steps to Run Locally
+```bash
+# Clone repository
+git clone https://github.com/imamhossenbu/pet-adoption-client.git
 cd pet-adoption-client
-Install dependencies:
-bash
-Copy
-Edit
+
+# Install dependencies
 npm install
-Create a .env file in the root directory and add your Firebase and API configurations:
-REACT_APP_FIREBASE_API_KEY=your_api_key
-REACT_APP_FIREBASE_AUTH_DOMAIN=your_auth_domain
-REACT_APP_FIREBASE_PROJECT_ID=your_project_id
-REACT_APP_FIREBASE_STORAGE_BUCKET=your_storage_bucket
-REACT_APP_FIREBASE_MESSAGING_SENDER_ID=your_sender_id
-REACT_APP_FIREBASE_APP_ID=your_app_id
-Start the development server:
+
+# Start Vite dev server
 npm run dev
-Open the app in your browser at http://localhost:5173
-📂 Project Structure:-
-pet-adoption-client
-│-- public
-│-- src
-│   │-- components
-│   │-- pages
-│   │-- context
-│   │-- hooks
-│   │-- services
-│   │-- styles
-│   └-- utils
-│-- .env
-│-- package.json
-│-- README.md
-🔐 Security Measures
-Environment variables are used to secure sensitive data such as Firebase and MongoDB credentials.
-JWT tokens are used for authentication and authorization.
-Firebase domain authorization for deployment security.
-🚀 Deployment
-The project is deployed on Firebase Hosting. Ensure to:
+```
 
-Run the build command:
-npm run build
-Deploy to Firebase:
-bash
-Copy
-Edit
-firebase deploy
-📜 Meaningful Commits
-Ensure at least 20 meaningful commits with descriptive messages following conventional commit style.
-Example commit message:
-csharp
-Copy
-Edit
-feat: add pet adoption form with validation
-📄 Additional Information
-Admin Credentials:
+Visit `http://localhost:5173` in your browser.
 
-Email: admin@petadoption.com
-Password: admin123
-Links:
+---
 
-Client Side Repository
-Server Side Repository
-🙏 Acknowledgements
-Thanks to all contributors who made this project possible. Special thanks to the open-source community for providing valuable tools and resources.
+## 🔐 Environment Variables (`.env.local`)
 
+```env
+VITE_API_URL=http://localhost:5000
+VITE_FIREBASE_API_KEY=your_firebase_api_key
+VITE_FIREBASE_AUTH_DOMAIN=your_auth_domain
+VITE_FIREBASE_PROJECT_ID=your_project_id
+VITE_FIREBASE_STORAGE_BUCKET=your_storage_bucket
+VITE_FIREBASE_MESSAGING_SENDER_ID=your_sender_id
+VITE_FIREBASE_APP_ID=your_app_id
+VITE_STRIPE_PUBLIC_KEY=your_stripe_publishable_key
+VITE_CLOUDINARY_CLOUD_NAME=your_cloudinary_cloud_name
+VITE_CLOUDINARY_UPLOAD_PRESET=your_preset
+```
+
+---
+
+## 📄 Credentials & Access
+
+- **Admin Account:** `admin@petadoption.com`
+- **Password:** `admin123`
+
+---
+
+## 📜 License
+This project is open-source and licensed under the [MIT License](LICENSE).
