@@ -78,6 +78,12 @@ const Sidebar = ({ onClose }) => {
         { name: "Create Campaign", path: "/dashboard/create-donation-campaign", icon: FaHeart },
       ],
     },
+    {
+      title: "PREFERENCES",
+      items: [
+        { name: "Account Settings", path: "/dashboard/settings", icon: FaCog },
+      ],
+    },
   ];
 
   // Dedicated Regular User Menu
@@ -98,6 +104,12 @@ const Sidebar = ({ onClose }) => {
         { name: "Create Campaign", path: "/dashboard/create-donation-campaign", icon: FaHandHoldingHeart },
         { name: "My Campaigns", path: "/dashboard/my-donation-campaigns", icon: FaHeart },
         { name: "My Donations", path: "/dashboard/my-donations", icon: FaHandHoldingHeart },
+      ],
+    },
+    {
+      title: "PREFERENCES",
+      items: [
+        { name: "Account Settings", path: "/dashboard/settings", icon: FaCog },
       ],
     },
   ];

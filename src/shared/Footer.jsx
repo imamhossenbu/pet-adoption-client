@@ -9,7 +9,6 @@ import {
   FaPhoneAlt,
   FaMapMarkerAlt,
   FaClock,
-  FaEnvelope,
   FaShieldAlt,
 } from "react-icons/fa";
 import logo from "../assets/logo.png";

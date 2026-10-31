@@ -64,6 +64,11 @@ const AddPet = () => {
   const editor = useEditor({
     extensions: [StarterKit],
     content: "<p>Tell the adopter about this pet's personality, behavior with kids and other pets, and daily routine...</p>",
+    editorProps: {
+      attributes: {
+        class: "focus:outline-none outline-none min-h-[130px] text-xs leading-relaxed text-gray-800",
+      },
+    },
     onUpdate: ({ editor }) => {
       setValue("longDescription", editor.getHTML());
     },

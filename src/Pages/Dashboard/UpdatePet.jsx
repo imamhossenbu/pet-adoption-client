@@ -40,6 +40,11 @@ const UpdatePet = () => {
     const editor = useEditor({
         extensions: [StarterKit],
         content: '',
+        editorProps: {
+            attributes: {
+                class: 'focus:outline-none outline-none min-h-[140px] text-sm leading-relaxed text-gray-800',
+            },
+        },
         onUpdate: ({ editor }) => {
             setValue('longDescription', editor.getHTML());
         },

@@ -54,6 +54,11 @@ const CreateDonationCampaign = () => {
   const editor = useEditor({
     extensions: [StarterKit],
     content: "<p>Describe the pet's diagnosis, the vet clinic handling treatment, estimated surgery or medication costs, and recovery plan...</p>",
+    editorProps: {
+      attributes: {
+        class: "focus:outline-none outline-none min-h-[130px] text-xs leading-relaxed text-gray-800",
+      },
+    },
     onUpdate: ({ editor }) => {
       setValue("longDescription", editor.getHTML());
     },

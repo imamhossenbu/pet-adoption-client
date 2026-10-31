@@ -4,7 +4,6 @@ import { Helmet } from "react-helmet";
 import { Link } from "react-router-dom";
 import Swal from "sweetalert2";
 import {
-  FaTags,
   FaPlusCircle,
   FaPaw,
   FaTrashAlt,

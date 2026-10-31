@@ -38,6 +38,7 @@ import ManageCategories from "../Pages/Dashboard/ManageCategories";
 import ForgotPassword from "../Pages/ForgotPassword";
 import ManageTeam from "../Pages/Dashboard/ManageTeam";
 import ManageNewsletter from "../Pages/Dashboard/ManageNewsletter";
+import Settings from "../Pages/Dashboard/Settings";
 
 
 const router = createBrowserRouter([
@@ -199,6 +200,10 @@ const router = createBrowserRouter([
             {
                 path: 'manage-newsletter',
                 element: <AdminRoute><ManageNewsletter></ManageNewsletter></AdminRoute>
+            },
+            {
+                path: 'settings',
+                element: <PrivateRoute><Settings></Settings></PrivateRoute>
             }
 
         ]

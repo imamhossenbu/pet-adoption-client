@@ -45,6 +45,7 @@ const Dashboard = () => {
     if (pathname.includes("edit-donation")) return "Edit Donation Campaign";
     if (pathname.includes("my-donations")) return "My Donations History";
     if (pathname.includes("my-adoption-requests")) return "My Adoption Applications";
+    if (pathname.includes("settings")) return "Account Settings";
     return "Dashboard";
   };
 
@@ -134,15 +135,19 @@ const Dashboard = () => {
             </Link>
 
             {/* User Profile Pill */}
-            <div className="flex items-center gap-3 pl-2 border-l border-gray-200">
+            <Link
+              to="/dashboard/settings"
+              title="Account Settings"
+              className="flex items-center gap-3 pl-2 border-l border-gray-200 hover:opacity-85 transition group cursor-pointer"
+            >
               <UserAvatar
                 name={user?.displayName || user?.email}
                 email={user?.email}
                 photo={user?.photoURL}
-                className="w-9 h-9 rounded-xl text-xs font-black border border-[#FBAE02]"
+                className="w-9 h-9 rounded-xl text-xs font-black border border-[#FBAE02] group-hover:ring-2 group-hover:ring-[#FBAE02]/50 transition"
               />
               <div className="hidden xl:block text-left">
-                <p className="text-xs font-black text-gray-900 leading-none">
+                <p className="text-xs font-black text-gray-900 leading-none group-hover:text-orange-600 transition">
                   {user?.displayName || "Member"}
                 </p>
                 <span
@@ -153,7 +158,7 @@ const Dashboard = () => {
                   {isAdmin ? "Admin Access" : "Pet Adopter"}
                 </span>
               </div>
-            </div>
+            </Link>
           </div>
         </header>
 

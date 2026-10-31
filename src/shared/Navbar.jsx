@@ -126,6 +126,13 @@ const Navbar = () => {
                     >
                       Dashboard
                     </NavLink>
+                    <NavLink
+                      to="/dashboard/settings"
+                      onClick={() => setIsDropdownOpen(false)}
+                      className="block px-4 py-2.5 text-white font-medium transition duration-200 hover:bg-[#FBAE02] hover:text-black border-t border-gray-800"
+                    >
+                      Account Settings
+                    </NavLink>
                     <button
                       onClick={() => {
                         setIsDropdownOpen(false);

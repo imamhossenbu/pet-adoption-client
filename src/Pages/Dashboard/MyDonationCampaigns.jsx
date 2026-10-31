@@ -6,7 +6,6 @@ import { useQuery } from "@tanstack/react-query";
 import { Helmet } from "react-helmet";
 import Swal from "sweetalert2";
 import Skeleton from "react-loading-skeleton";
-import DonationProgress from "../../shared/DonationProgress";
 import useAxiosSecure from "../../Hooks/useAxiosSecure";
 import EmptyState from "../../Components/EmptyState";
 import UserAvatar from "../../Components/UserAvatar";

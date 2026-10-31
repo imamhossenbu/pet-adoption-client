@@ -1,16 +1,14 @@
 import { useState, useRef, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { Helmet } from "react-helmet";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion } from "framer-motion";
 import Swal from "sweetalert2";
 import {
   FaLock,
   FaEnvelope,
-  FaShieldAlt,
   FaArrowLeft,
   FaCheckCircle,
   FaKey,
-  FaRedoAlt,
   FaEye,
   FaEyeSlash,
   FaPaw

@@ -4,10 +4,57 @@
 @tailwind components;
 @tailwind utilities;
 
-body{
+body {
     font-family: "Lato", serif;
 }
 
+/* TipTap / ProseMirror Focus & Outline Fix across entire app */
+.ProseMirror {
+    outline: none !important;
+    border: none !important;
+}
 
+.ProseMirror:focus,
+.ProseMirror-focused,
+.tiptap:focus,
+.tiptap {
+    outline: none !important;
+    box-shadow: none !important;
+    border: none !important;
+}
 
-  
+.ProseMirror p {
+    margin-bottom: 0.5rem;
+}
+
+.ProseMirror p:last-child {
+    margin-bottom: 0;
+}
+
+.ProseMirror ul {
+    list-style-type: disc;
+    padding-left: 1.25rem;
+    margin-bottom: 0.5rem;
+}
+
+.ProseMirror ol {
+    list-style-type: decimal;
+    padding-left: 1.25rem;
+    margin-bottom: 0.5rem;
+}
+
+/* Custom Scrollbar for sleek UI */
+::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+}
+::-webkit-scrollbar-track {
+    background: transparent;
+}
+::-webkit-scrollbar-thumb {
+    background: #e2e8f0;
+    border-radius: 9999px;
+}
+::-webkit-scrollbar-thumb:hover {
+    background: #cbd5e1;
+}

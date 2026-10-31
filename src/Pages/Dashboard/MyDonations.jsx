@@ -11,8 +11,7 @@ import {
   FaCalendarAlt,
   FaReceipt,
   FaUndo,
-  FaSearch,
-  FaExternalLinkAlt
+  FaSearch
 } from "react-icons/fa";
 import AuthContext from "../../context/authContext";
 import useAxiosSecure from "../../Hooks/useAxiosSecure";

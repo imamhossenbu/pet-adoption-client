@@ -44,7 +44,7 @@ const ManageNewsletter = () => {
     },
   });
 
-  const subscribers = data.subscribers || [];
+  const subscribers = useMemo(() => data.subscribers || [], [data.subscribers]);
   const stats = data.stats || { total: subscribers.length, active: 0, unsubscribed: 0 };
 
   // Filter subscribers

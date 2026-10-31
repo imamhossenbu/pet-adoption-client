@@ -48,7 +48,6 @@ const PetListing = () => {
         data,
         isLoading,
         isError,
-        isFetching,
     } = useQuery({
         queryKey: ["pets", selectedCategory?.value, searchTerm, page], // Depend on category, searchTerm, and page
         queryFn: async () => {

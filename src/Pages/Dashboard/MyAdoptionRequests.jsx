@@ -7,11 +7,7 @@ import {
   FaCheckCircle,
   FaClock,
   FaTimesCircle,
-  FaPaw,
-  FaSearch,
-  FaExternalLinkAlt,
-  FaPhoneAlt,
-  FaMapMarkerAlt
+  FaPaw
 } from "react-icons/fa";
 import AuthContext from "../../context/authContext";
 import useAxiosSecure from "../../Hooks/useAxiosSecure";

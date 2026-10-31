@@ -3,15 +3,8 @@ import { Helmet } from "react-helmet";
 import { Link } from "react-router-dom";
 import Swal from "sweetalert2";
 import {
-  FaCog,
-  FaPlusCircle,
-  FaCheckCircle,
-  FaEdit,
-  FaTrashAlt,
   FaExternalLinkAlt,
-  FaDollarSign,
   FaTimes,
-  FaStar,
   FaShieldAlt
 } from "react-icons/fa";
 import { servicesData } from "../../data/servicesData";
