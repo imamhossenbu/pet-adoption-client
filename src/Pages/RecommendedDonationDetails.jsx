@@ -3,8 +3,6 @@ import {  useParams } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { loadStripe } from "@stripe/stripe-js";
 import { Elements } from "@stripe/react-stripe-js";
-import { Modal } from "react-responsive-modal";
-import "react-responsive-modal/styles.css";
 import useAxiosPublic from "../Hooks/useAxiosPublic";
 import DonationForm from "./Dashboard/DonationForm";
 import DonationProgress from "../shared/DonationProgress";
@@ -80,14 +78,14 @@ const RecommendedDonationDetails = () => {
                 />
             </div>
 
-            {/* Donation Modal */}
-            <Modal open={isModalOpen} onClose={() => setIsModalOpen(false)} center>
-                <div className="p-6 w-[350px] md:w-[400px]">
+            {/* Unified Donation Modal */}
+            {isModalOpen && (
+                <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm overflow-y-auto animate-in fade-in duration-200">
                     <Elements stripe={stripePromise}>
                         <DonationForm donationId={id} refetch={refetch} onClose={() => setIsModalOpen(false)} />
                     </Elements>
                 </div>
-            </Modal>
+            )}
         </div>
     );
 };

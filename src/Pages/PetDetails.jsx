@@ -1,81 +1,31 @@
 import { useContext, useState } from "react";
-import { Modal } from "react-responsive-modal";
-import "react-responsive-modal/styles.css";
 import AuthContext from "../context/authContext";
 import { useQuery } from "@tanstack/react-query";
-import { useNavigate, useParams } from "react-router-dom";
-import Swal from "sweetalert2";
+import { useParams } from "react-router-dom";
 import useAxiosSecure from "../Hooks/useAxiosSecure";
 import { useFavorites } from "../context/FavoritesContext";
 import { FaHeart, FaRegHeart, FaAward, FaCheckCircle, FaShieldAlt } from "react-icons/fa";
 import AdoptionCertificateModal from "../Components/AdoptionCertificateModal";
+import AdoptionRequestModal from "../Components/AdoptionRequestModal";
 import { getPetImage, handleImageError } from "../utils/imageFallback";
 
 const PetDetails = () => {
     const { user } = useContext(AuthContext);
     const { id } = useParams();
-    const navigate = useNavigate();
     const { toggleFavorite, isFavorite } = useFavorites();
 
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [isCertificateOpen, setIsCertificateOpen] = useState(false);
-    const [formData, setFormData] = useState({
-        phone: "",
-        address: "",
-    });
 
     const axiosSecure = useAxiosSecure();
 
-    const { data: pet = {} } = useQuery({
+    const { data: pet = {}, refetch } = useQuery({
         queryKey: ["pet", id],
         queryFn: async () => {
             const res = await axiosSecure.get(`/pets/${id}`);
             return res.data;
         },
     });
-
-    const handleInputChange = (e) => {
-        const { name, value } = e.target;
-        setFormData({ ...formData, [name]: value });
-    };
-
-    const handleAdopt = async (e) => {
-        e.preventDefault();
-        const adoptionData = {
-            petId: pet._id,
-            petName: pet.petName,
-            petImage: pet.petImage,
-            userName: user?.displayName,
-            userEmail: user?.email,
-            phone: formData.phone,
-            address: formData.address,
-        };
-
-        
-            const res = await axiosSecure.post("/adoption", adoptionData);
-
-            if (res.data.insertedId) {
-                setIsModalOpen(false);
-                Swal.fire({
-                    position: "top-end",
-                    icon: "success",
-                    title: "Adoption request sent successfully",
-                    showConfirmButton: false,
-                    timer: 1500
-                });
-                navigate('/pet-listing');
-            }
-            else{
-                Swal.fire({
-                    position: "top-end",
-                    icon: "error",
-                    title: "Failed to submit adoption request",
-                    showConfirmButton: false,
-                    timer: 1500
-                });
-
-        } 
-    };
 
     return (
         <div className="max-w-6xl mx-auto my-12 p-6 md:p-10 bg-white rounded-2xl shadow-xl border border-gray-100">
@@ -193,75 +143,14 @@ const PetDetails = () => {
                 />
             </div>
 
-            {/* Modal */}
-            <Modal open={isModalOpen} onClose={() => setIsModalOpen(false)} center>
-                <div className="w-[350px] md:w-[400px] p-6">
-                    <h2 className="text-2xl font-bold text-orange-600 mb-4">
-                        Adopt {pet.petName}
-                    </h2>
-                    <form onSubmit={handleAdopt} className="space-y-4">
-                        {/* Pet Info */}
-                        <input type="hidden" name="petId" value={pet.id} />
-                        <input type="hidden" name="petName" value={pet.petName} />
-                        <input type="hidden" name="petImage" value={pet.petImage} />
-
-                        {/* User Info */}
-                        <div>
-                            <label className="block font-medium">Name</label>
-                            <input
-                                type="text"
-                                value={user?.displayName || ""}
-                                disabled
-                                className="w-full p-2 border rounded bg-gray-100"
-                            />
-                        </div>
-                        <div>
-                            <label className="block font-medium">Email</label>
-                            <input
-                                type="email"
-                                value={user?.email || ""}
-                                disabled
-                                className="w-full p-2 border rounded bg-gray-100"
-                            />
-                        </div>
-
-                        {/* Phone Number */}
-                        <div>
-                            <label className="block font-medium">Phone Number</label>
-                            <input
-                                type="tel"
-                                name="phone"
-                                value={formData.phone}
-                                onChange={handleInputChange}
-                                required
-                                placeholder="Enter your phone number"
-                                className="w-full p-2 border rounded"
-                            />
-                        </div>
-
-                        {/* Address */}
-                        <div>
-                            <label className="block font-medium">Address</label>
-                            <textarea
-                                name="address"
-                                value={formData.address}
-                                onChange={handleInputChange}
-                                required
-                                placeholder="Enter your address"
-                                className="w-full p-2 border rounded"
-                            />
-                        </div>
-
-                        {/* Submit Button */}
-                        <button
-                            type="submit"
-                            className="w-full bg-orange-500 text-white py-2 px-4 rounded-md hover:bg-orange-600 transition duration-300"
-                        >
-                            Submit Adoption Request
-                        </button>
-                    </form>
-                </div>
-            </Modal>
+            {/* Adoption Request Modal */}
+            <AdoptionRequestModal
+                isOpen={isModalOpen}
+                onClose={() => setIsModalOpen(false)}
+                pet={pet}
+                user={user}
+                onSuccess={refetch}
+            />
         </div>
     );
 };

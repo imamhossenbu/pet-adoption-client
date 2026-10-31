@@ -51,7 +51,7 @@ const AdoptionRequest = () => {
         statusFilter === "all" ||
         (statusFilter === "accepted" && req.status === "accepted") ||
         (statusFilter === "rejected" && req.status === "rejected") ||
-        (statusFilter === "pending" && !req.status || req.status === "pending");
+        (statusFilter === "pending" && (!req.status || req.status === "pending"));
       return matchSearch && matchStatus;
     });
   }, [requests, searchTerm, statusFilter]);
