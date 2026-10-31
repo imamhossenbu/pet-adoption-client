@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 import { useState, useMemo } from "react";
 import { FaEdit, FaPause, FaPlay, FaEye, FaTrashAlt, FaHandHoldingHeart, FaSearch, FaFilter, FaTimes, FaPlusCircle } from "react-icons/fa";
 import { useNavigate, Link } from "react-router-dom";
@@ -8,6 +9,7 @@ import DonationProgress from "../../shared/DonationProgress";
 import useAxiosSecure from "../../Hooks/useAxiosSecure";
 import Skeleton from "react-loading-skeleton";
 import EmptyState from "../../Components/EmptyState";
+import UserAvatar from "../../Components/UserAvatar";
 
 const AllDonationCampaign = () => {
   const navigate = useNavigate();
@@ -313,9 +315,17 @@ const AllDonationCampaign = () => {
               <ul className="divide-y divide-gray-100 text-xs">
                 {modalData.map((d, i) => (
                   <li key={d._id || i} className="py-3 flex items-center justify-between">
-                    <div>
-                      <p className="font-black text-gray-900">{d.name || "Generous Donor"}</p>
-                      <p className="text-[11px] text-gray-400">{d.email}</p>
+                    <div className="flex items-center gap-3">
+                      <UserAvatar
+                        name={d.name || d.userName || d.email}
+                        email={d.email}
+                        photo={d.photo}
+                        className="w-9 h-9 rounded-xl text-xs font-black shadow-xs shrink-0"
+                      />
+                      <div>
+                        <p className="font-black text-gray-900">{d.name || "Generous Donor"}</p>
+                        <p className="text-[11px] text-gray-400">{d.email}</p>
+                      </div>
                     </div>
                     <span className="font-black text-emerald-600 bg-emerald-50 px-3 py-1 rounded-full text-xs">
                       ${d.amount}

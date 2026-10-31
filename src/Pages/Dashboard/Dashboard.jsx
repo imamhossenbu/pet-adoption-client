@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 import { useContext, useState } from "react";
 import { Outlet, useLocation, Link } from "react-router-dom";
 import {
@@ -14,6 +15,7 @@ import Sidebar from "./Sidebar";
 import AuthContext from "../../context/authContext";
 import useAdmin from "../../Hooks/useAdmin";
 import Skeleton from "react-loading-skeleton";
+import UserAvatar from "../../Components/UserAvatar";
 
 const Dashboard = () => {
   const { user } = useContext(AuthContext);
@@ -133,10 +135,11 @@ const Dashboard = () => {
 
             {/* User Profile Pill */}
             <div className="flex items-center gap-3 pl-2 border-l border-gray-200">
-              <img
-                src={user?.photoURL || "https://i.ibb.co/5GzXkwq/user.png"}
-                alt={user?.displayName}
-                className="w-9 h-9 rounded-xl object-cover border border-[#FBAE02]"
+              <UserAvatar
+                name={user?.displayName || user?.email}
+                email={user?.email}
+                photo={user?.photoURL}
+                className="w-9 h-9 rounded-xl text-xs font-black border border-[#FBAE02]"
               />
               <div className="hidden xl:block text-left">
                 <p className="text-xs font-black text-gray-900 leading-none">

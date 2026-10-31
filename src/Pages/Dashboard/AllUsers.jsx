@@ -17,6 +17,8 @@ import {
 } from "react-icons/fa";
 import useAxiosSecure from "../../Hooks/useAxiosSecure";
 import Skeleton from "react-loading-skeleton";
+import UserAvatar from "../../Components/UserAvatar";
+import EmptyState from "../../Components/EmptyState";
 
 const AllUsers = () => {
   const axiosSecure = useAxiosSecure();
@@ -174,7 +176,7 @@ const AllUsers = () => {
         name: newUser.name,
         email: newUser.email,
         role: newUser.role || "user",
-        photo: newUser.photo || "https://i.ibb.co/5GzXkwq/user.png",
+        photo: newUser.photo || "",
         createdAt: new Date().toISOString(),
       });
 
@@ -272,13 +274,23 @@ const AllUsers = () => {
             <Skeleton height={50} count={5} className="rounded-xl" />
           </div>
         ) : filteredUsers.length === 0 ? (
-          <div className="text-center py-16 px-4">
-            <FaUsers className="mx-auto text-4xl text-gray-300 mb-3" />
-            <h4 className="text-base font-black text-gray-800">No users found</h4>
-            <p className="text-xs text-gray-400 mt-1 max-w-sm mx-auto">
-              No matching accounts found for your current search and filter criteria.
-            </p>
-          </div>
+          <EmptyState
+            icon={FaUsers}
+            badge="No Users"
+            title="No Users Found"
+            description={
+              searchTerm || roleFilter !== "all" || statusFilter !== "all"
+                ? "No user accounts match your search or filter criteria."
+                : "No registered users in the database yet."
+            }
+            actionText="Clear Filters"
+            actionOnClick={() => {
+              setSearchTerm("");
+              setRoleFilter("all");
+              setStatusFilter("all");
+            }}
+            className="my-10"
+          />
         ) : (
           <div className="overflow-x-auto">
             <table className="w-full text-left text-xs">
@@ -302,10 +314,11 @@ const AllUsers = () => {
                     >
                       <td className="py-4 px-6">
                         <div className="flex items-center gap-3">
-                          <img
-                            src={user.photo || "https://i.ibb.co/5GzXkwq/user.png"}
-                            alt={user.name}
-                            className="w-10 h-10 rounded-xl object-cover border border-gray-200"
+                          <UserAvatar
+                            name={user.name || user.email}
+                            email={user.email}
+                            photo={user.photo}
+                            className="w-10 h-10 rounded-xl text-xs font-black shadow-xs shrink-0"
                           />
                           <div>
                             <p className="font-black text-gray-900 text-sm">

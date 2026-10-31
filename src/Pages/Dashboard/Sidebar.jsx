@@ -1,3 +1,5 @@
+/* eslint-disable react/prop-types */
+/* eslint-disable no-unused-vars */
 import { useContext } from "react";
 import { NavLink, Link, useNavigate } from "react-router-dom";
 import {
@@ -23,6 +25,7 @@ import logo from "../../assets/logo.png";
 import AuthContext from "../../context/authContext";
 import useAdmin from "../../Hooks/useAdmin";
 import Swal from "sweetalert2";
+import UserAvatar from "../../Components/UserAvatar";
 
 const Sidebar = ({ onClose }) => {
   const { user, logOut } = useContext(AuthContext);
@@ -124,10 +127,11 @@ const Sidebar = ({ onClose }) => {
 
       {/* User Profile Mini Card */}
       <div className="px-6 py-4 mx-4 my-3 rounded-2xl bg-white/5 border border-white/5 flex items-center gap-3">
-        <img
-          src={user?.photoURL || "https://i.ibb.co/5GzXkwq/user.png"}
-          alt={user?.displayName}
-          className="w-10 h-10 rounded-xl object-cover border border-[#FBAE02]/60"
+        <UserAvatar
+          name={user?.displayName || user?.email}
+          email={user?.email}
+          photo={user?.photoURL}
+          className="w-10 h-10 rounded-xl text-sm font-black border border-[#FBAE02]/60"
         />
         <div className="flex-1 min-w-0">
           <h4 className="text-xs font-black text-white truncate">

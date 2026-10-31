@@ -9,6 +9,7 @@ import Skeleton from "react-loading-skeleton";
 import DonationProgress from "../../shared/DonationProgress";
 import useAxiosSecure from "../../Hooks/useAxiosSecure";
 import EmptyState from "../../Components/EmptyState";
+import UserAvatar from "../../Components/UserAvatar";
 
 const MyDonationCampaigns = () => {
   const navigate = useNavigate();
@@ -379,9 +380,12 @@ const MyDonationCampaigns = () => {
                     className="py-3.5 flex items-center justify-between"
                   >
                     <div className="flex items-center gap-3">
-                      <div className="w-10 h-10 rounded-2xl bg-amber-50 text-[#FBAE02] flex items-center justify-center font-black text-sm">
-                        {(donator.name || donator.userName || "A")[0].toUpperCase()}
-                      </div>
+                      <UserAvatar
+                        name={donator.name || donator.userName || donator.email}
+                        email={donator.email}
+                        photo={donator.photo}
+                        className="w-10 h-10 rounded-2xl text-xs font-black shadow-xs shrink-0"
+                      />
                       <div>
                         <p className="font-black text-gray-900 text-xs">
                           {donator.name || donator.userName || "Anonymous Benefactor"}

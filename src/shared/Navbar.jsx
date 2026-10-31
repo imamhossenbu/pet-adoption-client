@@ -5,6 +5,7 @@ import AuthContext from "../context/authContext";
 import { useFavorites } from "../context/FavoritesContext";
 import { FaHeart } from "react-icons/fa";
 import toast from "react-hot-toast";
+import UserAvatar from "../Components/UserAvatar";
 
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -109,10 +110,11 @@ const Navbar = () => {
             {/* Profile Section (Show only if user is logged in) */}
             {user && (
               <div className="relative">
-                <img
-                  src={user.photoURL}
-                  alt="User"
-                  className="h-10 w-10 rounded-full cursor-pointer border-2 border-[#FBAE02]"
+                <UserAvatar
+                  name={user.displayName || user.email}
+                  email={user.email}
+                  photo={user.photoURL}
+                  className="h-10 w-10 rounded-full cursor-pointer text-sm font-black shadow-sm"
                   onClick={() => setIsDropdownOpen(!isDropdownOpen)}
                 />
                 {isDropdownOpen && (
@@ -187,16 +189,55 @@ const Navbar = () => {
 
         {/* Mobile Navigation Links */}
         {isOpen && (
-          <div className="md:hidden">
+          <div className="md:hidden py-3 border-t border-gray-100">
+            {user && (
+              <div className="px-4 py-3 mb-2 bg-gray-50 rounded-2xl flex items-center gap-3">
+                <UserAvatar
+                  name={user.displayName || user.email}
+                  email={user.email}
+                  photo={user.photoURL}
+                  className="w-10 h-10 rounded-full text-sm font-black"
+                />
+                <div className="flex-1 min-w-0">
+                  <p className="font-black text-xs text-gray-900 truncate">
+                    {user.displayName || "Member"}
+                  </p>
+                  <p className="text-[10px] text-gray-400 truncate">
+                    {user.email}
+                  </p>
+                </div>
+              </div>
+            )}
             {navLinks.map((link) => (
               <NavLink
                 key={link.name}
                 to={link.path}
+                onClick={() => setIsOpen(false)}
                 className={`block px-4 py-2 ${linkClass}`}
               >
                 {link.name}
               </NavLink>
             ))}
+            {user && (
+              <div className="pt-2 mt-2 border-t border-gray-100 space-y-1">
+                <NavLink
+                  to="/dashboard"
+                  onClick={() => setIsOpen(false)}
+                  className="block px-4 py-2 text-xs font-bold text-gray-700 hover:text-[#FBAE02]"
+                >
+                  Dashboard
+                </NavLink>
+                <button
+                  onClick={() => {
+                    setIsOpen(false);
+                    handleLogOut();
+                  }}
+                  className="block w-full text-left px-4 py-2 text-xs font-bold text-red-600 hover:text-red-700"
+                >
+                  Logout
+                </button>
+              </div>
+            )}
           </div>
         )}
       </div>

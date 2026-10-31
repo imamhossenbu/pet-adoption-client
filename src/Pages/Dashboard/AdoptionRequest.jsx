@@ -21,6 +21,7 @@ import useAdmin from "../../Hooks/useAdmin";
 import useAxiosSecure from "../../Hooks/useAxiosSecure";
 import Skeleton from "react-loading-skeleton";
 import EmptyState from "../../Components/EmptyState";
+import UserAvatar from "../../Components/UserAvatar";
 
 const AdoptionRequest = () => {
   const axiosSecure = useAxiosSecure();
@@ -194,10 +195,19 @@ const AdoptionRequest = () => {
                     </td>
 
                     <td className="py-4 px-6">
-                      <p className="font-black text-gray-900">{req.userName}</p>
-                      <span className="flex items-center gap-1 text-[11px] text-gray-400 mt-0.5">
-                        <FaEnvelope className="text-[10px]" /> {req.userEmail}
-                      </span>
+                      <div className="flex items-center gap-3">
+                        <UserAvatar
+                          name={req.userName}
+                          email={req.userEmail}
+                          className="w-9 h-9 rounded-xl text-xs font-black shadow-xs shrink-0"
+                        />
+                        <div>
+                          <p className="font-black text-gray-900">{req.userName}</p>
+                          <span className="flex items-center gap-1 text-[11px] text-gray-400 mt-0.5">
+                            <FaEnvelope className="text-[10px]" /> {req.userEmail}
+                          </span>
+                        </div>
+                      </div>
                     </td>
 
                     <td className="py-4 px-6">
