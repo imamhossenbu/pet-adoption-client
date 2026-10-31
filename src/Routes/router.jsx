@@ -36,6 +36,8 @@ import ManageServices from "../Pages/Dashboard/ManageServices";
 import ManageFaqs from "../Pages/Dashboard/ManageFaqs";
 import ManageCategories from "../Pages/Dashboard/ManageCategories";
 import ForgotPassword from "../Pages/ForgotPassword";
+import ManageTeam from "../Pages/Dashboard/ManageTeam";
+import ManageNewsletter from "../Pages/Dashboard/ManageNewsletter";
 
 
 const router = createBrowserRouter([
@@ -189,6 +191,14 @@ const router = createBrowserRouter([
             {
                 path: 'manage-categories',
                 element: <AdminRoute><ManageCategories></ManageCategories></AdminRoute>
+            },
+            {
+                path: 'manage-team',
+                element: <AdminRoute><ManageTeam></ManageTeam></AdminRoute>
+            },
+            {
+                path: 'manage-newsletter',
+                element: <AdminRoute><ManageNewsletter></ManageNewsletter></AdminRoute>
             }
 
         ]

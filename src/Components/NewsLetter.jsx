@@ -1,45 +1,43 @@
-import {useState } from "react";
-import emailjs from "emailjs-com";
+import { useState } from "react";
 import newsletterBg from "../assets/newsletter.jpg";
 import Swal from "sweetalert2";
+import useAxiosPublic from "../Hooks/useAxiosPublic";
 
 const Newsletter = () => {
   const [email, setEmail] = useState("");
   const [isSubmitted, setIsSubmitted] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState("");
+  const axiosPublic = useAxiosPublic();
 
-  const sendEmail = (e) => {
+  const handleSubscribe = async (e) => {
     e.preventDefault();
+    if (!email) return;
 
-    emailjs
-      .send(
-        "service_qw43pch",
-        "template_7dzfa4c",
-        {
-          email: email,
-        },
-        "xPMPQPzivNE4gngbY"
-      )
-      .then(
-        (response) => {
-          console.log("SUCCESS!", response.status, response.text);
-          Swal.fire({
-            title: "Success.",
-            text: "Thanks for Subscribing us.",
-            icon: "success",
-          });
-          setIsSubmitted(true);
-        },
-        (err) => {
-          console.error("FAILED...", err);
-          Swal.fire({
-            title: "Error!",
-            text: "Failed to subscribe. Please try again.",
-            icon: "error",
-          });
-          setError("Failed to subscribe. Please try again.");
-        }
-      );
+    setIsSubmitting(true);
+    setError("");
+
+    try {
+      const res = await axiosPublic.post("/newsletter/subscribe", { email });
+      Swal.fire({
+        title: res.data.alreadySubscribed ? "Already Subscribed!" : "Subscribed!",
+        text: res.data.message || "Thank you for joining our community newsletter.",
+        icon: "success",
+        confirmButtonColor: "#FBAE02",
+      });
+      setIsSubmitted(true);
+      setEmail("");
+    } catch (err) {
+      console.error("Subscription error:", err);
+      Swal.fire({
+        title: "Error!",
+        text: err.response?.data?.message || "Failed to subscribe. Please try again.",
+        icon: "error",
+      });
+      setError("Failed to subscribe. Please try again.");
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
 
@@ -61,27 +59,28 @@ const Newsletter = () => {
 
         {/* Show Thank You Message or Form */}
         {isSubmitted ? (
-          <p className="text-2xl font-semibold text-green-400">
-            Thanks for subscribing!
-          </p>
+          <div className="bg-emerald-500/20 border border-emerald-400 text-emerald-300 px-6 py-3 rounded-2xl max-w-md mx-auto font-bold text-sm">
+            ✓ Thanks for subscribing! You'll receive our monthly rescues digest.
+          </div>
         ) : (
           <form
-            onSubmit={sendEmail}
-            className="max-w-lg mx-auto flex flex-col md:flex-row items-center"
+            onSubmit={handleSubscribe}
+            className="max-w-lg mx-auto flex flex-col sm:flex-row items-center gap-2 sm:gap-0"
           >
             <input
               type="email"
-              placeholder="Email"
+              placeholder="Enter your email address..."
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              className="w-full md:flex-1 px-4 py-3 rounded-l-lg border-0 focus:ring-2 focus:ring-orange-400 text-gray-900"
+              className="w-full sm:flex-1 px-5 py-3.5 rounded-2xl sm:rounded-r-none border-0 focus:ring-2 focus:ring-[#FBAE02] text-gray-900 text-sm shadow-md"
               required
             />
             <button
               type="submit"
-              className="bg-blue-500 hover:bg-blue-600 text-white font-bold px-6 py-3 rounded-r-lg transition duration-300"
+              disabled={isSubmitting}
+              className="w-full sm:w-auto bg-[#FBAE02] hover:bg-orange-500 text-black hover:text-white font-extrabold px-7 py-3.5 rounded-2xl sm:rounded-l-none transition duration-300 shadow-md text-xs uppercase tracking-wider disabled:opacity-60"
             >
-              SUBSCRIBE
+              {isSubmitting ? "Subscribing..." : "SUBSCRIBE"}
             </button>
           </form>
         )}

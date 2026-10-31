@@ -15,7 +15,9 @@ import {
   FaCertificate,
   FaHeart,
   FaTags,
-  FaGlobe
+  FaGlobe,
+  FaUserFriends,
+  FaEnvelopeOpenText
 } from "react-icons/fa";
 import logo from "../../assets/logo.png";
 import AuthContext from "../../context/authContext";
@@ -62,6 +64,8 @@ const Sidebar = ({ onClose }) => {
         { name: "Manage Services", path: "/dashboard/manage-services", icon: FaCog },
         { name: "Manage FAQs", path: "/dashboard/manage-faqs", icon: FaQuestionCircle },
         { name: "Pet Categories", path: "/dashboard/manage-categories", icon: FaTags },
+        { name: "Manage Team", path: "/dashboard/manage-team", icon: FaUserFriends },
+        { name: "Newsletter", path: "/dashboard/manage-newsletter", icon: FaEnvelopeOpenText },
       ],
     },
     {

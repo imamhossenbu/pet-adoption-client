@@ -33,6 +33,8 @@ const Dashboard = () => {
     if (pathname.includes("manage-services")) return "Services Management";
     if (pathname.includes("manage-faqs")) return "FAQs Management";
     if (pathname.includes("manage-categories")) return "Categories Management";
+    if (pathname.includes("manage-team")) return "Team & Specialists";
+    if (pathname.includes("manage-newsletter")) return "Newsletter & Subscribers";
     if (pathname.includes("my-added-pets")) return "My Added Pets";
     if (pathname.includes("add-pet")) return "Add a New Pet";
     if (pathname.includes("update-pet")) return "Update Pet Details";

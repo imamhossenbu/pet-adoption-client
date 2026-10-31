@@ -50,24 +50,63 @@ const AllUsers = () => {
         roleFilter === "all" ||
         (roleFilter === "admin" && u.role === "admin") ||
         (roleFilter === "user" && u.role !== "admin");
+      const currentStatus = u.status || (u.isBanned ? "banned" : "active");
       const matchStatus =
         statusFilter === "all" ||
-        (statusFilter === "banned" && u.isBanned) ||
-        (statusFilter === "active" && !u.isBanned);
+        currentStatus === statusFilter;
       return matchSearch && matchRole && matchStatus;
     });
   }, [users, searchTerm, roleFilter, statusFilter]);
 
-  // Role toggle: Make Admin / Demote to User
-  const handleRoleToggle = async (user) => {
-    const newRole = user.role === "admin" ? "user" : "admin";
+  // Status Change Handler: Active / Suspended / Banned
+  const handleStatusChange = async (user, newStatus) => {
+    const statusDescriptions = {
+      active: "Restore full account privileges and activate member.",
+      suspended: "Temporarily pause user activity and login privileges.",
+      banned: "Permanently restrict and block this account.",
+    };
+
+    const confirm = await Swal.fire({
+      title: `Set Status to ${newStatus.toUpperCase()}?`,
+      text: `${user.name}: ${statusDescriptions[newStatus] || ""}`,
+      icon: newStatus === "banned" ? "warning" : "question",
+      showCancelButton: true,
+      confirmButtonColor: newStatus === "banned" ? "#EF4444" : "#FBAE02",
+      cancelButtonColor: "#6B7280",
+      confirmButtonText: `Yes, Set to ${newStatus}`,
+    });
+
+    if (confirm.isConfirmed) {
+      try {
+        const res = await axiosSecure.patch(`/users/status/${user._id}`, {
+          status: newStatus,
+        });
+        if (res.data.modifiedCount || res.data.acknowledged) {
+          refetch();
+          Swal.fire({
+            icon: "success",
+            title: "Status Updated!",
+            text: `${user.name}'s status is now ${newStatus.toUpperCase()}.`,
+            timer: 1800,
+            showConfirmButton: false,
+          });
+        }
+      } catch (err) {
+        Swal.fire("Error!", err.message || "Failed to update status", "error");
+      }
+    }
+  };
+
+  // Role Change Handler: Admin / User
+  const handleRoleChange = async (user, newRole) => {
+    if (user.role === newRole) return;
     const confirm = await Swal.fire({
       title: `${newRole === "admin" ? "Promote to Admin?" : "Demote to User?"}`,
       text: `Change ${user.name}'s role to ${newRole.toUpperCase()}?`,
       icon: "warning",
       showCancelButton: true,
       confirmButtonColor: "#FBAE02",
-      cancelButtonColor: "#d33",
+      cancelButtonColor: "#6B7280",
       confirmButtonText: "Yes, Change Role",
     });
 
@@ -90,34 +129,11 @@ const AllUsers = () => {
     }
   };
 
-  // Ban / Unban user
+  // Ban / Unban quick toggle
   const handleBanToggle = async (user) => {
-    const isCurrentlyBanned = !!user.isBanned;
-    const confirm = await Swal.fire({
-      title: `${isCurrentlyBanned ? "Unban User?" : "Ban User?"}`,
-      text: `${user.name}'s account will be ${isCurrentlyBanned ? "activated" : "restricted"}.`,
-      icon: "warning",
-      showCancelButton: true,
-      confirmButtonColor: isCurrentlyBanned ? "#10B981" : "#EF4444",
-      cancelButtonColor: "#6B7280",
-      confirmButtonText: `Yes, ${isCurrentlyBanned ? "Unban" : "Ban"}!`,
-    });
-
-    if (confirm.isConfirmed) {
-      try {
-        await axiosSecure.patch(`/users/admin/ban/${user._id}`, {
-          isBanned: !isCurrentlyBanned,
-        });
-        refetch();
-        Swal.fire(
-          "Updated!",
-          `User account has been ${isCurrentlyBanned ? "unbanned" : "banned"}.`,
-          "success"
-        );
-      } catch (err) {
-        Swal.fire("Error!", "Could not change user ban status", "error");
-      }
-    }
+    const isCurrentlyBanned = user.status === "banned" || !!user.isBanned;
+    const newStatus = isCurrentlyBanned ? "active" : "banned";
+    await handleStatusChange(user, newStatus);
   };
 
   // Delete user
@@ -241,8 +257,9 @@ const AllUsers = () => {
               className="bg-transparent font-bold text-gray-700 focus:outline-none cursor-pointer"
             >
               <option value="all">All Status</option>
-              <option value="active">Active Accounts</option>
-              <option value="banned">Banned Accounts</option>
+              <option value="active">Active Only</option>
+              <option value="suspended">Suspended Only</option>
+              <option value="banned">Banned Only</option>
             </select>
           </div>
         </div>
@@ -270,124 +287,112 @@ const AllUsers = () => {
                   <th className="py-4 px-6">User Profile</th>
                   <th className="py-4 px-6">Email Address</th>
                   <th className="py-4 px-6">Role</th>
-                  <th className="py-4 px-6">Status</th>
+                  <th className="py-4 px-6">Account Status</th>
                   <th className="py-4 px-6 text-right">Actions</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-gray-100">
-                {filteredUsers.map((user) => (
-                  <tr
-                    key={user._id}
-                    className="hover:bg-gray-50/70 transition"
-                  >
-                    <td className="py-4 px-6">
-                      <div className="flex items-center gap-3">
-                        <img
-                          src={user.photo || "https://i.ibb.co/5GzXkwq/user.png"}
-                          alt={user.name}
-                          className="w-10 h-10 rounded-xl object-cover border border-gray-200"
-                        />
-                        <div>
-                          <p className="font-black text-gray-900 text-sm">
-                            {user.name}
-                          </p>
-                          <span className="text-[10px] text-gray-400">
-                            User ID: {user._id?.slice(-6)}
-                          </span>
+                {filteredUsers.map((user) => {
+                  const currentStatus =
+                    user.status || (user.isBanned ? "banned" : "active");
+                  return (
+                    <tr
+                      key={user._id}
+                      className="hover:bg-gray-50/70 transition"
+                    >
+                      <td className="py-4 px-6">
+                        <div className="flex items-center gap-3">
+                          <img
+                            src={user.photo || "https://i.ibb.co/5GzXkwq/user.png"}
+                            alt={user.name}
+                            className="w-10 h-10 rounded-xl object-cover border border-gray-200"
+                          />
+                          <div>
+                            <p className="font-black text-gray-900 text-sm">
+                              {user.name}
+                            </p>
+                            <span className="text-[10px] text-gray-400">
+                              User ID: {user._id?.slice(-6)}
+                            </span>
+                          </div>
                         </div>
-                      </div>
-                    </td>
+                      </td>
 
-                    <td className="py-4 px-6 text-gray-600 font-semibold">
-                      {user.email}
-                    </td>
+                      <td className="py-4 px-6 text-gray-600 font-semibold">
+                        {user.email}
+                      </td>
 
-                    <td className="py-4 px-6">
-                      <span
-                        className={`inline-flex items-center gap-1 text-[11px] font-extrabold px-3 py-1 rounded-full ${
-                          user.role === "admin"
-                            ? "bg-amber-100 text-amber-900 border border-amber-200"
-                            : "bg-blue-50 text-blue-800 border border-blue-200"
-                        }`}
-                      >
-                        {user.role === "admin" ? (
-                          <>
-                            <FaShieldAlt className="text-amber-600" /> Admin
-                          </>
-                        ) : (
-                          "User"
-                        )}
-                      </span>
-                    </td>
-
-                    <td className="py-4 px-6">
-                      <span
-                        className={`inline-flex items-center gap-1 text-[11px] font-extrabold px-3 py-1 rounded-full ${
-                          user.isBanned
-                            ? "bg-red-100 text-red-800 border border-red-200"
-                            : "bg-emerald-100 text-emerald-800 border border-emerald-200"
-                        }`}
-                      >
-                        {user.isBanned ? (
-                          <>
-                            <FaBan className="text-red-600" /> Banned
-                          </>
-                        ) : (
-                          <>
-                            <FaCheckCircle className="text-emerald-600" /> Active
-                          </>
-                        )}
-                      </span>
-                    </td>
-
-                    <td className="py-4 px-6 text-right">
-                      <div className="inline-flex items-center gap-2">
-                        {/* Role Demote/Promote Button */}
-                        <button
-                          onClick={() => handleRoleToggle(user)}
-                          title={
+                      {/* Interactive Role Selector */}
+                      <td className="py-4 px-6">
+                        <select
+                          value={user.role || "user"}
+                          onChange={(e) => handleRoleChange(user, e.target.value)}
+                          className={`text-[11px] font-black px-3 py-1.5 rounded-xl border cursor-pointer focus:outline-none focus:ring-2 focus:ring-[#FBAE02] transition shadow-xs ${
                             user.role === "admin"
-                              ? "Demote to User"
-                              : "Promote to Admin"
-                          }
-                          className={`p-2 rounded-xl text-xs font-bold transition ${
-                            user.role === "admin"
-                              ? "bg-amber-100 text-amber-900 hover:bg-amber-200"
-                              : "bg-blue-100 text-blue-800 hover:bg-blue-200"
+                              ? "bg-amber-100/80 text-amber-950 border-amber-300"
+                              : "bg-blue-50 text-blue-900 border-blue-200"
                           }`}
                         >
-                          <FaUserCog className="text-sm" />
-                        </button>
+                          <option value="user">👤 User</option>
+                          <option value="admin">🛡️ Admin</option>
+                        </select>
+                      </td>
 
-                        {/* Ban / Unban Button */}
-                        <button
-                          onClick={() => handleBanToggle(user)}
-                          title={user.isBanned ? "Unban Account" : "Ban Account"}
-                          className={`p-2 rounded-xl text-xs font-bold transition ${
-                            user.isBanned
-                              ? "bg-emerald-100 text-emerald-800 hover:bg-emerald-200"
-                              : "bg-orange-100 text-orange-800 hover:bg-orange-200"
+                      {/* Interactive Status Selector */}
+                      <td className="py-4 px-6">
+                        <select
+                          value={currentStatus}
+                          onChange={(e) => handleStatusChange(user, e.target.value)}
+                          className={`text-[11px] font-black px-3 py-1.5 rounded-xl border cursor-pointer focus:outline-none focus:ring-2 focus:ring-[#FBAE02] transition shadow-xs ${
+                            currentStatus === "banned"
+                              ? "bg-red-50 text-red-800 border-red-300"
+                              : currentStatus === "suspended"
+                              ? "bg-amber-50 text-amber-800 border-amber-300"
+                              : "bg-emerald-50 text-emerald-800 border-emerald-300"
                           }`}
                         >
-                          {user.isBanned ? (
-                            <FaUserCheck className="text-sm" />
-                          ) : (
-                            <FaBan className="text-sm" />
-                          )}
-                        </button>
+                          <option value="active">🟢 Active</option>
+                          <option value="suspended">🟡 Suspended</option>
+                          <option value="banned">🔴 Banned</option>
+                        </select>
+                      </td>
 
-                        {/* Delete User Button */}
-                        <button
-                          onClick={() => handleDeleteUser(user)}
-                          title="Delete User Permanently"
-                          className="p-2 rounded-xl text-xs font-bold bg-red-100 text-red-700 hover:bg-red-200 transition"
-                        >
-                          <FaTrashAlt className="text-sm" />
-                        </button>
-                      </div>
-                    </td>
-                  </tr>
-                ))}
+                      <td className="py-4 px-6 text-right">
+                        <div className="inline-flex items-center gap-2">
+                          {/* Quick Ban / Unban Toggle */}
+                          <button
+                            onClick={() => handleBanToggle(user)}
+                            title={
+                              currentStatus === "banned"
+                                ? "Activate User"
+                                : "Ban User"
+                            }
+                            className={`p-2 rounded-xl text-xs font-bold transition ${
+                              currentStatus === "banned"
+                                ? "bg-emerald-100 text-emerald-800 hover:bg-emerald-200"
+                                : "bg-red-100 text-red-800 hover:bg-red-200"
+                            }`}
+                          >
+                            {currentStatus === "banned" ? (
+                              <FaUserCheck className="text-sm" />
+                            ) : (
+                              <FaBan className="text-sm" />
+                            )}
+                          </button>
+
+                          {/* Delete User Button */}
+                          <button
+                            onClick={() => handleDeleteUser(user)}
+                            title="Delete User Permanently"
+                            className="p-2 rounded-xl text-xs font-bold bg-gray-100 text-gray-500 hover:bg-red-100 hover:text-red-700 transition"
+                          >
+                            <FaTrashAlt className="text-sm" />
+                          </button>
+                        </div>
+                      </td>
+                    </tr>
+                  );
+                })}
               </tbody>
             </table>
           </div>

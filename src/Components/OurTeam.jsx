@@ -1,22 +1,24 @@
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Autoplay, Navigation, Pagination } from "swiper/modules";
 import { motion } from "framer-motion";
+import { useQuery } from "@tanstack/react-query";
+import useAxiosPublic from "../Hooks/useAxiosPublic";
 import "swiper/css";
 import "swiper/css/navigation";
 import "swiper/css/pagination";
 import HeadingSection from "../shared/HeadingSection";
-import { FaFacebookF, FaTwitter, FaLinkedinIn} from "react-icons/fa";
+import { FaFacebookF, FaTwitter, FaLinkedinIn, FaInstagram } from "react-icons/fa";
 import { FaArrowLeftLong, FaArrowRightLong } from "react-icons/fa6";
 
-const teamMembers = [
+const fallbackTeamMembers = [
     {
         name: "Mika Doe",
         role: "Adoption Manager",
         image: "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&w=800&q=80",
         social: {
-            facebook: "https://www.facebook.com/mika.doe",
-            twitter: "https://www.twitter.com/mika_doe",
-            linkedin: "https://www.linkedin.com/in/mikadoe",
+            facebook: "https://www.facebook.com",
+            twitter: "https://www.twitter.com",
+            linkedin: "https://www.linkedin.com",
         },
     },
     {
@@ -24,19 +26,19 @@ const teamMembers = [
         role: "Vet Assistant",
         image: "https://images.unsplash.com/photo-1576765608535-5f04d1e3f289?auto=format&fit=crop&w=800&q=80",
         social: {
-            facebook: "https://www.facebook.com/jillian.smith",
-            twitter: "https://www.twitter.com/jillian_smith",
-            linkedin: "https://www.linkedin.com/in/jilliansmith",
+            facebook: "https://www.facebook.com",
+            twitter: "https://www.twitter.com",
+            linkedin: "https://www.linkedin.com",
         },
     },
     {
-        name: "Laura Smith",
+        name: "Dr. Laura Smith",
         role: "Veterinarian",
         image: "https://images.unsplash.com/photo-1559839734-2b71ea197ec2?auto=format&fit=crop&w=800&q=80",
         social: {
-            facebook: "https://www.facebook.com/laura.smith",
-            twitter: "https://www.twitter.com/laura_smith",
-            linkedin: "https://www.linkedin.com/in/laurasmith",
+            facebook: "https://www.facebook.com",
+            twitter: "https://www.twitter.com",
+            linkedin: "https://www.linkedin.com",
         },
     },
     {
@@ -44,9 +46,9 @@ const teamMembers = [
         role: "Pet Trainer",
         image: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=800&q=80",
         social: {
-            facebook: "https://www.facebook.com/john.doe",
-            twitter: "https://www.twitter.com/john_doe",
-            linkedin: "https://www.linkedin.com/in/johndoe",
+            facebook: "https://www.facebook.com",
+            twitter: "https://www.twitter.com",
+            linkedin: "https://www.linkedin.com",
         },
     },
     {
@@ -54,9 +56,9 @@ const teamMembers = [
         role: "Animal Care Specialist",
         image: "https://images.unsplash.com/photo-1580489944761-15a19d654956?auto=format&fit=crop&w=800&q=80",
         social: {
-            facebook: "https://www.facebook.com/sarah.johnson",
-            twitter: "https://www.twitter.com/sarah_johnson",
-            linkedin: "https://www.linkedin.com/in/sarahjohnson",
+            facebook: "https://www.facebook.com",
+            twitter: "https://www.twitter.com",
+            linkedin: "https://www.linkedin.com",
         },
     },
     {
@@ -64,14 +66,29 @@ const teamMembers = [
         role: "Pet Behaviorist",
         image: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?auto=format&fit=crop&w=800&q=80",
         social: {
-            facebook: "https://www.facebook.com/michael.adams",
-            twitter: "https://www.twitter.com/michael_adams",
-            linkedin: "https://www.linkedin.com/in/michaeladams",
+            facebook: "https://www.facebook.com",
+            twitter: "https://www.twitter.com",
+            linkedin: "https://www.linkedin.com",
         },
     },
 ];
 
 const OurTeam = () => {
+    const axiosPublic = useAxiosPublic();
+    const { data: teamMembers = [] } = useQuery({
+        queryKey: ["public-team"],
+        queryFn: async () => {
+            try {
+                const res = await axiosPublic.get("/team");
+                return res.data || [];
+            } catch (e) {
+                return [];
+            }
+        }
+    });
+
+    const displayMembers = teamMembers.length > 0 ? teamMembers : fallbackTeamMembers;
+
     return (
         <section className="py-20 bg-gray-100 overflow-hidden">
             <div className="container mx-auto px-4 md:px-10 text-center">
@@ -108,15 +125,15 @@ const OurTeam = () => {
                         }}
                         autoplay={{ delay: 0, disableOnInteraction: false }}
                         speed={5000}
-                        loop={true}
+                        loop={displayMembers.length > 3}
                         navigation={{
                             prevEl: ".swiper-button-prev-custom",
                             nextEl: ".swiper-button-next-custom",
                         }}
                         pagination={{ clickable: true }}
                     >
-                        {teamMembers.map((member, index) => (
-                            <SwiperSlide key={index}>
+                        {displayMembers.map((member, index) => (
+                            <SwiperSlide key={member._id || index}>
                                 <motion.div whileHover={{ y: -6 }} className="relative mx-auto w-full max-w-[340px] rounded-2xl shadow-lg bg-white overflow-hidden group border border-gray-100">
                                     <div className="relative group overflow-hidden">
                                         <img 
@@ -133,15 +150,26 @@ const OurTeam = () => {
                                         <div
                                             className="absolute top-0 right-0 h-full w-14 bg-[#1D1D1D]/90 backdrop-blur-xs rounded-l-2xl flex flex-col justify-center items-center space-y-4 transition-all transform translate-x-full opacity-0 group-hover:translate-x-0 group-hover:opacity-100"
                                         >
-                                            <a href={member.social.facebook} target="_blank" rel="noopener noreferrer" className="p-2 rounded-full hover:bg-white/20 transition">
-                                                <FaFacebookF className="text-[#FBAE02]" size={16} />
-                                            </a>
-                                            <a href={member.social.twitter} target="_blank" rel="noopener noreferrer" className="p-2 rounded-full hover:bg-white/20 transition">
-                                                <FaTwitter className="text-[#FBAE02]" size={16} />
-                                            </a>
-                                            <a href={member.social.linkedin} target="_blank" rel="noopener noreferrer" className="p-2 rounded-full hover:bg-white/20 transition">
-                                                <FaLinkedinIn className="text-[#FBAE02]" size={16} />
-                                            </a>
+                                            {member.social?.facebook && (
+                                                <a href={member.social.facebook} target="_blank" rel="noopener noreferrer" className="p-2 rounded-full hover:bg-white/20 transition">
+                                                    <FaFacebookF className="text-[#FBAE02]" size={16} />
+                                                </a>
+                                            )}
+                                            {member.social?.twitter && (
+                                                <a href={member.social.twitter} target="_blank" rel="noopener noreferrer" className="p-2 rounded-full hover:bg-white/20 transition">
+                                                    <FaTwitter className="text-[#FBAE02]" size={16} />
+                                                </a>
+                                            )}
+                                            {member.social?.linkedin && (
+                                                <a href={member.social.linkedin} target="_blank" rel="noopener noreferrer" className="p-2 rounded-full hover:bg-white/20 transition">
+                                                    <FaLinkedinIn className="text-[#FBAE02]" size={16} />
+                                                </a>
+                                            )}
+                                            {member.social?.instagram && (
+                                                <a href={member.social.instagram} target="_blank" rel="noopener noreferrer" className="p-2 rounded-full hover:bg-white/20 transition">
+                                                    <FaInstagram className="text-[#FBAE02]" size={16} />
+                                                </a>
+                                            )}
                                         </div>
                                     </div>
 
