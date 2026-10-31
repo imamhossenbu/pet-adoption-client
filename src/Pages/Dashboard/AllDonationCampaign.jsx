@@ -7,6 +7,7 @@ import Swal from "sweetalert2";
 import DonationProgress from "../../shared/DonationProgress";
 import useAxiosSecure from "../../Hooks/useAxiosSecure";
 import Skeleton from "react-loading-skeleton";
+import EmptyState from "../../Components/EmptyState";
 
 const AllDonationCampaign = () => {
   const navigate = useNavigate();
@@ -143,15 +144,25 @@ const AllDonationCampaign = () => {
             <Skeleton height={60} count={5} className="rounded-xl" />
           </div>
         ) : filteredCampaigns.length === 0 ? (
-          <div className="text-center py-16 px-4">
-            <FaHandHoldingHeart className="mx-auto text-4xl text-gray-300 mb-3" />
-            <h4 className="text-base font-black text-gray-800">
-              No campaigns found
-            </h4>
-            <p className="text-xs text-gray-400 mt-1 max-w-sm mx-auto">
-              No matching medical campaigns found for your query.
-            </p>
-          </div>
+          <EmptyState
+            icon={FaHandHoldingHeart}
+            badge="No Campaigns"
+            title="No Donation Campaigns Found"
+            description={
+              searchTerm || statusFilter !== "all"
+                ? "No campaigns match your current search query or filter."
+                : "No donation campaigns have been created on the platform yet."
+            }
+            actionText="Create Campaign"
+            actionLink="/dashboard/create-donation-campaign"
+            actionIcon={FaPlusCircle}
+            secondaryText="Clear Filters"
+            secondaryOnClick={() => {
+              setSearchTerm("");
+              setStatusFilter("all");
+            }}
+            className="my-10"
+          />
         ) : (
           <div className="overflow-x-auto">
             <table className="w-full text-left text-xs">

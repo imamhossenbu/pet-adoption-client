@@ -9,8 +9,10 @@ import { NavLink } from "react-router-dom";
 import HeadingSection from '../shared/HeadingSection'
 import DonationProgress from "../shared/DonationProgress";
 import Skeleton from "react-loading-skeleton";
-import 'react-loading-skeleton/dist/skeleton.css'
+import 'react-loading-skeleton/dist/skeleton.css';
 import { getPetImage, handleImageError } from "../utils/imageFallback";
+import EmptyState from "../Components/EmptyState";
+import { FaHandHoldingHeart } from "react-icons/fa";
 
 const DonationCampaigns = () => {
     const axiosSecurePublic = useAxiosPublic();
@@ -95,6 +97,16 @@ const DonationCampaigns = () => {
                     </div>
                 ) : isError ? (
                     <div className="text-center py-10 text-red-500 font-semibold">Error fetching donation campaigns. Please try again later.</div>
+                ) : campaigns.length === 0 ? (
+                    <EmptyState
+                        icon={FaHandHoldingHeart}
+                        badge="No Campaigns"
+                        title="No Donation Campaigns Found"
+                        description={searchTerm ? `No campaigns found matching "${searchTerm}". Try another search term.` : "There are currently no active donation campaigns."}
+                        actionText={searchTerm ? "Clear Search" : undefined}
+                        actionOnClick={searchTerm ? () => setSearchTerm("") : undefined}
+                        className="my-10"
+                    />
                 ) : (
                     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
                     {campaigns.map((campaign) => (

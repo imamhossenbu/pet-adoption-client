@@ -17,6 +17,7 @@ import AuthContext from "../../context/authContext";
 import useAxiosSecure from "../../Hooks/useAxiosSecure";
 import AdoptionCertificateModal from "../../Components/AdoptionCertificateModal";
 import Skeleton from "react-loading-skeleton";
+import EmptyState from "../../Components/EmptyState";
 
 const MyAdoptionRequests = () => {
   const axiosSecure = useAxiosSecure();
@@ -79,21 +80,16 @@ const MyAdoptionRequests = () => {
             <Skeleton height={60} count={4} className="rounded-xl" />
           </div>
         ) : myApplications.length === 0 ? (
-          <div className="text-center py-16 px-4">
-            <FaPaw className="mx-auto text-4xl text-gray-300 mb-3" />
-            <h4 className="text-base font-black text-gray-800">
-              No applications submitted yet
-            </h4>
-            <p className="text-xs text-gray-400 mt-1 max-w-sm mx-auto">
-              Find an adorable furry friend waiting for love in our pet listings and submit an adoption form!
-            </p>
-            <Link
-              to="/pet-listing"
-              className="mt-4 inline-flex items-center gap-2 bg-[#FBAE02] hover:bg-orange-500 text-black hover:text-white font-extrabold text-xs uppercase px-5 py-2.5 rounded-xl transition shadow"
-            >
-              Explore Pets for Adoption
-            </Link>
-          </div>
+          <EmptyState
+            icon={FaPaw}
+            badge="No Applications"
+            title="No Adoption Applications Yet"
+            description="Find an adorable furry friend waiting for love in our pet listings and submit an adoption form to get started!"
+            actionText="Explore Pets for Adoption"
+            actionLink="/pet-listing"
+            actionIcon={FaPaw}
+            className="my-10"
+          />
         ) : (
           <div className="overflow-x-auto">
             <table className="w-full text-left text-xs">

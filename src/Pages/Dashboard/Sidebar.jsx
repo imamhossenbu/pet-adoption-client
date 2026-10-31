@@ -85,6 +85,7 @@ const Sidebar = ({ onClose }) => {
         { name: "My Overview", path: "/dashboard", icon: FaChartPie, end: true },
         { name: "My Added Pets", path: "/dashboard/my-added-pets", icon: FaPaw },
         { name: "Add a Pet", path: "/dashboard/add-pet", icon: FaPlusCircle },
+        { name: "Incoming Requests", path: "/dashboard/adoption-request", icon: FaClipboardList },
         { name: "My Applications", path: "/dashboard/my-adoption-requests", icon: FaCertificate },
       ],
     },
@@ -93,7 +94,7 @@ const Sidebar = ({ onClose }) => {
       items: [
         { name: "Create Campaign", path: "/dashboard/create-donation-campaign", icon: FaHandHoldingHeart },
         { name: "My Campaigns", path: "/dashboard/my-donation-campaigns", icon: FaHeart },
-        { name: "My Donations", path: "/dashboard/my-donations", icon: FaClipboardList },
+        { name: "My Donations", path: "/dashboard/my-donations", icon: FaHandHoldingHeart },
       ],
     },
   ];

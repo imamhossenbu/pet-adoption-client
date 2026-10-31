@@ -17,6 +17,7 @@ import {
 } from "react-icons/fa";
 import useAxiosSecure from "../Hooks/useAxiosSecure";
 import Skeleton from "react-loading-skeleton";
+import EmptyState from "../Components/EmptyState";
 
 const AllPets = () => {
   const navigate = useNavigate();
@@ -256,13 +257,26 @@ const AllPets = () => {
             <Skeleton height={60} count={6} className="rounded-xl" />
           </div>
         ) : filteredPets.length === 0 ? (
-          <div className="text-center py-16 px-4">
-            <FaPaw className="mx-auto text-4xl text-gray-300 mb-3" />
-            <h4 className="text-base font-black text-gray-800">No pets found</h4>
-            <p className="text-xs text-gray-400 mt-1 max-w-sm mx-auto">
-              No matching pet records found for your current search criteria.
-            </p>
-          </div>
+          <EmptyState
+            icon={FaPaw}
+            badge="No Pets"
+            title="No Pet Records Found"
+            description={
+              searchTerm || selectedCategory !== "all" || statusFilter !== "all"
+                ? `No pet records match your current filter settings.`
+                : "No pets have been registered in the system yet."
+            }
+            actionText="Quick Add Pet"
+            actionOnClick={() => setIsAddModalOpen(true)}
+            actionIcon={FaPlusCircle}
+            secondaryText="Clear Filters"
+            secondaryOnClick={() => {
+              setSearchTerm("");
+              setSelectedCategory("all");
+              setStatusFilter("all");
+            }}
+            className="my-10"
+          />
         ) : (
           <div className="overflow-x-auto">
             <table className="w-full text-left text-xs">

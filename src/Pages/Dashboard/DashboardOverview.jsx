@@ -24,6 +24,7 @@ import AuthContext from "../../context/authContext";
 import useAdmin from "../../Hooks/useAdmin";
 import useAxiosSecure from "../../Hooks/useAxiosSecure";
 import Skeleton from "react-loading-skeleton";
+import EmptyState from "../../Components/EmptyState";
 
 const DashboardOverview = () => {
   const { user } = useContext(AuthContext);
@@ -526,21 +527,16 @@ const DashboardOverview = () => {
             </div>
 
             {userPets.length === 0 ? (
-              <div className="text-center py-10 bg-gray-50 rounded-2xl p-6">
-                <FaPaw className="mx-auto text-3xl text-gray-300 mb-2" />
-                <p className="text-sm font-bold text-gray-700">
-                  You haven't listed any pets yet!
-                </p>
-                <p className="text-xs text-gray-400 mt-1 max-w-sm mx-auto">
-                  Know a pet in need of a loving forever home? List them now to connect with certified adopters.
-                </p>
-                <Link
-                  to="/dashboard/add-pet"
-                  className="mt-4 inline-flex items-center gap-2 bg-[#FBAE02] hover:bg-orange-500 text-black hover:text-white font-extrabold text-xs uppercase px-5 py-2.5 rounded-xl transition shadow"
-                >
-                  <FaPlusCircle /> Add a Pet
-                </Link>
-              </div>
+              <EmptyState
+                icon={FaPaw}
+                badge="No Pets Listed"
+                title="You haven't listed any pets yet"
+                description="Know a pet in need of a loving forever home? List them now to connect with certified adopters across our community."
+                actionText="Add a Pet Now"
+                actionLink="/dashboard/add-pet"
+                actionIcon={FaPlusCircle}
+                className="my-4"
+              />
             ) : (
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
                 {userPets.map((pet) => (

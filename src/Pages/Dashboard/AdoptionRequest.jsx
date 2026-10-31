@@ -20,6 +20,7 @@ import AuthContext from "../../context/authContext";
 import useAdmin from "../../Hooks/useAdmin";
 import useAxiosSecure from "../../Hooks/useAxiosSecure";
 import Skeleton from "react-loading-skeleton";
+import EmptyState from "../../Components/EmptyState";
 
 const AdoptionRequest = () => {
   const axiosSecure = useAxiosSecure();
@@ -149,15 +150,13 @@ const AdoptionRequest = () => {
             <Skeleton height={60} count={5} className="rounded-xl" />
           </div>
         ) : filteredRequests.length === 0 ? (
-          <div className="text-center py-16 px-4">
-            <FaClipboardList className="mx-auto text-4xl text-gray-300 mb-3" />
-            <h4 className="text-base font-black text-gray-800">
-              No adoption requests found
-            </h4>
-            <p className="text-xs text-gray-400 mt-1 max-w-sm mx-auto">
-              No matching applications found. When users submit an adoption form, they will appear here.
-            </p>
-          </div>
+          <EmptyState
+            icon={FaClipboardList}
+            badge="No Applications"
+            title="No Adoption Requests Found"
+            description="When users submit an adoption form for available pets, their contact details and applications will appear here."
+            className="my-10"
+          />
         ) : (
           <div className="overflow-x-auto">
             <table className="w-full text-left text-xs">

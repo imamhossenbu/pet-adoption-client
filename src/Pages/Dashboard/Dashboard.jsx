@@ -29,7 +29,7 @@ const Dashboard = () => {
     if (pathname.includes("all-users")) return "Users Management";
     if (pathname.includes("all-pets")) return "Pets Management";
     if (pathname.includes("all-donations")) return "Campaigns Management";
-    if (pathname.includes("adoption-requests")) return "Adoption Applications";
+    if (pathname.includes("adoption-request")) return "Adoption Applications";
     if (pathname.includes("manage-services")) return "Services Management";
     if (pathname.includes("manage-faqs")) return "FAQs Management";
     if (pathname.includes("manage-categories")) return "Categories Management";
