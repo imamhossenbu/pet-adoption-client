@@ -4,7 +4,7 @@ import { useContext } from "react";
 import AuthContext from "../context/authContext";
 
 const axiosSecure = axios.create({
-  baseURL: "http://localhost:5000",
+  baseURL: import.meta.env.VITE_API_URL || "https://pet-adoption-server-olive.vercel.app",
 });
 const useAxiosSecure = () => {
   const navigate = useNavigate();

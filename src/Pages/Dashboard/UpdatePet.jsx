@@ -11,6 +11,8 @@ import AuthContext from '../../context/authContext';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
 
+import { uploadImageToCloud } from '../../utils/cloudinaryUpload';
+
 const categoryOptions = [
     { value: 'dog', label: 'Dog', color: '#FF5630' },
     { value: 'cat', label: 'Cat', color: '#0052CC' },
@@ -19,8 +21,6 @@ const categoryOptions = [
 ];
 
 const animatedComponents = makeAnimated();
-const image_hosting_key = import.meta.env.VITE_img_hosting_api;
-const image_hosting_api = `https://api.imgbb.com/1/upload?key=${image_hosting_key}`;
 
 
 const UpdatePet = () => {
@@ -80,46 +80,46 @@ const UpdatePet = () => {
 
     // Form Submission Handler
     const onSubmit = async (data) => {
-        const imageFile = { image: data.image[0] };
-        const res = await axiosSecurePublic.post(image_hosting_api, imageFile, {
-            headers: {
-                'Content-Type': 'multipart/form-data'
+        try {
+            let finalImageUrl = pets?.petImage;
+            if (data.image && data.image[0]) {
+                finalImageUrl = await uploadImageToCloud(data.image[0], data.petCategory?.value || "dog");
             }
-        })
-        console.log(res.data.data.display_url);
-        if (res.data.status === 200) {
             const updatedPetData = {
                 petName: data.petName,
                 petAge: parseFloat(data.petAge),
-                petCategory: data.petCategory.value,
+                petCategory: data.petCategory?.value || pets?.petCategory,
                 petLocation: data.petLocation,
                 shortDescription: data.shortDescription,
-                longDescription: editor.getHTML(),
-                petImage: res.data.data.display_url,
-                userEmail: user.email,
-                dateAdded: new Date().toISOString(),
-                adopted:false
+                longDescription: editor ? editor.getHTML() : pets?.longDescription,
+                petImage: finalImageUrl,
+                userEmail: user?.email,
+                dateAdded: pets?.dateAdded || new Date().toISOString(),
+                adopted: pets?.adopted || false
             };
             const response = await axiosSecure.put(`/pet/${id}`, updatedPetData);
-            console.log(response);
-            if (response.data.modifiedCount > 0) {
+            if (response.data.modifiedCount > 0 || response.data.matchedCount > 0) {
                 Swal.fire({
                     title: "Updated!",
                     text: "Pet details have been updated successfully.",
                     icon: "success",
                 });
-                navigate('/dashboard/my-added-pets'); // Redirect to the My Added Pets page
-            }
-            else {
+                navigate('/dashboard/my-added-pets');
+            } else {
                 Swal.fire({
-                    title: "Error!",
-                    text: "Something went wrong while updating the pet. Please try again.",
-                    icon: "error",
+                    title: "Info",
+                    text: "No changes detected.",
+                    icon: "info",
                 });
             }
+        } catch (err) {
+            console.error("Update pet error:", err);
+            Swal.fire({
+                title: "Error!",
+                text: "Something went wrong while updating the pet. Please try again.",
+                icon: "error",
+            });
         }
-
-
     };
 
     return (

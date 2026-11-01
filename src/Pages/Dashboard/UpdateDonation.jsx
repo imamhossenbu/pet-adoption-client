@@ -7,9 +7,7 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { useEffect } from 'react';
 import useAxiosSecure from '../../Hooks/useAxiosSecure';
 
-// Cloudinary/ImgBB API Key (Replace with your actual API key)
-const image_hosting_key = import.meta.env.VITE_img_hosting_api;
-const image_hosting_api = `https://api.imgbb.com/1/upload?key=${image_hosting_key}`;
+import { uploadImageToCloud } from '../../utils/cloudinaryUpload';
 
 const UpdateDonation = () => {
     const [campaign, setCampaign] = useState([]);
@@ -33,41 +31,40 @@ const UpdateDonation = () => {
     // Submit handler
     const onSubmit = async (data) => {
         try {
-            // Upload Image to ImgBB/Cloudinary
-            const imageData = new FormData();
-            imageData.append('image', data.petImage[0]);
+            let finalImageUrl = campaign?.petImage;
+            if (data.petImage && data.petImage[0]) {
+                finalImageUrl = await uploadImageToCloud(data.petImage[0], "campaign");
+            }
 
-            const imageRes = await axiosSecurePublic.post(image_hosting_api, imageData, {
-                headers: { 'Content-Type': 'multipart/form-data' }
-            });
+            const donationData = {
+                petName: data.petName,
+                petImage: finalImageUrl,
+                maxDonationAmount: parseFloat(data.maxDonationAmount),
+                lastDate: data.lastDate,
+                shortDescription: data.shortDescription,
+                longDescription: data.longDescription,
+                createdBy: user?.email,
+                createdAt: campaign?.createdAt || new Date().toISOString(),
+            };
 
-            if (imageRes.data.success) {
-                // Construct the donation campaign data
-                const donationData = {
-                    petName: data.petName,
-                    petImage: imageRes.data.data.display_url, // Uploaded image URL
-                    maxDonationAmount: parseFloat(data.maxDonationAmount),
-                    lastDate: data.lastDate,
-                    shortDescription: data.shortDescription,
-                    longDescription: data.longDescription,
-                    createdBy: user?.email,
-                    createdAt: new Date().toISOString(), // Store creation timestamp
-                };
+            const res = await axiosSecure.put(`/donation-campaigns/${id}`, donationData);
 
-                // Send the donation data to the backend
-                const res = await axiosSecure.put(`/donation-campaigns/${id}`, donationData);
-
-                if (res.data.modifiedCount > 0) {
-                    Swal.fire({
-                        title: "Success!",
-                        text: "Donation campaign updated successfully.",
-                        icon: "success",
-                    });
-                    navigate('/donation-campaigns'); // Redirect after submission
-                }
+            if (res.data.modifiedCount > 0 || res.data.matchedCount > 0) {
+                Swal.fire({
+                    title: "Success!",
+                    text: "Donation campaign updated successfully.",
+                    icon: "success",
+                });
+                navigate('/dashboard/my-donation-campaigns');
+            } else {
+                Swal.fire({
+                    title: "Info",
+                    text: "No changes detected.",
+                    icon: "info",
+                });
             }
         } catch (error) {
-            console.error('Error creating campaign:', error);
+            console.error('Error updating campaign:', error);
             Swal.fire({
                 title: "Error!",
                 text: "Something went wrong while updating the campaign.",
@@ -75,6 +72,7 @@ const UpdateDonation = () => {
             });
         }
     };
+
 
     return (
         <div className="max-w-3xl mx-auto p-8 bg-white shadow-md rounded-lg">

@@ -10,8 +10,8 @@ import axios from "axios";
 export const uploadImageToCloud = async (file, fallbackCategory = "dog") => {
   if (!file) return null;
 
-  const cloudName = import.meta.env.VITE_CLOUDINARY_CLOUD_NAME;
-  const uploadPreset = import.meta.env.VITE_CLOUDINARY_UPLOAD_PRESET;
+  const cloudName = import.meta.env.VITE_CLOUDINARY_CLOUD_NAME || "dd6xynlko";
+  const uploadPreset = import.meta.env.VITE_CLOUDINARY_UPLOAD_PRESET || "peddycare_preset";
   const imgbbKey = import.meta.env.VITE_img_hosting_api;
 
   // 1. Try Cloudinary if keys exist
